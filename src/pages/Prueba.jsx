@@ -20,7 +20,7 @@ function Prueba() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-      <Boton nombre="Agus" />
+      <Boton nombre="Fran" />
         <p>
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>

@@ -9,6 +9,7 @@ import About from './pages/About'
 import NotFound from './pages/NotFound'
 import Products from './pages/Products'
 import Prueba from './pages/Prueba'
+import NuevoPiloto from './pages/nuevoPiloto.jsx'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="about" element={<About />} />
         <Route path="products" element={<Products />} />
         <Route path="prueba" element={<Prueba />} />
+        <Route path="nuevoPiloto" element={<NuevoPiloto />}/>
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
