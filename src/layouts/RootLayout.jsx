@@ -44,6 +44,12 @@ function RootLayout() {
                 Añadir un nuevo piloto
               </NavLink>
             </li>
+            <li>
+              <NavLink 
+                to="/verPilotos" className={({ isActive }) => (isActive ? "active" : "")}>
+                Info Pilotos
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </header>
