@@ -9,7 +9,7 @@ function VerPilotos(){
         .then((response) => response.json())
         .then((data) => {
             console.log(data)
-            setPilotos(data)
+            setPilotos(data.data)
         })
         .catch((err) => {
             console.log(err.message)
@@ -17,13 +17,13 @@ function VerPilotos(){
     }, [])
 
     return(
+    <div><h1>Todos los pilotos</h1>
         <div className="pilotos-container">
-            <h1>HOLA</h1>
             {pilotos.map((piloto) => {
                 return (
                     <div className="piloto" key={piloto.id}>
                         <h2 className="nombre-piloto">{piloto.name}</h2>
-                        <a className="escuderia-piloto">{piloto.team}</a>
+                        <h5 className="escuderia-piloto">{piloto.team}</h5>
                         <h5 className="nro-piloto">{piloto.nro}</h5>
                         <h5 className="nacionalidad-piloto">{piloto.nationality}</h5>
                         <h5 className="rol-piloto">{piloto.role}</h5>
@@ -31,6 +31,7 @@ function VerPilotos(){
                 )
             })}
         </div>
+    </div>
     )
 }
 

@@ -66,3 +66,32 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+/* Puedes agregar esto en tu archivo App.css o index.css */
+
+nav ul {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  margin-right: 20px;
+}
+ /* todos menos el útlimo */
+nav ul li:last-child { 
+  margin-right: 0;
+}
+.pilotos-container {
+  display: flex;
+  flex-wrap: wrap; /* Para que se acomoden en varias filas si hay muchos */
+  gap: 20px;       /* Espacio entre los pilotos */
+}
+
+.piloto {
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 8px;
+  min-width: 200px;
+  background: #f9f9f9;
+}

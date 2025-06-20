@@ -4,7 +4,9 @@ function NuevoPiloto() {
   return (<div>
       <h1>AÑADIR NUEVO PILOTO</h1>
       <p>Por favor, complete el formulario:</p>
+      <form>
       <FormularioNuevoPiloto />
+      </form>
     </div>
   )
 }
