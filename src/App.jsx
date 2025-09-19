@@ -7,7 +7,7 @@ import RootLayout from './layouts/RootLayout'
 import Home from './pages/Home'
 import About from './pages/About'
 import NotFound from './pages/NotFound'
-import Products from './pages/Products'
+import Pilotos from './pages/Pilotos'
 import Prueba from './pages/Prueba'
 
 function App() {
@@ -16,7 +16,7 @@ function App() {
       <Route path="/" element={<RootLayout />}>
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
-        <Route path="products" element={<Products />} />
+        <Route path="pilotos" element={<Pilotos />} />
         <Route path="prueba" element={<Prueba />} />
         <Route path="*" element={<NotFound />} />
       </Route>

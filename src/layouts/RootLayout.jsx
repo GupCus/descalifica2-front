@@ -24,7 +24,7 @@ function RootLayout() {
             </li>
             <li>
               <NavLink
-                to="/products"
+                to="/pilotos"
                 className={({ isActive }) => (isActive ? "active" : "")}
               >
                 Productos
