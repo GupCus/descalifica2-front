@@ -1,7 +1,7 @@
 //Esto estaba en el app original, lo dejo como prueba para ejempo de uso de componentes
 
 import reactLogo from '../assets/react.svg'
-import '../App.css'
+import '../styles/EjEstilo.css'
 import Boton from '../components/Boton'
 
 function Prueba() {

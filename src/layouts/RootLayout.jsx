@@ -1,53 +1,39 @@
 import { Outlet, NavLink } from 'react-router-dom';
+import header from '../assets/Header.png';
+
+// Función externa para manejar las clases activas
+const estaSeleccionado = ({ isActive }) => (isActive ? "active" : "");
 
 function RootLayout() {
   return (
     <>
-      <header>
-        <nav>
-          <ul>
-            <li>
-              <NavLink
-                to="/"
-                className={({ isActive }) => (isActive ? "active" : "")}
-              >
-                Inicio
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/about"
-                className={({ isActive }) => (isActive ? "active" : "")}
-              >
-                Sobre Nosotros
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/pilotos"
-                className={({ isActive }) => (isActive ? "active" : "")}
-              >
-                Productos
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/prueba"
-                className={({ isActive }) => (isActive ? "active" : "")}
-              >
-                Prueba
-              </NavLink>
-            </li>
-          </ul>
-        </nav>
-      </header>
+      <header></header>
 
       <main>
-        <Outlet />
+        <aside>
+          <nav className="sidebar-nav">
+            <NavLink to="/" className="logo">
+              <img src={header} alt="Home" />
+            </NavLink>
+
+            <NavLink to="/about" className={estaSeleccionado}>
+              Sobre Nosotros
+            </NavLink>
+            
+            <NavLink to="/pilotos" className={estaSeleccionado}>
+              Pilotos
+            </NavLink>
+          </nav>
+          
+        </aside>
+
+        <section className="content">
+          <Outlet />
+        </section>
       </main>
 
       <footer>
-        <p>© 2024 Mi Aplicación</p>
+        <p>© 2025 Descalifica2 Team</p>
       </footer>
     </>
   );

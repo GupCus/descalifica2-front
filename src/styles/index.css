@@ -1,0 +1,221 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  /* Paleta F1 - Modo Oscuro */
+  --racing-red: #DC143C;        /* Rojo Ferrari */
+  --burgundy: #8B1538;          /* Bordó profundo */
+  --carbon-black: #1C1C1C;     /* Negro carbón */
+  --metallic-silver: #C0C0C0;   /* Plata metálica */
+  --checkered-white: #F8F8F8;   /* Blanco bandera */
+  --racing-yellow: #C0C0C0;     /* Amarillo racing */
+  --pit-lane-gray: #2D2D2D;     /* Gris pit lane */
+
+  color: var(--checkered-white);
+  background: linear-gradient(135deg, var(--racing-red) 0%, var(--burgundy) 100%);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  text-align: center;
+}
+
+a {
+  font-weight: 500;
+  color: var(--checkered-white);
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--metallic-silver);
+}
+
+body {
+  margin: 0;
+  display: flex;
+
+  min-width: 320px;
+  min-height: 100vh;
+  flex-direction: column;
+  
+}
+
+
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  color: var(--carbon-black);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+button {
+  border-radius: 8px;
+  border: 2px solid var(--racing-red);
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--burgundy);
+  color: var(--checkered-white);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+button:hover {
+  border-color: var(--racing-yellow);
+  background-color: var(--racing-red);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 20, 60, 0.3);
+}
+button:focus,
+button:focus-visible {
+  outline: 2px solid var(--racing-yellow);
+  outline-offset: 2px;
+}
+
+/*ai
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: linear-gradient(135deg, var(--racing-red) 0%, var(--burgundy) 100%);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  padding: 1rem 0;
+}
+*/
+
+nav {
+  display: flex;
+  justify-content: flex-start; /* Cambio de center a flex-start */
+  align-items: center;
+  gap: 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+nav a {
+  color: var(--checkered-white);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: all 0.25s ease;
+}
+
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--racing-yellow);
+}
+
+nav a.active {
+  background-color: var(--racing-yellow);
+  color: var(--carbon-black);
+  font-weight: 600;
+}
+
+nav a.logo {
+  background-color: transparent !important;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+}
+
+nav a.logo:hover {
+  background-color: transparent !important;
+  transform: scale(1.05);
+}
+
+nav a.logo img {
+  height: 70px; /* Aumentado de 50px a 70px */
+  width: auto;
+  transition: all 0.25s ease;
+}
+
+nav a.logo:hover img {
+  filter: brightness(1.1);
+}
+
+
+/* Ajustar el main para layout con sidebar */
+main {
+  display: flex;
+  flex: 1;
+  margin-top: 0px; /* Aumentado para dar espacio al header más grande */
+  margin-left: 250px; /* Agregar margen izquierdo para el sidebar fijo */
+  min-height: 100vh;
+  gap: 0; /* Eliminar gap ya que el sidebar es fijo */
+}
+
+/* Estilos para el aside sidebar - FIJO */
+aside {
+  position: fixed;
+  top: 0px; /* Debajo del header */
+  left: 0;
+  bottom: 0;
+  width: 250px;
+  background: linear-gradient(135deg, var(--racing-red) 0%, var(--burgundy) 100%);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  padding: 2rem 1rem;
+  z-index: 999; /* Menor que el header pero sobre el contenido */
+  overflow-y: auto; /* Scroll si es necesario */
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-nav a {
+  color: var(--checkered-white);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 1rem;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  text-align: left;
+}
+
+.sidebar-nav a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--racing-yellow);
+  transform: translateX(5px);
+}
+
+.sidebar-nav a.active {
+  background-color: var(--racing-yellow);
+  color: var(--carbon-black);
+  font-weight: 600;
+}
+
+/* Contenido principal */
+.content {
+  /* Espacio para el aside fijo */
+  padding: 2rem;
+  width: calc(100% - 250px);
+  overflow-y: auto;
+  display:block;
+}
+
+footer {
+  width: calc(100% - 250px);
+  color: var(--checkered-white);
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+  bottom: 0;
+}
+
+
+
+

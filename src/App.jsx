@@ -8,7 +8,6 @@ import Home from './pages/Home'
 import About from './pages/About'
 import NotFound from './pages/NotFound'
 import Pilotos from './pages/Pilotos'
-import Prueba from './pages/Prueba'
 
 function App() {
   return (
@@ -17,7 +16,6 @@ function App() {
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="pilotos" element={<Pilotos />} />
-        <Route path="prueba" element={<Prueba />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
