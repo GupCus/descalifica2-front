@@ -1,0 +1,166 @@
+.login-page {
+  /* min-height: 100vh; */
+  display: flex;
+  align-items: center;
+  border-radius: 15px;
+  justify-content: center;
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  margin: 2rem;
+}
+
+.login-container {
+  background: white;
+  padding: 2.5rem 2rem;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #764ba2;
+  margin-bottom: 0.5rem;
+}
+
+.login-header p {
+  color: #6c757d;
+  font-size: 1rem;
+}
+
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.form-input {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+.form-input.error {
+  .form-input {
+  border: 2px solid #ef4444 !important;  /* Gris claro */
+  background-color: #fafbfc;  /* Fondo claro */
+}
+}
+
+
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  color: #6c757d;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.forgot-link {
+  color: #764ba2;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.login-btn {
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-btn:disabled {
+  background: #b3b3b3;
+  cursor: not-allowed;
+}
+
+.login-btn:hover:not(:disabled) {
+  background: #764ba2;
+}
+
+.error-message {
+  border-radius: 6px;
+  color: #ef4444;
+  background-color: #ffe5e5;
+  padding: 0.25rem 0.25rem;
+  font-size: 0.875rem; /* Más pequeño y discreto */
+  margin-top: 0.25rem;
+  margin-left: 0.25rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.login-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: #6c757d;
+  font-size: 0.98rem;
+}
+
+.register-link {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}
+
+.demo-info {
+  margin-top: 2rem;
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.demo-info h3 {
+  margin: 0 0 0.5rem 0;
+  color: #764ba2;
+  font-size: 1.1rem;
+}
+
+.demo-credentials {
+  margin-top: 0.5rem;
+  font-size: 0.98rem;
+  color: #2c3e50;
+}
+
+@media (max-width: 500px) {
+  .login-container {
+    padding: 1.2rem;
+  }
+} 

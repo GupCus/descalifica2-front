@@ -38,6 +38,14 @@ function RootLayout() {
                 Prueba
               </NavLink>
             </li>
+             <li>
+              <NavLink
+                to="/login"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                Login
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </header>
@@ -47,7 +55,7 @@ function RootLayout() {
       </main>
 
       <footer>
-        <p>© 2024 Mi Aplicación</p>
+        <p>© 2025 Mi Aplicación</p>
       </footer>
     </>
   );
