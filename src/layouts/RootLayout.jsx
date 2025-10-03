@@ -15,13 +15,13 @@ function RootLayout() {
             <NavLink to="/" className="logo">
               <img src={header} alt="Home" />
             </NavLink>
-
-            <NavLink to="/about" className={estaSeleccionado}>
-              Sobre Nosotros
-            </NavLink>
             
             <NavLink to="/pilotos" className={estaSeleccionado}>
               Pilotos
+            </NavLink>
+            
+            <NavLink to="/about" className={estaSeleccionado}>
+              Sobre Nosotros
             </NavLink>
           </nav>
           
@@ -33,7 +33,6 @@ function RootLayout() {
       </main>
 
       <footer>
-        <p>© 2025 Descalifica2 Team</p>
       </footer>
     </>
   );
