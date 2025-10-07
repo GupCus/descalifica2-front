@@ -27,7 +27,7 @@ function RootLayout() {
               <NavigationMenuTrigger className="font-semibold bg-red-700">
                 Wiki
               </NavigationMenuTrigger>
-              <NavigationMenuContent>
+              <NavigationMenuContent className="z-50">
                 <NavigationMenuLink href="pilotos">Pilotos</NavigationMenuLink>
                 <NavigationMenuLink href="escuderias">
                   Escuderías
