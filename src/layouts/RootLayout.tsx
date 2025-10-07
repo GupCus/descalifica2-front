@@ -2,14 +2,11 @@ import { Outlet, Link } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
-import { Separator } from "@/components/ui/separator";
 
 /* Los classname, como "mx-4" (agrega margenes de distancia 4 de ambos lados, sino es ml para izquierda o mr para derecha), vienen de tailwind, instalar extensión "Tailwind CSS Intellisense" */
 function RootLayout() {
@@ -50,7 +47,7 @@ function RootLayout() {
               </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem className="dark">
-              <NavigationMenuLink className="font-semibold">
+              <NavigationMenuLink href="dondever" className="font-semibold">
                 ¿Dónde Ver?
               </NavigationMenuLink>
             </NavigationMenuItem>
@@ -73,7 +70,7 @@ function RootLayout() {
       </main>
 
       <footer>
-        <p className="text-center">© 2025 Descalifica2</p>
+        <p className="text-center leading-7 mt-6">© 2025 Descalifica2</p>
       </footer>
     </>
   );

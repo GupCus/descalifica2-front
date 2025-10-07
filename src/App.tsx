@@ -9,6 +9,7 @@ import Marcas from "./pages/Marcas.tsx";
 import Circuitos from "./pages/Circuitos.tsx";
 import Categorias from "./pages/Categorias.tsx";
 import Temporadas from "./pages/Temporadas.tsx";
+import DondeVer from "./pages/DondeVer.tsx";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="circuitos" element={<Circuitos />} />
         <Route path="categorias" element={<Categorias />} />
         <Route path="temporadas" element={<Temporadas />} />
+        <Route path="dondever" element={<DondeVer />} />
       </Route>
     </Routes>
   );

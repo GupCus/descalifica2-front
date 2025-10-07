@@ -1,4 +1,4 @@
-import DasboardAccordion from "@/components/DashboardAccordion.tsx";
+import DashboardAccordion from "@/components/DashboardAccordion.tsx";
 import {
   Accordion,
   AccordionContent,
@@ -10,23 +10,39 @@ import TextType from "@/components/ui/TextType.tsx";
 function Home() {
   return (
     <>
-      <div className="bg-[url('./src/assets/ferrari-lluvia-sainz.jpg')] bg-cover bg-center pt-20 pb-20 text-center flex flex-col justify-center items-center">
-        <TextType
-          className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance"
-          text={[
-            "Bienvenido al foro más conocido del automovilismo.",
-            "Welcome to the most famous motorsport forum.",
-          ]}
-          typingSpeed={75}
-          pauseDuration={3500}
-          showCursor={true}
-          textColors={["white"]}
-          cursorCharacter=""
+      <div className="relative pt-20 pb-20 text-center flex flex-col justify-center items-center overflow-hidden">
+        {/* Pseudo-element for blurred background */}
+        <div
+          className="absolute inset-0 w-full h-full z-0"
+          style={{
+            backgroundImage: "url('./src/assets/ferrari-lluvia-sainz.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: "blur(4px)",
+          }}
         />
-        <h3 className="text-white mt-2 scroll-m-20 text-2xl font-semibold tracking-tight text-center">
-          En este foro vas a encontrar toda la información que necesitás para tu
-          deporte motor favorito.
-        </h3>
+        {/* Content stays sharp */}
+        <div className="relative z-10">
+          <TextType
+            className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance"
+            text={[
+              "Bienvenido al foro más conocido del automovilismo.",
+              "Welcome to the most famous motorsport forum.",
+              "Willkommen im berühmtesten Motorsportforum.",
+              "Bem-vindo ao mais famoso fórum de automobilismo",
+            ]}
+            typingSpeed={75}
+            pauseDuration={3500}
+            showCursor={true}
+            textColors={["white"]}
+            cursorCharacter="_"
+            cursorClassName="text-white"
+          />
+          <h3 className="text-white mt-2 scroll-m-20 text-2xl font-semibold tracking-tight text-center">
+            En este foro vas a encontrar toda la información que necesitás para
+            tu deporte motor favorito.
+          </h3>
+        </div>
       </div>
       <div>
         <h4 className="scroll-m-20 text-xl font-semibold tracking-tight mt-15 text-center">
@@ -43,14 +59,14 @@ function Home() {
             </AccordionTrigger>
 
             <AccordionContent>
-              <div className="flex h-40">
+              <div className="flex h-auto">
                 <div className="flex-3 w-full h-full">
-                  <DasboardAccordion />
+                  <DashboardAccordion />
                 </div>
                 <img
                   src="./src/assets/gp-singapur.png"
                   alt="Gran Premio de Singapur"
-                  className="flex-1 max-w-[25%] object-contain object-right"
+                  className="flex-1 max-w-[30%] object-contain"
                 />
               </div>
             </AccordionContent>
