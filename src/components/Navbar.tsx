@@ -1,4 +1,3 @@
-import Pilotos from "@/pages/Pilotos.tsx";
 import {
   NavigationMenu,
   NavigationMenuList,

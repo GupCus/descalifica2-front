@@ -26,7 +26,7 @@ function RootLayout() {
                 Descalifica2
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem>
+            <NavigationMenuItem className="dark">
               <NavigationMenuTrigger className="font-semibold bg-red-700">
                 Wiki
               </NavigationMenuTrigger>
@@ -44,22 +44,22 @@ function RootLayout() {
                 </NavigationMenuLink>
               </NavigationMenuContent>
             </NavigationMenuItem>
-            <NavigationMenuItem>
+            <NavigationMenuItem className="dark">
               <NavigationMenuLink className="font-semibold">
                 Noticias
               </NavigationMenuLink>
             </NavigationMenuItem>
-            <NavigationMenuItem>
+            <NavigationMenuItem className="dark">
               <NavigationMenuLink className="font-semibold">
                 ¿Dónde Ver?
               </NavigationMenuLink>
             </NavigationMenuItem>
-            <NavigationMenuItem>
+            <NavigationMenuItem className="dark">
               <NavigationMenuLink className="font-semibold">
                 Foro
               </NavigationMenuLink>
             </NavigationMenuItem>
-            <NavigationMenuItem>
+            <NavigationMenuItem className="dark">
               <NavigationMenuLink className="font-semibold">
                 Calendario
               </NavigationMenuLink>

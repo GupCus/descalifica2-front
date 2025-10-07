@@ -1,3 +1,4 @@
+import DasboardAccordion from "@/components/DashboardAccordion.tsx";
 import {
   Accordion,
   AccordionContent,
@@ -14,7 +15,7 @@ function Home() {
           className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance"
           text={[
             "Bienvenido al foro más conocido del automovilismo.",
-            "Nos alegramos de tenerte aquí.",
+            "Welcome to the most famous motorsport forum.",
           ]}
           typingSpeed={75}
           pauseDuration={3500}
@@ -37,12 +38,21 @@ function Home() {
           collapsible
         >
           <AccordionItem value="item-1">
-            <AccordionTrigger className="mx-auto">GP SINGAPUR</AccordionTrigger>
+            <AccordionTrigger className="mx-auto">
+              GRAN PREMIO DE SINGAPUR
+            </AccordionTrigger>
+
             <AccordionContent>
-              <p>
-                ACA IRIA ARRAY DE PILOTOS, de largada o de llegada dependiendo
-                el caso. Popular todos los accordions con la info necesaria.
-              </p>
+              <div className="flex h-40">
+                <div className="flex-3 w-full h-full">
+                  <DasboardAccordion />
+                </div>
+                <img
+                  src="./src/assets/gp-singapur.png"
+                  alt="Gran Premio de Singapur"
+                  className="flex-1 max-w-[25%] object-contain object-right"
+                />
+              </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

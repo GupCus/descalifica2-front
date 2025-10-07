@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Pilotos from "./pages/Pilotos.tsx";
-import Escuderias from "./pages/escuderias.tsx";
+import Escuderias from "./pages/Escuderias.tsx";
 import Marcas from "./pages/Marcas.tsx";
 import Circuitos from "./pages/Circuitos.tsx";
 import Categorias from "./pages/Categorias.tsx";
