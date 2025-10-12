@@ -15,7 +15,7 @@ function RootLayout() {
       <header>
         <NavigationMenu
           viewport={false}
-          className="bg-red-700 max-w-full w-full justify-start pt-1 pb-1"
+          className="bg-primary max-w-full w-full justify-start pt-1 pb-1"
         >
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -24,7 +24,7 @@ function RootLayout() {
               </Link>
             </NavigationMenuItem>
             <NavigationMenuItem className="dark">
-              <NavigationMenuTrigger className="font-semibold bg-red-700">
+              <NavigationMenuTrigger className="font-semibold bg-accent">
                 Wiki
               </NavigationMenuTrigger>
               <NavigationMenuContent className="z-50">
