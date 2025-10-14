@@ -15,7 +15,8 @@ function RootLayout() {
       <header>
         <NavigationMenu
           viewport={false}
-          className="bg-primary max-w-full w-full justify-start pt-1 pb-1"
+          className="max-w-full w-full justify-start pt-1 pb-1"
+          style={{ background: 'var(--fondodescalifica2)' }}
         >
           <NavigationMenuList>
             <NavigationMenuItem>
@@ -70,7 +71,7 @@ function RootLayout() {
       </main>
 
       <footer>
-        <p className="text-center leading-7 mt-6">© 2025 Descalifica2</p>
+        <p className="text-center bg-background absolute mb-2 mt-10 bottom-0 right-0 left-0 leading-7 ">© 2025 Descalifica2</p>
       </footer>
     </>
   );

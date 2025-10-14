@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -120,16 +121,16 @@
   --shadow-xl: 0px 4px 10px 0px hsl(0 0% 0% / 0.40), 0px 8px 10px -1px hsl(0 0% 0% / 0.40);
   --shadow-2xl: 0px 4px 10px 0px hsl(0 0% 0% / 1.00);
   --tracking-normal: 0.03em;
+  --fondodescalifica2: linear-gradient(135deg, var(--primary) 40%, #8b1550 100%);
 }
 
-
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
   body {
-    @apply bg-background text-foreground;
+    background: var(--background);
+    color: var(--foreground);
     letter-spacing: var(--tracking-normal);
   }
 }
+
+
 

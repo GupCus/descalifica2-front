@@ -8,69 +8,86 @@ import {
 import TextType from "@/components/ui/TextType.tsx";
 
 function Home() {
+    const grandesPremios = [
+    {
+      id: "item-1",
+      nombre: "GRAN PREMIO DE SINGAPUR",
+      imagen: "https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Singapore_Circuit.webp",
+    },
+    {
+      id: "item-2",
+      nombre: "GRAN PREMIO DE JAPÓN",
+      imagen: "https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Japan_Circuit.webp",
+    },
+    {
+      id: "item-3",
+      nombre: "GRAN PREMIO DE QATAR",
+      imagen: "https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Qatar_Circuit.webp",
+    },
+  ];
+
   return (
     <>
       <div className="relative pt-20 pb-20 text-center flex flex-col justify-center items-center overflow-hidden">
-        {/* Pseudo-element for blurred background */}
+
         <div
-          className="absolute inset-0 w-full h-full z-0"
+          className="absolute inset-0 w-full h-full z-0 blur-[3px]"
           style={{
             backgroundImage: "url('./src/assets/ferrari-lluvia-sainz.jpg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            filter: "blur(4px)",
           }}
         />
-        {/* Content stays sharp */}
+
         <div className="relative z-10">
           <TextType
-            className="scroll-m-20 text-4xl font-extrabold tracking-tight text-balance"
+            className="scroll-m-20 text-4xl font-extrabold tracking-tight text-primary-foreground"
             text={[
-              "Bienvenido al foro más conocido del automovilismo.",
-              "Welcome to the most famous motorsport forum.",
+              "Bienvenido al mejor foro sobre automovilismo.",
+              "Welcome to the best motorsport forum.",
               "Willkommen im berühmtesten Motorsportforum.",
-              "Bem-vindo ao mais famoso fórum de automobilismo",
+              "Bem-vindo ao mais melhor fórum do automobilismo",
+              "Hikinawa kyoto nagasaki hiroyima"
             ]}
             typingSpeed={75}
             pauseDuration={3500}
             showCursor={true}
-            textColors={["white"]}
             cursorCharacter="_"
-            cursorClassName="text-white"
           />
-          <h3 className="text-white mt-2 scroll-m-20 text-2xl font-semibold tracking-tight text-center">
-            En este foro vas a encontrar toda la información que necesitás para
+          <h3 className="text-primary-foreground mt-5 scroll-m-20 text-xl font-semibold tracking-tight text-center">
+            En descalifica2 vas a encontrar toda la información que necesitás para
             tu deporte motor favorito.
           </h3>
         </div>
       </div>
       <div>
-        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight mt-15 text-center">
-          Algunos resultados recientes:{" "}
+        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight mt-5 mb-5 text-center">
+          Últimos grandes premios:{" "}
         </h4>
-        <Accordion
-          className="max-w-2xl w-full mx-auto px-4 bg-gray-400 rounded-lg mt-1"
+                <Accordion
+          className="max-w-3xl w-full mx-auto px-4 bg-secondary rounded-lg mt-1"
           type="single"
           collapsible
         >
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="mx-auto">
-              GRAN PREMIO DE SINGAPUR
-            </AccordionTrigger>
-
-            <AccordionContent>
-              <div className="flex h-auto">
-                <div className="flex-3 w-full h-full">
-                  <DashboardAccordion />
+          {grandesPremios.map((gp) => (
+            <AccordionItem key={gp.id} value={gp.id}>
+              <AccordionTrigger className="mx-auto">
+                {gp.nombre}
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="flex h-auto">
+                  <div className="flex-3 w-full h-full">
+                    <DashboardAccordion />
+                  </div>
+                  <img
+                    src={gp.imagen}
+                    alt={gp.nombre}
+                    className="flex-1 max-w-[40%]"
+                  />
                 </div>
-                <img
-                  src="./src/assets/gp-singapur.png"
-                  alt="Gran Premio de Singapur"
-                  className="flex-1 max-w-[30%] object-contain"
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
         </Accordion>
       </div>
     </>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Button } from "@/components/ui/button";
 import {
   ButtonGroup,
@@ -10,24 +11,24 @@ function DashboardAccordion() {
     <>
       <header className="max-w-[100%] w-full mb-1">
         <ButtonGroup className="">
-          <Button variant="outline" className="w-20 dark text-white">
+          <Button variant="outline" className="w-20 dark text-foreground">
             P1
           </Button>
-          <Button variant="outline" className="w-20 dark text-white">
+          <Button variant="outline" className="w-20 dark text-foreground">
             P2
           </Button>
-          <Button variant="outline" className="w-20 dark text-white">
+          <Button variant="outline" className="w-20 dark text-foreground">
             P3
           </Button>
-          <Button variant="outline" className="w-25 dark text-white">
+          <Button variant="outline" className="w-25 dark text-foreground">
             Qualy
           </Button>
-          <Button variant="outline" className="w-25 dark text-white">
+          <Button variant="outline" className="w-25 dark text-foreground">
             Race
           </Button>
         </ButtonGroup>
       </header>
-      <main className="bg-gray-900 mr-10">
+      <main className="bg-secondary mr-10">
         <Button className="items-center">aaa</Button>
       </main>
     </>
