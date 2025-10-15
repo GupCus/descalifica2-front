@@ -25,7 +25,7 @@ function RootLayout() {
                   <img
                     src="./src/assets/descalifica2logo.png"
                     alt="Descalifica2"
-                    className="mt-2 mb-2 ml-6 h-auto w-32 object-contain hover:scale-105 transition-transform"
+                    className="mt-2 mb-2 ml-6 h-auto w-32 object-cover [overflow-clip-margin:unset] hover:scale-102 transition-transform"
                   />
                 </Link>
               </NavigationMenuItem>
