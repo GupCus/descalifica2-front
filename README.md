@@ -1,30 +1,20 @@
-# React + TypeScript + Vite
+# 🏎️ descalifica2-front 🏎️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 👥Integrantes
 
-Currently, two official plugins are available:
+- 52818 - Barroso Bollero, Agustín
+- 52962 - Taborda, Ignacio
+- 52961 - Figueroa, Francisco Alejandro
+- 52847 - Taborda, Santiago
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Cursando en:** UTN FRRo, Catedra DSW, ISI 303 2025.
 
-## Expanding the ESLint configuration
+### 📝 Descripción
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Descalifica2 es un sitio web dedicado principalmente a la Fórmula 1, donde podrás consultar el calendario de carreras, acceder a información detallada sobre cada evento y mantenerte al día con las noticias sobre automovilismo. El objetivo del sitio es mantener informada a toda la comunidad amante del deporte automotor, brindando las fechas de cada Gran Premio, dónde verlo en vivo, y datos sobre las escuderías participantes junto a sus pilotos. Los usuarios pueden crear un perfil personalizado, indicando su nombre, escuderías, circuitos y pilotos favoritos para adaptar su experiencia en la plataforma. Además, podrán participar en un foro donde intercambiar opiniones, debatir y compartir su pasión con otros fanáticos de la Fórmula 1.
 
-- Configure the top-level `parserOptions` property like this:
+## ℹ️ Más información del proyecto
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- 🛠️ **Tecnologías:** React + Javascript.
+- **Nuestro proposal:** [tp/proposal.md](https://github.com/GupCus/tp/blob/main/proposal.md)
+- **Repo back:** [descalifica2-back](https://github.com/GupCus/descalifica2-back)

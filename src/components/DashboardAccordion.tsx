@@ -6,7 +6,7 @@ import {
   ButtonGroupText,
 } from "@/components/ui/button-group";
 
-function DashboardAccordion() {
+function DashboardAccordion({}) {
   return (
     <>
       <header className="max-w-[100%] w-full mb-1">

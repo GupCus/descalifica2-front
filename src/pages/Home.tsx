@@ -30,8 +30,7 @@ function Home() {
     <>
       <div className="relative pt-20 pb-20 text-center flex flex-col justify-center items-center overflow-hidden">
 
-        <div
-          className="absolute inset-0 w-full h-full z-0 blur-[3px]"
+        <div className="absolute inset-0 w-full h-full z-0 blur-[3px]"
           style={{
             backgroundImage: "url('./src/assets/ferrari-lluvia-sainz.jpg')",
             backgroundSize: "cover",
@@ -41,7 +40,7 @@ function Home() {
 
         <div className="relative z-10">
           <TextType
-            className="scroll-m-20 text-4xl font-extrabold tracking-tight text-primary-foreground"
+            className="text-4xl font-extrabold tracking-tight text-primary-foreground"
             text={[
               "Bienvenido al mejor foro sobre automovilismo.",
               "Welcome to the best motorsport forum.",
@@ -59,13 +58,15 @@ function Home() {
             tu deporte motor favorito.
           </h3>
         </div>
+
       </div>
+
       <div>
-        <h4 className="scroll-m-20 text-xl font-semibold tracking-tight mt-5 mb-5 text-center">
+        <h4 className="text-xl font-semibold tracking-tight mt-5 mb-5 text-center">
           Últimos grandes premios:{" "}
         </h4>
-                <Accordion
-          className="max-w-3xl w-full mx-auto px-4 bg-secondary rounded-lg mt-1"
+        <Accordion
+          className="max-w-3xl w-full mx-auto px-4 bg-secondary rounded-lg"
           type="single"
           collapsible
         >
@@ -74,6 +75,7 @@ function Home() {
               <AccordionTrigger className="mx-auto">
                 {gp.nombre}
               </AccordionTrigger>
+
               <AccordionContent>
                 <div className="flex h-auto">
                   <div className="flex-3 w-full h-full">
@@ -86,6 +88,7 @@ function Home() {
                   />
                 </div>
               </AccordionContent>
+              
             </AccordionItem>
           ))}
         </Accordion>

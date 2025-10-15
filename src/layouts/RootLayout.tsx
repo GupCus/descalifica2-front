@@ -12,20 +12,31 @@ import {
 function RootLayout() {
   return (
     <>
-      <header>
+      <header className="sticky top-0 z-50">
         <NavigationMenu
           viewport={false}
-          className="max-w-full w-full justify-start pt-1 pb-1"
+          className="max-w-full w-full justify-start pt-0.5 pb-0.5"
           style={{ background: 'var(--fondodescalifica2)' }}
         >
-          <NavigationMenuList>
+          <NavigationMenuList className="w-full flex justify-between">
             <NavigationMenuItem>
-              <Link to="/" className="mx-4 font-extrabold">
-                Descalifica2
+              <Link to="/">
+                <img 
+                  src="./src/assets/descalifica2logo.png" 
+                  alt="Descalifica2"
+                  className="mt-2 mb-2 ml-10 mr-10 h-auto w-32 object-contain hover:scale-105 transition-transform"
+                />
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem className="dark">
-              <NavigationMenuTrigger className="font-semibold bg-accent">
+
+            <NavigationMenuItem>
+              <NavigationMenuLink href="calendario" className="font-semibold">
+                Calendario
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem >
+              <NavigationMenuTrigger className="font-semibold">
                 Wiki
               </NavigationMenuTrigger>
               <NavigationMenuContent className="z-50">
@@ -33,7 +44,9 @@ function RootLayout() {
                 <NavigationMenuLink href="escuderias">
                   Escuderías
                 </NavigationMenuLink>
-                <NavigationMenuLink href="marcas">Marcas</NavigationMenuLink>
+                <NavigationMenuLink href="marcas">
+                  Marcas
+                </NavigationMenuLink>
                 <NavigationMenuLink href="temporadas">
                   Temporadas
                 </NavigationMenuLink>
@@ -42,26 +55,27 @@ function RootLayout() {
                 </NavigationMenuLink>
               </NavigationMenuContent>
             </NavigationMenuItem>
-            <NavigationMenuItem className="dark">
-              <NavigationMenuLink className="font-semibold">
-                Noticias
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-            <NavigationMenuItem className="dark">
+
+
+            <NavigationMenuItem>
               <NavigationMenuLink href="dondever" className="font-semibold">
                 ¿Dónde Ver?
               </NavigationMenuLink>
             </NavigationMenuItem>
-            <NavigationMenuItem className="dark">
-              <NavigationMenuLink className="font-semibold">
+
+            <NavigationMenuItem>
+              <NavigationMenuLink className="font-semibold opacity-50 cursor-not-allowed pointer-events-none">
                 Foro
               </NavigationMenuLink>
             </NavigationMenuItem>
-            <NavigationMenuItem className="dark">
-              <NavigationMenuLink className="font-semibold">
-                Calendario
+
+            <NavigationMenuItem >
+              <NavigationMenuLink href="about" className="font-semibold">
+                Sobre Nosotros
               </NavigationMenuLink>
             </NavigationMenuItem>
+
+
           </NavigationMenuList>
         </NavigationMenu>
       </header>
@@ -71,7 +85,7 @@ function RootLayout() {
       </main>
 
       <footer>
-        <p className="text-center bg-background absolute mb-2 mt-10 bottom-0 right-0 left-0 leading-7 ">© 2025 Descalifica2</p>
+        <p className="text-center bg-background sticky pb-2 pt-2 bottom-0 right-0 left-0 leading-5 ">© 2025 Descalifica2</p>
       </footer>
     </>
   );

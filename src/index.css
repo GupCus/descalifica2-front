@@ -100,7 +100,7 @@
   --sidebar-accent-foreground: oklch(1.0000 0 0);
   --sidebar-border: oklch(0.3994 0 0);
   --sidebar-ring: oklch(0.3919 0.1254 15.8631);
-  --radius: 0.25rem;
+  --radius: 0.75rem;
   --font-sans: "Formula1 Display", sans-serif;
   --font-serif: "Formula1 Text", serif;
   --font-mono: "Fira Code", monospace;
@@ -121,7 +121,13 @@
   --shadow-xl: 0px 4px 10px 0px hsl(0 0% 0% / 0.40), 0px 8px 10px -1px hsl(0 0% 0% / 0.40);
   --shadow-2xl: 0px 4px 10px 0px hsl(0 0% 0% / 1.00);
   --tracking-normal: 0.03em;
-  --fondodescalifica2: linear-gradient(135deg, var(--primary) 40%, #8b1550 100%);
+  --fondodescalifica2: linear-gradient(90deg, var(--primary) 40%, #5a0d2e 100%);
+  --fondodescalifica2: linear-gradient(135deg,
+        var(--primary) 0%,
+        #b31031 30%,
+        #8b1550 70%,
+        #4b0c2c 100%
+      );
 }
 
 @layer base {
