@@ -11,6 +11,7 @@ import Categorias from "./pages/Categorias.tsx";
 import Temporadas from "./pages/Temporadas.tsx";
 import DondeVer from "./pages/DondeVer.tsx";
 import Calendario from "./pages/Calendario.tsx";
+import NuevoPiloto from "./pages/NuevoPiloto.tsx";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="categorias" element={<Categorias />} />
         <Route path="temporadas" element={<Temporadas />} />
         <Route path="dondever" element={<DondeVer />} />
+        <Route path="nuevopiloto" element={<NuevoPiloto />} />
       </Route>
     </Routes>
   );
