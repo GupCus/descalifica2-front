@@ -61,11 +61,9 @@ export default function Calendar21() {
               ? new Date(sesion.fecha_Hora_sesion) 
               : sesion.fecha_Hora_sesion;
             
-            // Comparar solo año, mes y día (ignorar hora)
             return fechaSesion?.toDateString() === day.date.toDateString();
           });
 
-          // Crear label con los tipos de sesión del día
           const gpLabel = sesionesDelDia.length > 0 
             ? sesionesDelDia[0].tipoSesion
             : null;

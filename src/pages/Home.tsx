@@ -40,7 +40,7 @@ function Home() {
 
         <div className="relative z-10">
           <TextType
-            className="text-4xl font-extrabold tracking-tight text-primary-foreground"
+            className="text-5xl font-extrabold tracking-tight text-primary-foreground"
             text={[
               "Bienvenido al mejor foro sobre automovilismo.",
               "Welcome to the best motorsport forum.",
