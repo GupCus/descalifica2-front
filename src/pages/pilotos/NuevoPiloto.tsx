@@ -7,8 +7,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup,
+  SelectLabel,
 } from "@/components/ui/select";
 
+//DEFINICIONES DE CLASES
 type FormState = {
   name: string;
   escuderia: string; // ahora será el id de la escudería
@@ -19,6 +22,11 @@ type FormState = {
 };
 
 type Escuderia = {
+  id: string;
+  name: string;
+};
+
+type Categoria = {
   id: string;
   name: string;
 };
@@ -35,17 +43,17 @@ function NuevoPiloto() {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
 
   const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
   //obtiene escuderías para el select
   useEffect(() => {
     fetch(`${api}/escuderias`)
-      .then((res) => res.json())
+      .then((res) => res.json()) //convierte a JSON
       .then((data) => {
-        // Si la respuesta es { escuderias: [...] }
         if (Array.isArray(data.data)) {
-          setEscuderias(data.data);
+          setEscuderias(data.data); //si dentro de data es array, lo carga a escuderias
         } else {
           setEscuderias([]);
           console.error(
@@ -57,6 +65,27 @@ function NuevoPiloto() {
       .catch((err) => {
         setEscuderias([]);
         console.error("Error cargando escuderías", err);
+      });
+  }, [api]);
+
+  //obtiene categorias, también para el select
+  useEffect(() => {
+    fetch(`${api}/categorias`)
+      .then((res) => res.json()) //convierte a JSON
+      .then((data) => {
+        if (Array.isArray(data.data)) {
+          setCategorias(data.data); //si dentro de data es array, lo carga a escuderias
+        } else {
+          setCategorias([]);
+          console.error(
+            "La respuesta no contiene un array de categorías.",
+            data
+          );
+        }
+      })
+      .catch((err) => {
+        setCategorias([]);
+        console.error("Error cargando categorías", err);
       });
   }, [api]);
 
@@ -162,20 +191,46 @@ function NuevoPiloto() {
           </InputGroup>
           <div className="flex">
             <InputGroup className="mb-5 w-45 mr-6">
-              <InputGroupInput
-                placeholder="Rol"
-                id="role"
-                value={form.role}
-                onChange={handleChange}
-              />
+              <Select>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Seleccione un rol" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  <SelectGroup>
+                    <SelectLabel>Posibles roles</SelectLabel>
+                    <SelectItem value="Primer piloto">Primer piloto</SelectItem>
+                    <SelectItem value="Segundo piloto">
+                      Segundo piloto
+                    </SelectItem>
+                    <SelectItem value="Piloto reserva">
+                      Piloto reserva
+                    </SelectItem>
+                    <SelectItem value="Piloto de pruebas">
+                      Piloto de pruebas
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </InputGroup>
             <InputGroup className="mb-5 w-45">
-              <InputGroupInput
-                placeholder="Categoría"
-                id="racing_series"
+              <Select
                 value={form.racing_series}
-                onChange={handleChange}
-              />
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, racing_series: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Categoría" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  {categorias.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </InputGroup>
           </div>
         </div>

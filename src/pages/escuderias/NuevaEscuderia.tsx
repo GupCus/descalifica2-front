@@ -1,6 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+  SelectLabel,
+} from "@/components/ui/select";
 
 type FormState = {
   name: string;
@@ -9,6 +18,16 @@ type FormState = {
   engine: string;
   marca: string;
   categoria: string;
+};
+
+type Categoria = {
+  id: string;
+  name: string;
+};
+
+type Marca = {
+  id: string;
+  name: string;
 };
 
 function NuevaEscuderia() {
@@ -22,8 +41,49 @@ function NuevaEscuderia() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [marcas, setMarcas] = useState<Marca[]>([]);
 
-  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
+  //getAll categorias
+  useEffect(() => {
+    fetch(`${api}/categorias`)
+      .then((res) => res.json()) //convierte a JSON
+      .then((data) => {
+        if (Array.isArray(data.data)) {
+          setCategorias(data.data); //si dentro de data es array, lo carga a escuderias
+        } else {
+          setCategorias([]);
+          console.error(
+            "La respuesta no contiene un array de escuderías.",
+            data
+          );
+        }
+      })
+      .catch((err) => {
+        setCategorias([]);
+        console.error("Error cargando escuderías", err);
+      });
+  }, [api]);
+
+  //getAll marcas
+  useEffect(() => {
+    fetch(`${api}/marcas`)
+      .then((res) => res.json()) //convierte a JSON
+      .then((data) => {
+        if (Array.isArray(data.data)) {
+          setMarcas(data.data); //si dentro de data es array, lo carga a escuderias
+        } else {
+          setMarcas([]);
+          console.error("La respuesta no contiene un array de marcas.", data);
+        }
+      })
+      .catch((err) => {
+        setCategorias([]);
+        console.error("Error cargando marcas", err);
+      });
+  }, [api]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -38,7 +98,7 @@ function NuevaEscuderia() {
     setMessage(null);
 
     try {
-      const res = await fetch(`${apiBase}/escuderias`, {
+      const res = await fetch(`${api}/escuderias`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -96,37 +156,62 @@ function NuevaEscuderia() {
             </InputGroup>
             <InputGroup className="mb-5 w-45">
               <InputGroupInput
-                placeholder="Motor"
-                id="engine"
-                value={form.engine}
+                placeholder="Nacionalidad"
+                id="nationality"
+                value={form.nationality}
                 onChange={handleChange}
               />
             </InputGroup>
           </div>
           <InputGroup className="mb-5 w-96">
             <InputGroupInput
-              placeholder="Nacionalidad"
-              id="nationality"
-              value={form.nationality}
+              placeholder="Nombre del motor"
+              id="engine"
+              value={form.engine}
               onChange={handleChange}
             />
           </InputGroup>
           <div className="flex">
             <InputGroup className="mb-5 w-45 mr-6">
-              <InputGroupInput
-                placeholder="Marca"
-                id="marca"
+              <Select
                 value={form.marca}
-                onChange={handleChange}
-              />
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, marca: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Marca" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  <SelectItem value="Ninguna">Ninguna</SelectItem>
+                  {marcas.map((m) => (
+                    <SelectItem key={m.id} value={String(m.id)}>
+                      {m.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </InputGroup>
             <InputGroup className="mb-5 w-45">
-              <InputGroupInput
-                placeholder="Categoría"
-                id="categoria"
+              <Select
                 value={form.categoria}
-                onChange={handleChange}
-              />
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, racing_series: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Categoría" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  {categorias.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </InputGroup>
           </div>
         </div>

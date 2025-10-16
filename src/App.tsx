@@ -6,7 +6,7 @@ import NotFound from "./pages/NotFound";
 import Pilotos from "./pages/pilotos/Pilotos.tsx";
 import Escuderias from "./pages/escuderias/Escuderias.tsx";
 import Marcas from "./pages/Marcas.tsx";
-import Circuitos from "./pages/Circuitos.tsx";
+import Circuitos from "./pages/circuitos/Circuitos.tsx";
 import Categorias from "./pages/Categorias.tsx";
 import Temporadas from "./pages/Temporadas.tsx";
 import DondeVer from "./pages/DondeVer.tsx";
@@ -14,6 +14,7 @@ import Calendario from "./pages/Calendario.tsx";
 import NuevoPiloto from "./pages/pilotos/NuevoPiloto.tsx";
 import MenuAdmin from "./pages/MenuAdmin.tsx";
 import NuevaEscuderia from "./pages/escuderias/NuevaEscuderia.tsx";
+import NuevoCircuito from "./pages/circuitos/NuevoCircuito.tsx";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="menuadmin" element={<MenuAdmin />} />
         <Route path="menuadmin/nuevopiloto" element={<NuevoPiloto />} />
         <Route path="menuadmin/nuevaescuderia" element={<NuevaEscuderia />} />
+        <Route path="menuadmin/nuevocircuito" element={<NuevoCircuito />} />
       </Route>
     </Routes>
   );
