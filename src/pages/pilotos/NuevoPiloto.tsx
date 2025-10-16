@@ -1,27 +1,34 @@
-import React, { useState } from "react";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
+import React, { useState, useEffect } from "react";
+import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type FormState = {
   name: string;
-  escuderia: string;
+  escuderia: string; // ahora será el id de la escudería
+  nombreEscuderia: string; //esto es para mostrar en el select, una vez se seleccione una escuderia
   num: string;
   nationality: string;
   role: string;
   racing_series: string;
 };
 
+type Escuderia = {
+  id: string;
+  name: string;
+};
+
 function NuevoPiloto() {
   const [form, setForm] = useState<FormState>({
     name: "",
     escuderia: "",
+    nombreEscuderia: "",
     num: "",
     nationality: "",
     role: "",
@@ -29,11 +36,37 @@ function NuevoPiloto() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
+  const [nombreEscuderia, setNombreEscuderia] = useState<string | null>("");
 
-  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
+  //obtiene escuderías para el select
+  useEffect(() => {
+    fetch(`${api}/escuderias`)
+      .then((res) => res.json())
+      .then((data) => {
+        // Si la respuesta es { escuderias: [...] }
+        if (Array.isArray(data.data)) {
+          setEscuderias(data.data);
+        } else {
+          setEscuderias([]);
+          console.error(
+            "La respuesta no contiene un array de escuderías.",
+            data
+          );
+        }
+      })
+      .catch((err) => {
+        setEscuderias([]);
+        console.error("Error cargando escuderías", err);
+      });
+  }, [api]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    > //agregado HTMLSelectElement para resolver error en los select
   ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
@@ -45,7 +78,7 @@ function NuevoPiloto() {
     setMessage(null);
 
     try {
-      const res = await fetch(`${apiBase}/pilotos`, {
+      const res = await fetch(`${api}/pilotos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -60,6 +93,7 @@ function NuevoPiloto() {
       setForm({
         name: "",
         escuderia: "",
+        nombreEscuderia: "",
         num: "",
         nationality: "",
         role: "",
@@ -94,12 +128,26 @@ function NuevoPiloto() {
           </InputGroup>
           <div className="flex">
             <InputGroup className="mb-5 w-45 mr-6">
-              <InputGroupInput
-                placeholder="Escudería"
-                id="escuderia"
+              <Select
                 value={form.escuderia}
-                onChange={handleChange}
-              />
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, escuderia: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Escudería">
+                    {form.nombreEscuderia}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  {escuderias.map((e) => (
+                    <SelectItem key={e.id} value={e.id}>
+                      <p>{e.name}</p>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </InputGroup>
             <InputGroup className="mb-5 w-45">
               <InputGroupInput
