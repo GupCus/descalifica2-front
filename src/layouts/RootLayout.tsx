@@ -31,7 +31,7 @@ function RootLayout() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink href="calendario" className="font-semibold">
+                <NavigationMenuLink href="/calendario" className="font-semibold">
                   Calendario
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -41,24 +41,24 @@ function RootLayout() {
                   Wiki
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="z-50">
-                  <NavigationMenuLink href="pilotos">
+                  <NavigationMenuLink href="/pilotos">
                     Pilotos
                   </NavigationMenuLink>
-                  <NavigationMenuLink href="escuderias">
+                  <NavigationMenuLink href="/escuderias">
                     Escuderías
                   </NavigationMenuLink>
-                  <NavigationMenuLink href="marcas">Marcas</NavigationMenuLink>
-                  <NavigationMenuLink href="temporadas">
+                  <NavigationMenuLink href="/marcas">Marcas</NavigationMenuLink>
+                  <NavigationMenuLink href="/temporadas">
                     Temporadas
                   </NavigationMenuLink>
-                  <NavigationMenuLink href="categorias">
+                  <NavigationMenuLink href="/categorias">
                     Categorias
                   </NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink href="dondever" className="font-semibold">
+                <NavigationMenuLink href="/dondever" className="font-semibold">
                   ¿Dónde Ver?
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -70,13 +70,13 @@ function RootLayout() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink href="about" className="font-semibold">
+                <NavigationMenuLink href="/about" className="font-semibold">
                   Sobre Nosotros
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-          <Link to="menuadmin">
+          <Link to="/menuadmin">
             <Avatar className="rounded-3xl border cursor-pointer hover:ring-2 hover:ring-accent transition-all mr-6">
               <AvatarImage src="https://a.espncdn.com/combiner/i?img=/i/headshots/rpm/players/full/5498.png&w=350&h=254" />
               <AvatarFallback>CN</AvatarFallback>
