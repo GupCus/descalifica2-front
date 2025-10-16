@@ -22,7 +22,7 @@ export default function Calendar21({ carreras }: { carreras: Carrera[] }) {
       onSelect={setSelected}
       numberOfMonths={3}
       captionLayout="label"
-      className="rounded-lg text-primary-foreground border shadow-2xl [--cell-size:--spacing(11)] md:[--cell-size:--spacing(13)]"
+      className="rounded-lg bg-background/70 text-primary-foreground border shadow-2xl [--cell-size:--spacing(11)] md:[--cell-size:--spacing(13)]"
       components={{
         DayButton: ({ children, modifiers, day, ...props }) => {
           

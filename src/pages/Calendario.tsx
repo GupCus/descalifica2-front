@@ -74,7 +74,17 @@ function Calendario() {
   }
 
   return (
-    <div className="flex flex-col gap-8 py-10 px-4 max-w-6xl mx-auto">
+    <div className="relative min-h-screen">
+      <div
+        className="absolute inset-0 w-full h-full z-0 blur-sm opacity-20"
+        style={{
+          backgroundImage: "url('https://theenterpriseworld.com/wp-content/uploads/2025/07/2.-Ayrton-Senna-Source-history.co_.uk_.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+    
+    <div className="flex flex-col gap-8 py-10 px-4 max-w-6xl mx-auto relative z-10">
       {esHoy(carreraActual)}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Columna izquierda */}
@@ -95,7 +105,8 @@ function Calendario() {
         </div>
 
         {/* Columna derecha */}
-        <Card className="bg-gradient-to-br from-primary/10 via-accent/5 to-primary/10">
+        
+        <Card className="bg-gradient-to-br from-primary/70 via-accent/70 to-primary/70">
           <CardHeader>
             <CardTitle className="text-3xl font-extrabold text-primary-foreground flex gap-3 border-b-2 border-accent pb-3">
               <span>{carreraActual.name}</span>
@@ -117,7 +128,7 @@ function Calendario() {
               {carreraActual.sesiones?.map((sesion) => (
                 <div
                   key={sesion.id}
-                  className="flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border/50"
+                  className="flex items-center justify-between p-3 rounded-lg bg-background/70 border border-border/50"
                 >
                   <div className="flex items-center gap-3">
                     <Badge
@@ -151,6 +162,7 @@ function Calendario() {
         <Calendar21 carreras={carreras}/>
       </div>
     </div>
+  </div>
   );
 }
 

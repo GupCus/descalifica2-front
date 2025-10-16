@@ -263,15 +263,20 @@ function DondeVer() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
-      <div className="bg-black py-6">
-        <div className="container mx-auto px-4">
-          <h1 className="text-2xl md:text-3xl font-bold text-center mb-2">
-            TRANSMISIÓN DE LA F1 PARA ARGENTINA 2025
-          </h1>
-        </div>
-      </div>
+    <div className="relative min-h-screen">
+      <div
+        className="absolute inset-0 w-full h-full z-0 blur-sm opacity-30"
+        style={{
+          backgroundImage: "url('https://img.jakpost.net/c/2022/05/09/2022_05_09_125440_1652083789._large.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+    <div className="relative z-10 min-h-screen bg-background/10 text-foreground">
+
+      <h1 className="text-2xl md:text-3xl font-bold text-center px-4 mt-10 mb-2">
+        TRANSMISIÓN DE LA F1 PARA ARGENTINA 2025
+      </h1>
 
       {/* Content */}
       <div className="container mx-auto px-4 py-8">
@@ -287,7 +292,7 @@ function DondeVer() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Columna Izquierda */}
           <div>
-            <div className="bg-gray-800 rounded-lg p-6">
+            <div className="bg-muted/80 rounded-lg p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold">GRAN PREMIO</h2>
                 <div className="flex gap-4">
@@ -351,7 +356,7 @@ function DondeVer() {
 
           {/* Columna Derecha */}
           <div>
-            <div className="bg-gray-800 rounded-lg p-6">
+            <div className="bg-muted/80 rounded-lg p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-xl font-bold">GRAN PREMIO</h2>
                 <div className="flex gap-4">
@@ -414,8 +419,8 @@ function DondeVer() {
         </div>
 
         {/* Footer con notas */}
-        <div className="mt-8 bg-gray-800 rounded-lg p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div className="mt-8 bg-muted/80 rounded-lg p-6">
+          <div className="text-sm tracking-wide">
             <div>
               <p className="text-gray-300">
                 * <span className="font-semibold">FOX SPORTS</span> transmitirá
@@ -434,6 +439,7 @@ function DondeVer() {
         </div>
       </div>
     </div>
+  </div>
   );
 }
 
