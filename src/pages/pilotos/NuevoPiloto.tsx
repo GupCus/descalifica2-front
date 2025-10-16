@@ -12,7 +12,6 @@ import {
 type FormState = {
   name: string;
   escuderia: string; // ahora será el id de la escudería
-  nombreEscuderia: string; //esto es para mostrar en el select, una vez se seleccione una escuderia
   num: string;
   nationality: string;
   role: string;
@@ -28,7 +27,6 @@ function NuevoPiloto() {
   const [form, setForm] = useState<FormState>({
     name: "",
     escuderia: "",
-    nombreEscuderia: "",
     num: "",
     nationality: "",
     role: "",
@@ -37,7 +35,6 @@ function NuevoPiloto() {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
-  const [nombreEscuderia, setNombreEscuderia] = useState<string | null>("");
 
   const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -93,7 +90,6 @@ function NuevoPiloto() {
       setForm({
         name: "",
         escuderia: "",
-        nombreEscuderia: "",
         num: "",
         nationality: "",
         role: "",
@@ -136,14 +132,12 @@ function NuevoPiloto() {
                 required
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Escudería">
-                    {form.nombreEscuderia}
-                  </SelectValue>
+                  <SelectValue placeholder="Escudería" />
                 </SelectTrigger>
                 <SelectContent className="border-secondary">
                   {escuderias.map((e) => (
-                    <SelectItem key={e.id} value={e.id}>
-                      <p>{e.name}</p>
+                    <SelectItem key={e.id} value={String(e.id)}>
+                      {e.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
