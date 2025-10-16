@@ -2,13 +2,20 @@ import Calendar21 from "@/components/calendar-21.tsx";
 import { CountdownTimer } from "@/components/countdown-timer.tsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carrera } from "@/entities/carrera.entity.ts";
-import { Sesion } from "@/entities/sesion.entity.ts";
 import { Badge } from "@/components/ui/badge";
 
 function Calendario() {
 
   //Sesión y carrera en memoria
-  const sesiones: Sesion[] = [
+  const carreras: Carrera[] = [
+    {
+      id: 1,
+      name: "🏁 GP de los EEUU",
+      circuito: undefined,
+      temporada: undefined,
+      start_date: new Date(2025, 9, 17),
+      end_date: new Date(2025, 9, 19),
+      sesiones: [
     {
       id: 1,
       name: "FP1",
@@ -39,31 +46,36 @@ function Calendario() {
       tipoSesion: "GP",
       fecha_Hora_sesion: new Date(2025, 9, 19, 16),
     },
-  ];
-
-  const carreras: Carrera[] = [
-    {
-      id: 1,
-      name: "🏁 GP de los EEUU",
-      circuito: undefined,
-      temporada: undefined,
-      start_date: new Date(2025, 9, 17),
-      end_date: new Date(2025, 9, 19),
-      sesiones: sesiones,
+  ],
     },
   ];
 
+  const carreraActual = carreras
+  .filter((c) => c.end_date >= new Date()) 
+  .sort((a, b) => a.start_date.getTime() - b.start_date.getTime())[0]; 
+
   const getSesionFecha = (tipo?: string) => {
     return tipo
-      ? sesiones.find((s) => s.tipoSesion === tipo)?.fecha_Hora_sesion
-      : sesiones[0]?.fecha_Hora_sesion;
+      ? carreraActual.sesiones.find((s) => s.tipoSesion === tipo)?.fecha_Hora_sesion
+      : carreraActual.sesiones[0]?.fecha_Hora_sesion;
   };
 
-  // Carrera actual (primera del array por ahora)
-  const carreraActual = carreras[0];
+  const esHoy = (c:Carrera) =>{
+    const hoy = new Date()
+    if(c.start_date <= hoy && c.end_date >= hoy){
+      return (      
+      <div className="flex justify-center py-2">
+          <h2 className="text-6xl font-black tracking-tight bg-gradient-to-r from-red-800 via-pink-800 to-purple-950 bg-clip-text text-transparent animate-bounce">
+            ¡HOY HAY FÓRMULA 1!
+          </h2>
+      </div>);
+    }
+    return null;
+  }
 
   return (
     <div className="flex flex-col gap-8 py-10 px-4 max-w-6xl mx-auto">
+      {esHoy(carreraActual)}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Columna izquierda */}
         <div>
@@ -136,7 +148,7 @@ function Calendario() {
       </div>
 
       <div className="flex justify-center">
-        <Calendar21 />
+        <Calendar21 carreras={carreras}/>
       </div>
     </div>
   );

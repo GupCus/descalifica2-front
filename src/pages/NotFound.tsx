@@ -10,7 +10,7 @@ function NotFound() {
           backgroundPosition: "center",
           filter: "blur(6px)",
         }}
-      ></div>
+      />
       <div className="relative z-10 flex flex-col justify-center items-center min-h-screen pt-20 pb-20 px-4">
         <h1 className="text-20xl md:text-9xl font-bold text-white drop-shadow-2xl mb-4 text-center">
           404

@@ -4,7 +4,17 @@ import { Badge } from "@/components/ui/badge";
 function About() {
 
   return (
-    <div className="flex flex-col gap-12 py-16 px-4 max-w-6xl mx-auto">
+    <div className="relative min-h-screen">
+      <div
+        className="absolute inset-0 w-full h-full z-0 blur-sm opacity-30"
+        style={{
+          backgroundImage: "url('https://media.formula1.com/image/upload/t_16by9South/c_lfill,w_3392/q_auto/v1740000000/fom-website/2025/F1%2075%20Live/GettyImages-2200471441.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+    
+    <div className="flex flex-col gap-12 py-16 px-4 max-w-6xl mx-auto relative z-10 justify-center items-center min-h-screen">
       <Card>
         <CardHeader>
           <CardTitle className="text-3xl text-primary-foreground">📝 Sobre el Proyecto</CardTitle>
@@ -149,7 +159,7 @@ function About() {
         </div>
       </div>
 
-      <Card className="bg-gradient-to-r from-primary/10 to-accent/10">
+      <Card className="bg-gradient-to-r from-primary/40 to-accent/40">
         <CardHeader>
           <CardTitle className="text-2xl text-primary-foreground">🔗 Links del Proyecto</CardTitle>
         </CardHeader>
@@ -182,6 +192,7 @@ function About() {
         <p className="text-sm mt-2">ISI 303 - Desarrollo de Software - 2025</p>
       </div>
     </div>
+  </div>
   );
 }
 
