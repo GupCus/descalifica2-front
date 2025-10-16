@@ -4,7 +4,7 @@ import { Carrera } from './carrera.entity.js';
 
 export class Sesion extends baseEntity {
   tipoSesion?: string;
-  fecha_Hora_sesion?: Date | string; 
+  fecha_Hora_sesion?: Date; 
   carrera?: Carrera;
   resultados?: Piloto[];
 

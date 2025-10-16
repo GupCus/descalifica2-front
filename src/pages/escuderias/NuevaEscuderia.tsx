@@ -1,31 +1,24 @@
 import React, { useState } from "react";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
 
 type FormState = {
   name: string;
-  escuderia: string;
-  num: string;
+  foundation: string;
   nationality: string;
-  role: string;
-  racing_series: string;
+  engine: string;
+  marca: string;
+  categoria: string;
 };
 
-function NuevoPiloto() {
+function NuevaEscuderia() {
   const [form, setForm] = useState<FormState>({
     name: "",
-    escuderia: "",
-    num: "",
+    foundation: "",
+    engine: "",
     nationality: "",
-    role: "",
-    racing_series: "",
+    marca: "",
+    categoria: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -45,7 +38,7 @@ function NuevoPiloto() {
     setMessage(null);
 
     try {
-      const res = await fetch(`${apiBase}/pilotos`, {
+      const res = await fetch(`${apiBase}/escuderias`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -56,18 +49,18 @@ function NuevoPiloto() {
         throw new Error(errText || `HTTP ${res.status}`);
       }
 
-      setMessage("Piloto creado con éxito.");
+      setMessage("Escudería creada con éxito.");
       setForm({
         name: "",
-        escuderia: "",
-        num: "",
+        foundation: "",
+        engine: "",
         nationality: "",
-        role: "",
-        racing_series: "",
+        marca: "",
+        categoria: "",
       });
     } catch (err: any) {
       console.error(err);
-      setMessage(`Error: ${err.message || "No se pudo crear el piloto"}`);
+      setMessage(`Error: ${err.message || "No se pudo crear la escudería"}`);
     } finally {
       setSubmitting(false);
     }
@@ -82,11 +75,11 @@ function NuevoPiloto() {
       >
         <div className="">
           <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
-            Alta pilotos
+            Alta escuderia
           </h1>
           <InputGroup className="mt-5 mb-5 w-96">
             <InputGroupInput
-              placeholder="Nombre completo"
+              placeholder="Nombre"
               id="name"
               value={form.name}
               onChange={handleChange}
@@ -95,17 +88,17 @@ function NuevoPiloto() {
           <div className="flex">
             <InputGroup className="mb-5 w-45 mr-6">
               <InputGroupInput
-                placeholder="Escudería"
-                id="escuderia"
-                value={form.escuderia}
+                placeholder="Año de fundación"
+                id="foundation"
+                value={form.foundation}
                 onChange={handleChange}
               />
             </InputGroup>
             <InputGroup className="mb-5 w-45">
               <InputGroupInput
-                placeholder="Número del piloto"
-                id="num"
-                value={form.num}
+                placeholder="Motor"
+                id="engine"
+                value={form.engine}
                 onChange={handleChange}
               />
             </InputGroup>
@@ -121,17 +114,17 @@ function NuevoPiloto() {
           <div className="flex">
             <InputGroup className="mb-5 w-45 mr-6">
               <InputGroupInput
-                placeholder="Rol"
-                id="role"
-                value={form.role}
+                placeholder="Marca"
+                id="marca"
+                value={form.marca}
                 onChange={handleChange}
               />
             </InputGroup>
             <InputGroup className="mb-5 w-45">
               <InputGroupInput
                 placeholder="Categoría"
-                id="racing_series"
-                value={form.racing_series}
+                id="categoria"
+                value={form.categoria}
                 onChange={handleChange}
               />
             </InputGroup>
@@ -143,7 +136,7 @@ function NuevoPiloto() {
             Cancelar
           </Button>
           <Button type="submit" disabled={submitting}>
-            {submitting ? "Enviando..." : "Crear nuevo piloto"}
+            {submitting ? "Enviando..." : "Crear nueva esc."}
           </Button>
         </div>
 
@@ -154,4 +147,4 @@ function NuevoPiloto() {
   );
 }
 
-export default NuevoPiloto;
+export default NuevaEscuderia;
