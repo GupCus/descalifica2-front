@@ -8,7 +8,6 @@ interface Carrera {
   pais: string;
   disneyPlus: boolean;
   foxSports: boolean;
-  codigoPais: string;
   imagenPais: string;
 }
 
@@ -24,7 +23,6 @@ function DondeVer() {
         pais: "Australia",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "AU",
         imagenPais: "./src/assets/banderas-paises/Australia.png",
       },
       {
@@ -34,7 +32,6 @@ function DondeVer() {
         pais: "China",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "CN",
         imagenPais: "./src/assets/banderas-paises/China.png",
       },
       {
@@ -44,7 +41,6 @@ function DondeVer() {
         pais: "Japón",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "JP",
         imagenPais: "./src/assets/banderas-paises/Japon.png",
       },
       {
@@ -54,7 +50,6 @@ function DondeVer() {
         pais: "Bahréin",
         disneyPlus: true,
         foxSports: false,
-        codigoPais: "BH",
         imagenPais: "./src/assets/banderas-paises/bahrain.png",
       },
       {
@@ -64,7 +59,6 @@ function DondeVer() {
         pais: "Arabia Saudita",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "SA",
         imagenPais: "./src/assets/banderas-paises/Arabia_Saudita.png",
       },
       {
@@ -74,7 +68,6 @@ function DondeVer() {
         pais: "Estados Unidos",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "US",
         imagenPais: "./src/assets/banderas-paises/USA.png",
       },
       {
@@ -84,7 +77,6 @@ function DondeVer() {
         pais: "Italia",
         disneyPlus: true,
         foxSports: false,
-        codigoPais: "IT",
         imagenPais: "./src/assets/banderas-paises/Italia.png",
       },
       {
@@ -94,7 +86,6 @@ function DondeVer() {
         pais: "Mónaco",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "MC",
         imagenPais: "./src/assets/banderas-paises/Monaco.png",
       },
       {
@@ -104,7 +95,6 @@ function DondeVer() {
         pais: "España",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "ES",
         imagenPais: "./src/assets/banderas-paises/Espana.png",
       },
       {
@@ -114,7 +104,6 @@ function DondeVer() {
         pais: "Canadá",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "CA",
         imagenPais: "./src/assets/banderas-paises/Canada.png",
       },
       {
@@ -124,7 +113,6 @@ function DondeVer() {
         pais: "Austria",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "AT",
         imagenPais: "./src/assets/banderas-paises/Austria.png",
       },
       {
@@ -134,7 +122,6 @@ function DondeVer() {
         pais: "Reino Unido",
         disneyPlus: true,
         foxSports: false,
-        codigoPais: "GB",
         imagenPais: "./src/assets/banderas-paises/UK.png",
       },
       {
@@ -144,7 +131,6 @@ function DondeVer() {
         pais: "Bélgica",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "BE",
         imagenPais: "./src/assets/banderas-paises/Belgica.png",
       },
       {
@@ -154,7 +140,6 @@ function DondeVer() {
         pais: "Hungría",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "HU",
         imagenPais: "./src/assets/banderas-paises/Hungria.png",
       },
       {
@@ -164,7 +149,6 @@ function DondeVer() {
         pais: "Países Bajos",
         disneyPlus: true,
         foxSports: false,
-        codigoPais: "NL",
         imagenPais: "./src/assets/banderas-paises/Paises_Bajos.png",
       },
       {
@@ -174,7 +158,6 @@ function DondeVer() {
         pais: "Italia",
         disneyPlus: true,
         foxSports: false,
-        codigoPais: "IT",
         imagenPais: "./src/assets/banderas-paises/Italia.png",
       },
       {
@@ -184,7 +167,6 @@ function DondeVer() {
         pais: "Azerbaiyán",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "AZ",
         imagenPais: "./src/assets/banderas-paises/Azerbaiyan.png",
       },
       {
@@ -194,7 +176,6 @@ function DondeVer() {
         pais: "Singapur",
         disneyPlus: true,
         foxSports: false,
-        codigoPais: "SG",
         imagenPais: "./src/assets/banderas-paises/Singapur.png",
       },
       {
@@ -204,7 +185,6 @@ function DondeVer() {
         pais: "Estados Unidos",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "US",
         imagenPais: "./src/assets/banderas-paises/USA.png",
       },
       {
@@ -214,7 +194,6 @@ function DondeVer() {
         pais: "México",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "MX",
         imagenPais: "./src/assets/banderas-paises/Mexico.png",
       },
       {
@@ -224,7 +203,6 @@ function DondeVer() {
         pais: "Brasil",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "BR",
         imagenPais: "./src/assets/banderas-paises/Brasil.png",
       },
       {
@@ -234,7 +212,6 @@ function DondeVer() {
         pais: "Estados Unidos",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "US",
         imagenPais: "./src/assets/banderas-paises/USA.png",
       },
       {
@@ -244,7 +221,6 @@ function DondeVer() {
         pais: "Qatar",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "QA",
         imagenPais: "./src/assets/banderas-paises/Catar.png",
       },
       {
@@ -254,7 +230,6 @@ function DondeVer() {
         pais: "Abu Dhabi",
         disneyPlus: true,
         foxSports: true,
-        codigoPais: "AE",
         imagenPais: "./src/assets/banderas-paises/EAU.png",
       },
     ];
@@ -267,179 +242,175 @@ function DondeVer() {
       <div
         className="absolute inset-0 w-full h-full z-0 blur-sm opacity-30"
         style={{
-          backgroundImage: "url('https://img.jakpost.net/c/2022/05/09/2022_05_09_125440_1652083789._large.jpg')",
+          backgroundImage:
+            "url('https://img.jakpost.net/c/2022/05/09/2022_05_09_125440_1652083789._large.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       />
-    <div className="relative z-10 min-h-screen bg-background/10 text-foreground">
+      <div className="relative z-10 min-h-screen bg-background/10 text-foreground">
+        <h1 className="text-2xl md:text-3xl font-bold text-center px-4 mt-10 mb-2">
+          TRANSMISIÓN DE LA F1 PARA ARGENTINA 2025
+        </h1>
 
-      <h1 className="text-2xl md:text-3xl font-bold text-center px-4 mt-10 mb-2">
-        TRANSMISIÓN DE LA F1 PARA ARGENTINA 2025
-      </h1>
+        {/* Content */}
+        <div className="container mx-auto px-4 py-8">
+          {/* Descripción informativa */}
+          <div className="mb-8 text-center">
+            <p className="text-lg text-gray-300 mb-4">
+              En Argentina, la Fórmula 1 se transmite a través de{" "}
+              <span className="text-orange-500 font-semibold">Fox Sports</span>{" "}
+              y <span className="text-blue-400 font-semibold">Disney+</span>
+            </p>
+          </div>
 
-      {/* Content */}
-      <div className="container mx-auto px-4 py-8">
-        {/* Descripción informativa */}
-        <div className="mb-8 text-center">
-          <p className="text-lg text-gray-300 mb-4">
-            En Argentina, la Fórmula 1 se transmite a través de{" "}
-            <span className="text-orange-500 font-semibold">Fox Sports</span> y{" "}
-            <span className="text-blue-400 font-semibold">Disney+</span>
-          </p>
-        </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Columna Izquierda */}
+            <div>
+              <div className="bg-muted/80 rounded-lg p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-bold">GRAN PREMIO</h2>
+                  <div className="flex gap-4">
+                    <span className="text-blue-400 font-semibold">Disney+</span>
+                    <span className="text-orange-500 font-semibold">FOX</span>
+                  </div>
+                </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Columna Izquierda */}
-          <div>
-            <div className="bg-muted/80 rounded-lg p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold">GRAN PREMIO</h2>
-                <div className="flex gap-4">
-                  <span className="text-blue-400 font-semibold">Disney+</span>
-                  <span className="text-orange-500 font-semibold">FOX</span>
+                <div className="space-y-3">
+                  {carreras.slice(0, 12).map((carrera) => (
+                    <div
+                      key={carrera.id}
+                      className="flex items-center justify-between py-2 border-b border-gray-700"
+                    >
+                      <div className="flex items-center gap-3">
+                        {/* Imagen del país */}
+                        <div className="w-12 h-8 flex-shrink-0">
+                          <img
+                            src={carrera.imagenPais}
+                            alt={`${carrera.pais}`}
+                            className="w-full h-full object-cover rounded border border-gray-600"
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                              (e.currentTarget
+                                .nextElementSibling as HTMLElement)!.style.display =
+                                "block";
+                            }}
+                          />
+                          <div className="w-full h-full hidden items-center justify-center bg-gray-700 rounded text-xs font-mono text-gray-300"></div>
+                        </div>
+                        <div>
+                          <div className="font-semibold">{carrera.nombre}</div>
+                          <div className="text-sm text-gray-400">
+                            {carrera.fecha}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-6">
+                        <div className="w-8 flex justify-center">
+                          {carrera.disneyPlus ? (
+                            <Check className="h-6 w-6 text-green-500" />
+                          ) : (
+                            <X className="h-6 w-6 text-red-500" />
+                          )}
+                        </div>
+                        <div className="w-8 flex justify-center">
+                          {carrera.foxSports ? (
+                            <Check className="h-6 w-6 text-green-500" />
+                          ) : (
+                            <X className="h-6 w-6 text-red-500" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
+            </div>
 
-              <div className="space-y-3">
-                {carreras.slice(0, 12).map((carrera) => (
-                  <div
-                    key={carrera.id}
-                    className="flex items-center justify-between py-2 border-b border-gray-700"
-                  >
-                    <div className="flex items-center gap-3">
-                      {/* Imagen del país */}
-                      <div className="w-12 h-8 flex-shrink-0">
-                        <img
-                          src={carrera.imagenPais}
-                          alt={`${carrera.pais}`}
-                          className="w-full h-full object-cover rounded border border-gray-600"
-                          onError={(e) => {
-                            e.currentTarget.style.display = "none";
-                            (e.currentTarget
-                              .nextElementSibling as HTMLElement)!.style.display =
-                              "block";
-                          }}
-                        />
-                        <div className="w-full h-full hidden items-center justify-center bg-gray-700 rounded text-xs font-mono text-gray-300">
-                          {carrera.codigoPais}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-semibold">{carrera.nombre}</div>
-                        <div className="text-sm text-gray-400">
-                          {carrera.fecha}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-6">
-                      <div className="w-8 flex justify-center">
-                        {carrera.disneyPlus ? (
-                          <Check className="h-6 w-6 text-green-500" />
-                        ) : (
-                          <X className="h-6 w-6 text-red-500" />
-                        )}
-                      </div>
-                      <div className="w-8 flex justify-center">
-                        {carrera.foxSports ? (
-                          <Check className="h-6 w-6 text-green-500" />
-                        ) : (
-                          <X className="h-6 w-6 text-red-500" />
-                        )}
-                      </div>
-                    </div>
+            {/* Columna Derecha */}
+            <div>
+              <div className="bg-muted/80 rounded-lg p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-bold">GRAN PREMIO</h2>
+                  <div className="flex gap-4">
+                    <span className="text-blue-400 font-semibold">Disney+</span>
+                    <span className="text-orange-500 font-semibold">FOX</span>
                   </div>
-                ))}
+                </div>
+
+                <div className="space-y-3">
+                  {carreras.slice(12).map((carrera) => (
+                    <div
+                      key={carrera.id}
+                      className="flex items-center justify-between py-2 border-b border-gray-700"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-8 flex-shrink-0">
+                          <img
+                            src={carrera.imagenPais}
+                            alt={`${carrera.pais}`}
+                            className="w-full h-full object-cover rounded border border-gray-600"
+                            onError={(e) => {
+                              e.currentTarget.style.display = "none";
+                              (e.currentTarget
+                                .nextElementSibling as HTMLElement)!.style.display =
+                                "block";
+                            }}
+                          />
+                          <div className="w-full h-full hidden items-center justify-center bg-gray-700 rounded text-xs font-mono text-gray-300"></div>
+                        </div>
+                        <div>
+                          <div className="font-semibold">{carrera.nombre}</div>
+                          <div className="text-sm text-gray-400">
+                            {carrera.fecha}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-6">
+                        <div className="w-8 flex justify-center">
+                          {carrera.disneyPlus ? (
+                            <Check className="h-6 w-6 text-green-500" />
+                          ) : (
+                            <X className="h-6 w-6 text-red-500" />
+                          )}
+                        </div>
+                        <div className="w-8 flex justify-center">
+                          {carrera.foxSports ? (
+                            <Check className="h-6 w-6 text-green-500" />
+                          ) : (
+                            <X className="h-6 w-6 text-red-500" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Columna Derecha */}
-          <div>
-            <div className="bg-muted/80 rounded-lg p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold">GRAN PREMIO</h2>
-                <div className="flex gap-4">
-                  <span className="text-blue-400 font-semibold">Disney+</span>
-                  <span className="text-orange-500 font-semibold">FOX</span>
-                </div>
+          {/* Footer con notas */}
+          <div className="mt-8 bg-muted/80 rounded-lg p-6">
+            <div className="text-sm tracking-wide">
+              <div>
+                <p className="text-gray-300">
+                  * <span className="font-semibold">FOX SPORTS</span>{" "}
+                  transmitirá EN VIVO el 75% de las carreras del calendario. Se
+                  irán confirmando en el transcurso de la temporada.
+                </p>
               </div>
-
-              <div className="space-y-3">
-                {carreras.slice(12).map((carrera) => (
-                  <div
-                    key={carrera.id}
-                    className="flex items-center justify-between py-2 border-b border-gray-700"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-8 flex-shrink-0">
-                        <img
-                          src={carrera.imagenPais}
-                          alt={`${carrera.pais}`}
-                          className="w-full h-full object-cover rounded border border-gray-600"
-                          onError={(e) => {
-                            e.currentTarget.style.display = "none";
-                            (e.currentTarget
-                              .nextElementSibling as HTMLElement)!.style.display =
-                              "block";
-                          }}
-                        />
-                        <div className="w-full h-full hidden items-center justify-center bg-gray-700 rounded text-xs font-mono text-gray-300">
-                          {carrera.codigoPais}
-                        </div>
-                      </div>
-                      <div>
-                        <div className="font-semibold">{carrera.nombre}</div>
-                        <div className="text-sm text-gray-400">
-                          {carrera.fecha}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex gap-6">
-                      <div className="w-8 flex justify-center">
-                        {carrera.disneyPlus ? (
-                          <Check className="h-6 w-6 text-green-500" />
-                        ) : (
-                          <X className="h-6 w-6 text-red-500" />
-                        )}
-                      </div>
-                      <div className="w-8 flex justify-center">
-                        {carrera.foxSports ? (
-                          <Check className="h-6 w-6 text-green-500" />
-                        ) : (
-                          <X className="h-6 w-6 text-red-500" />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              <div>
+                <p className="text-gray-300">
+                  * <span className="font-semibold text-blue-400">DISNEY+</span>{" "}
+                  transmitirá EN VIVO y sin cortes todos los Grandes Premios de
+                  la temporada 2025.
+                </p>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer con notas */}
-        <div className="mt-8 bg-muted/80 rounded-lg p-6">
-          <div className="text-sm tracking-wide">
-            <div>
-              <p className="text-gray-300">
-                * <span className="font-semibold">FOX SPORTS</span> transmitirá
-                EN VIVO el 75% de las carreras del calendario. Se irán
-                confirmando en el transcurso de la temporada.
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-300">
-                * <span className="font-semibold text-blue-400">DISNEY+</span>{" "}
-                transmitirá EN VIVO y sin cortes todos los Grandes Premios de la
-                temporada 2025.
-              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   );
 }
 

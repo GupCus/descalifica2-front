@@ -5,7 +5,7 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Pilotos from "./pages/pilotos/Pilotos.tsx";
 import ListadoEscuderias from "./pages/escuderias/ListadoEscuderias.tsx";
-import Marcas from "./pages/Marcas.tsx";
+import Marcas from "./pages/marcas/Marcas.tsx";
 import Circuitos from "./pages/circuitos/Circuitos.tsx";
 import Categorias from "./pages/Categorias.tsx";
 import Temporadas from "./pages/Temporadas.tsx";

@@ -133,120 +133,140 @@ function NuevoPiloto() {
   };
 
   return (
-    <div className="flex relative min-h-screen">
-      <div className="bg-[url('./src/assets/franco-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1" />
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 flex-2 mx-8 mt-20 flex flex-col items-center"
-      >
-        <div className="">
-          <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
-            Alta pilotos
-          </h1>
-          <InputGroup className="mt-5 mb-5 w-96">
-            <InputGroupInput
-              placeholder="Nombre completo"
-              id="name"
-              value={form.name}
-              onChange={handleChange}
-            />
-          </InputGroup>
-          <div className="flex">
-            <InputGroup className="mb-5 w-45 mr-6">
-              <Select
-                value={form.escuderia}
-                onValueChange={(value) =>
-                  setForm((s) => ({ ...s, escuderia: value }))
-                }
-                required
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Escudería" />
-                </SelectTrigger>
-                <SelectContent className="border-secondary">
-                  {escuderias.map((e) => (
-                    <SelectItem key={e.id} value={String(e.id)}>
-                      {e.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </InputGroup>
-            <InputGroup className="mb-5 w-45">
+    <div className="relative min-h-screen">
+      <div
+        className="absolute inset-0 w-full h-full z-0"
+        style={{
+          backgroundImage: "url('./src/assets/F1-drivers-25.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(6px) brightness(0.7)",
+        }}
+      />
+
+      {/* Quita el overlay o ponle z-index menor que la imagen */}
+      {/* <div className="absolute inset-0 w-full h-full z-0 bg-black/40" /> */}
+
+      {/* Contenido por encima del fondo */}
+      <div className="relative z-10 flex min-h-screen">
+        <div className="bg-[url('./src/assets/franco-1.jpg')] bg-cover bg-center max-w-[25%] w-full flex-1" />
+
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 flex-2 mx-8 mt-20 flex flex-col items-center"
+        >
+          <div className="">
+            <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
+              Alta pilotos
+            </h1>
+            <InputGroup className="mt-5 mb-5 w-96">
               <InputGroupInput
-                placeholder="Número del piloto"
-                id="num"
-                value={form.num}
+                placeholder="Nombre completo"
+                id="name"
+                value={form.name}
                 onChange={handleChange}
               />
             </InputGroup>
-          </div>
-          <InputGroup className="mb-5 w-96">
-            <InputGroupInput
-              placeholder="Nacionalidad"
-              id="nationality"
-              value={form.nationality}
-              onChange={handleChange}
-            />
-          </InputGroup>
-          <div className="flex">
-            <InputGroup className="mb-5 w-45 mr-6">
-              <Select>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Seleccione un rol" />
-                </SelectTrigger>
-                <SelectContent className="border-secondary">
-                  <SelectGroup>
-                    <SelectLabel>Posibles roles</SelectLabel>
-                    <SelectItem value="Primer piloto">Primer piloto</SelectItem>
-                    <SelectItem value="Segundo piloto">
-                      Segundo piloto
-                    </SelectItem>
-                    <SelectItem value="Piloto reserva">
-                      Piloto reserva
-                    </SelectItem>
-                    <SelectItem value="Piloto de pruebas">
-                      Piloto de pruebas
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+            <div className="flex">
+              <InputGroup className="mb-5 w-45 mr-6">
+                <Select
+                  value={form.escuderia}
+                  onValueChange={(value) =>
+                    setForm((s) => ({ ...s, escuderia: value }))
+                  }
+                  required
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Escudería" />
+                  </SelectTrigger>
+                  <SelectContent className="border-secondary">
+                    {escuderias.map((e) => (
+                      <SelectItem key={e.id} value={String(e.id)}>
+                        {e.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </InputGroup>
+              <InputGroup className="mb-5 w-45">
+                <InputGroupInput
+                  placeholder="Número del piloto"
+                  id="num"
+                  value={form.num}
+                  onChange={handleChange}
+                />
+              </InputGroup>
+            </div>
+            <InputGroup className="mb-5 w-96">
+              <InputGroupInput
+                placeholder="Nacionalidad"
+                id="nationality"
+                value={form.nationality}
+                onChange={handleChange}
+              />
             </InputGroup>
-            <InputGroup className="mb-5 w-45">
-              <Select
-                value={form.racing_series}
-                onValueChange={(value) =>
-                  setForm((s) => ({ ...s, racing_series: value }))
-                }
-                required
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Categoría" />
-                </SelectTrigger>
-                <SelectContent className="border-secondary">
-                  {categorias.map((c) => (
-                    <SelectItem key={c.id} value={String(c.id)}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </InputGroup>
+            <div className="flex">
+              <InputGroup className="mb-5 w-45 mr-6">
+                <Select>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Seleccione un rol" />
+                  </SelectTrigger>
+                  <SelectContent className="border-secondary">
+                    <SelectGroup>
+                      <SelectLabel>Posibles roles</SelectLabel>
+                      <SelectItem value="Primer piloto">
+                        Primer piloto
+                      </SelectItem>
+                      <SelectItem value="Segundo piloto">
+                        Segundo piloto
+                      </SelectItem>
+                      <SelectItem value="Piloto reserva">
+                        Piloto reserva
+                      </SelectItem>
+                      <SelectItem value="Piloto de pruebas">
+                        Piloto de pruebas
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </InputGroup>
+              <InputGroup className="mb-5 w-45">
+                <Select
+                  value={form.racing_series}
+                  onValueChange={(value) =>
+                    setForm((s) => ({ ...s, racing_series: value }))
+                  }
+                  required
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Categoría" />
+                  </SelectTrigger>
+                  <SelectContent className="border-secondary">
+                    {categorias.map((c) => (
+                      <SelectItem key={c.id} value={String(c.id)}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </InputGroup>
+            </div>
           </div>
-        </div>
 
-        <div className="flex w-96 justify-between">
-          <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
-            Cancelar
-          </Button>
-          <Button type="submit" disabled={submitting}>
-            {submitting ? "Enviando..." : "Crear nuevo piloto"}
-          </Button>
-        </div>
+          <div className="flex w-96 justify-between">
+            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
+              Cancelar
+            </Button>
+            <Button type="submit" disabled={submitting}>
+              {submitting ? "Enviando..." : "Crear nuevo piloto"}
+            </Button>
+          </div>
 
-        {message && <p className="mt-2 text-sm">{message}</p>}
-      </form>
-      <div className="bg-[url('./src/assets/piastri-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1 " />
+          {message && <p className="mt-2 text-sm">{message}</p>}
+        </form>
+
+        <div className="bg-[url('./src/assets/piastri-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1 " />
+      </div>
     </div>
   );
 }
