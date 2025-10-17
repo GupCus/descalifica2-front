@@ -4,7 +4,7 @@ import { Categoria } from './categoria.entity.js';
 
 export class Piloto extends baseEntity{ 
         
-        escuderia!: Escuderia[];
+        escuderia!: Escuderia[] | Escuderia;
         num!:number
         nationality!:string
         role!:string

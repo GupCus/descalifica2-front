@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -35,9 +36,16 @@ type Circuito = {
   id: string;
   name: string;
 };
+
+type Categoria = {
+  id: string;
+  name: string;
+};
+
 type Temporada = {
   id: string;
   year: string;
+  racing_series: string;
 };
 
 function NuevaCarrera() {
@@ -55,6 +63,7 @@ function NuevaCarrera() {
   const [openEnd, setOpenEnd] = React.useState(false);
   const [circuitos, setCircuitos] = useState<Circuito[]>([]);
   const [temporadas, setTemporadas] = useState<Temporada[]>([]);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
 
   const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -97,6 +106,27 @@ function NuevaCarrera() {
       .catch((err) => {
         setTemporadas([]);
         console.error("Error cargando temporadas", err);
+      });
+  }, [api]);
+
+  // getAll categorias
+  useEffect(() => {
+    fetch(`${api}/categorias`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data.data)) {
+          setCategorias(data.data);
+        } else {
+          setCategorias([]);
+          console.error(
+            "La respuesta no contiene un array de categorías.",
+            data
+          );
+        }
+      })
+      .catch((err) => {
+        setCategorias([]);
+        console.error("Error cargando categorías", err);
       });
   }, [api]);
 
@@ -257,11 +287,17 @@ function NuevaCarrera() {
                   <SelectValue placeholder="Temporada" />
                 </SelectTrigger>
                 <SelectContent className="border-secondary">
-                  {temporadas.map((t) => (
-                    <SelectItem key={t.id} value={String(t.id)}>
-                      {String(t.year)}
-                    </SelectItem>
-                  ))}
+                  {temporadas.map((t) => {
+                    const categoria = categorias.find(
+                      (c) => String(c.id) === String(t.racing_series)
+                    );
+                    return (
+                      <SelectItem key={t.id} value={String(t.id)}>
+                        {String(t.year)}
+                        {categoria ? ` (${categoria.name})` : ""}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </InputGroup>
@@ -269,12 +305,14 @@ function NuevaCarrera() {
         </div>
 
         <div className="flex w-96 justify-between">
-          <Button
-            type="button"
-            className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
-          >
-            Cancelar
-          </Button>
+          <Link to="/menuadmin">
+            <Button
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              type="button"
+            >
+              Cancelar
+            </Button>
+          </Link>
           <Button type="submit" disabled={submitting}>
             {submitting ? "Enviando..." : "Crear nueva carrera"}
           </Button>

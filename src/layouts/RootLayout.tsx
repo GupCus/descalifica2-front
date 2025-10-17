@@ -31,7 +31,10 @@ function RootLayout() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink href="/calendario" className="font-semibold">
+                <NavigationMenuLink
+                  href="/calendario"
+                  className="font-semibold"
+                >
                   Calendario
                 </NavigationMenuLink>
               </NavigationMenuItem>

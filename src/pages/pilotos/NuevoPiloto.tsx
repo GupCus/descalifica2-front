@@ -12,6 +12,7 @@ import {
   SelectLabel,
 } from "@/components/ui/select";
 import fondoFranco from "../../assets/franco-2.jpg";
+import { Link } from "react-router-dom";
 
 //DEFINICIONES DE CLASES
 type FormState = {
@@ -199,81 +200,16 @@ function NuevoPiloto() {
             </InputGroup>
           </div>
 
-          <InputGroup className="mb-5 w-full">
-            <InputGroupInput
-              placeholder="Nacionalidad"
-              id="nationality"
-              value={form.nationality}
-              onChange={handleChange}
-              required
-            />
-          </InputGroup>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputGroup>
-              <Select
-                value={form.role}
-                onValueChange={(value) =>
-                  setForm((s) => ({ ...s, role: value }))
-                }
-                required
+          <div className="flex w-96 justify-between">
+            <Link to="/menuadmin">
+              <Button
+                className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                type="button"
               >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Seleccione un rol" />
-                </SelectTrigger>
-                <SelectContent className="border-secondary">
-                  <SelectGroup>
-                    <SelectLabel>Posibles roles</SelectLabel>
-                    <SelectItem value="Primer piloto">Primer piloto</SelectItem>
-                    <SelectItem value="Segundo piloto">
-                      Segundo piloto
-                    </SelectItem>
-                    <SelectItem value="Piloto reserva">
-                      Piloto reserva
-                    </SelectItem>
-                    <SelectItem value="Piloto de pruebas">
-                      Piloto de pruebas
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </InputGroup>
-
-            <InputGroup>
-              <Select
-                value={form.racing_series}
-                onValueChange={(value) =>
-                  setForm((s) => ({ ...s, racing_series: value }))
-                }
-                required
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Categoría" />
-                </SelectTrigger>
-                <SelectContent className="border-secondary">
-                  {categorias.map((c) => (
-                    <SelectItem key={c.id} value={String(c.id)}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </InputGroup>
-          </div>
-
-          <div className="flex w-full justify-between pt-4">
-            <Button
-              type="button"
-              className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
-              onClick={() => window.history.back()}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              disabled={submitting}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-900/50 border-0"
-            >
+                Cancelar
+              </Button>
+            </Link>
+            <Button type="submit" disabled={submitting}>
               {submitting ? "Enviando..." : "Crear nuevo piloto"}
             </Button>
           </div>

@@ -6,25 +6,49 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import TextType from "@/components/ui/TextType.tsx";
+import { Carrera } from "@/entities/carrera.entity.ts";
 
+//api
+import axios from "axios";
+import { useEffect, useState } from "react";
+const client = axios.create({
+  baseURL: "http://localhost:3000/api/carreras" 
+});
+async function getCarreras(): Promise<Carrera[]> {
+  try {
+    const response = await client.get('/');
+    console.log(response);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error al obtener carreras:', error);
+    throw error;
+  }
+}
 function Home() {
-    const grandesPremios = [
-    {
-      id: "item-1",
-      nombre: "GRAN PREMIO DE SINGAPUR",
-      imagen: "https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Singapore_Circuit.webp",
-    },
-    {
-      id: "item-2",
-      nombre: "GRAN PREMIO DE JAPÓN",
-      imagen: "https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Japan_Circuit.webp",
-    },
-    {
-      id: "item-3",
-      nombre: "GRAN PREMIO DE QATAR",
-      imagen: "https://media.formula1.com/image/upload/c_fit,h_704/q_auto/v1740000000/content/dam/fom-website/2018-redesign-assets/Circuit%20maps%2016x9/Qatar_Circuit.webp",
-    },
-  ];
+
+  const [carreras, setCarreras] = useState<Carrera[]>([]);
+  
+  useEffect(() => {
+    const fetchCarreras = async () => {
+      try {
+        const data = await getCarreras();
+        console.log(data);
+        setCarreras(data);
+      } catch (err) {
+        console.error(err)
+      }
+    };
+    fetchCarreras();
+  }, []);
+  
+  const carrerasAnteriores = 
+  carreras.length === 0 ?
+  undefined
+  :
+  carreras
+  .filter((c) => new Date(c.end_date) < new Date()) 
+  .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
+
 
   return (
     <>
@@ -70,27 +94,29 @@ function Home() {
           type="single"
           collapsible
         >
-          {grandesPremios.map((gp) => (
-            <AccordionItem key={gp.id} value={gp.id}>
+          { carrerasAnteriores ?
+            carrerasAnteriores.map((gp) => (
+            <AccordionItem key={gp.id} value={gp.id ? gp.id.toString() : ""}>
               <AccordionTrigger className="mx-auto">
-                {gp.nombre}
+                {gp.name}
               </AccordionTrigger>
 
               <AccordionContent>
                 <div className="flex h-auto">
                   <div className="flex-3 w-full h-full">
-                    <DashboardAccordion />
+                    <DashboardAccordion sesiones={gp.sesiones}/>
                   </div>
+                  {/* Queda inhabilitada la imagen hasta agregarla al circuito
                   <img
-                    src={gp.imagen}
-                    alt={gp.nombre}
+                    src={gp.circuito.imagen}
+                    alt={gp.circuito}
                     className="flex-1 max-w-[40%]"
                   />
+                  */}
                 </div>
               </AccordionContent>
-              
             </AccordionItem>
-          ))}
+          )): null}
         </Accordion>
       </div>
     </>

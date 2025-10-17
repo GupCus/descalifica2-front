@@ -5,12 +5,11 @@ import { Carrera } from "@/entities/carrera.entity.ts";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
 
+//api
 import axios from "axios";
-
 const client = axios.create({
   baseURL: "http://localhost:3000/api/carreras" 
 });
-
 async function getCarreras(): Promise<Carrera[]> {
   try {
     const response = await client.get('/');
@@ -22,6 +21,7 @@ async function getCarreras(): Promise<Carrera[]> {
   }
 }
 
+//Componente
 function Calendario() {
   const [carreras, setCarreras] = useState<Carrera[]>([]);
 
@@ -38,43 +38,43 @@ function Calendario() {
     fetchCarreras();
   }, []);
 
-  if (carreras.length === 0) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-2xl font-bold text-muted-foreground">
-          No hay carreras programadas
-        </div>
-      </div>
-    );
-  }
-
-  const carreraActual = carreras
+  //Si todavía no llegaron las carreras, retorna mensaje vacío
+  const carreraActual = 
+  carreras.length === 0 ?
+  undefined
+  :
+  carreras
   .filter((c) => new Date(c.end_date) >= new Date()) 
-  .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0]; 
+  .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0];
 
-  carreraActual.start_date = new Date(carreraActual.start_date)
-  carreraActual.end_date = new Date(carreraActual.end_date)
-
+  //Consigue la fecha de la sesión en caso de especificar tipo, o de la primera
   const getSesionFecha = (tipo?: string) => {
-    if(!carreraActual.sesiones){
-      return null;
+    if(!carreraActual){
+      return undefined
+    } else if (!tipo) {
+      return new Date(carreraActual.sesiones[0].fecha_Hora_inicio);
+    } else {
+      const sesion = carreraActual.sesiones.find((s) => s.tipo_Sesion === tipo);
+      return sesion ? new Date(sesion.fecha_Hora_inicio) : undefined;
     }
-    return tipo
-      ? new Date(carreraActual.sesiones.find((s) => s.tipo_Sesion === tipo)?.fecha_Hora_inicio)
-      : new Date(carreraActual.sesiones[0]?.fecha_Hora_inicio);
   };
-
-  const esHoy = (c:Carrera) =>{
+  //En caso de haber f1 hoy, lo indica con un mensaje
+  const esHoy = (c?:Carrera) =>{
+    if(c){
     const hoy = new Date()
-    if(c.start_date <= hoy && c.end_date >= hoy){
+    const diaini = new Date(c.start_date)
+    const diafin = new Date(c.end_date)
+    diaini.setHours(0,0,0,0)
+    diafin.setHours(0,0,0,0)
+    if(diaini <= hoy && diafin >= hoy){
       return (      
       <div className="flex justify-center py-2">
           <h2 className="text-6xl font-black tracking-tight bg-gradient-to-r from-red-800 via-pink-800 to-purple-950 bg-clip-text text-transparent animate-bounce">
             ¡HOY HAY FÓRMULA 1!
           </h2>
       </div>);
-    }
-    return null;
+    }}
+    return undefined;
   }
 
   return (
@@ -109,27 +109,28 @@ function Calendario() {
         </div>
 
         {/* Columna derecha */ }
-        
         <Card className="bg-gradient-to-br from-primary/70 via-accent/70 to-primary/70">
           <CardHeader>
             <CardTitle className="text-3xl font-extrabold text-primary-foreground flex gap-3 border-b-2 border-accent pb-3">
-              <span>{carreraActual.name}</span>
+              <span>{carreraActual ? carreraActual.name : null}</span>
               <Badge variant="secondary" className="text-sm">
-                {carreraActual.start_date.toLocaleDateString("es-ES", {
-                  day: "numeric",
-                })
-                + " - " + 
-                carreraActual.end_date.toLocaleDateString("es-ES", {
-                  day: "numeric",
-                  month: "short",
-                })}
+                {carreraActual ?
+                  new Date(carreraActual.start_date).toLocaleDateString("es-ES", {
+                    day: "numeric",
+                  })
+                  + " - " + 
+                  new Date(carreraActual.end_date).toLocaleDateString("es-ES", {
+                    day: "numeric",
+                    month: "short",
+                  })
+                  : null}
               </Badge>
             </CardTitle>
           </CardHeader>
 
           <CardContent>
             <div className="grid gap-3 max-h-80 overflow-y-auto">
-              {carreraActual.sesiones?.map((sesion) => { 
+              {carreraActual ? carreraActual.sesiones?.map((sesion) => { 
               return (
                 <div
                   key={sesion.id}
@@ -157,7 +158,7 @@ function Calendario() {
                     })}
                   </span>
                 </div>
-              )})}
+              )}) : null}
             </div>
           </CardContent>
         </Card>
