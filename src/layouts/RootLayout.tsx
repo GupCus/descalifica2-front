@@ -7,26 +7,23 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function RootLayout() {
   return (
     <>
       <header className="sticky top-0 z-50">
-        <div 
+        <div
           className="flex justify-between items-center w-full pt-0.5 pb-0.5 px-4"
-          style={{ background: 'var(--fondodescalifica2)' }}
+          style={{ background: "var(--fondodescalifica2)" }}
         >
           {/* NavigationMenu con menús */}
-          <NavigationMenu
-            viewport={false}
-            className="flex-1"
-          >
+          <NavigationMenu viewport={false} className="flex-1">
             <NavigationMenuList className="flex items-center gap-4">
               <NavigationMenuItem>
                 <Link to="/">
-                  <img 
-                    src="./src/assets/descalifica2logo.png" 
+                  <img
+                    src="./src/assets/descalifica2logo.png"
                     alt="Descalifica2"
                     className="mt-2 mb-2 ml-6 h-auto w-32 object-contain hover:scale-105 transition-transform"
                   />
@@ -44,13 +41,13 @@ function RootLayout() {
                   Wiki
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="z-50">
-                  <NavigationMenuLink href="pilotos">Pilotos</NavigationMenuLink>
+                  <NavigationMenuLink href="pilotos">
+                    Pilotos
+                  </NavigationMenuLink>
                   <NavigationMenuLink href="escuderias">
                     Escuderías
                   </NavigationMenuLink>
-                  <NavigationMenuLink href="marcas">
-                    Marcas
-                  </NavigationMenuLink>
+                  <NavigationMenuLink href="marcas">Marcas</NavigationMenuLink>
                   <NavigationMenuLink href="temporadas">
                     Temporadas
                   </NavigationMenuLink>
