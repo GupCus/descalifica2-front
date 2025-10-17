@@ -12,12 +12,14 @@ type Escuderia = {
   marca?: {
     id: string;
     name: string;
-  };
+  } | string;
   categoria?: {
     id: string;
     name: string;
-  };
+  } | string;
 };
+
+
 
 const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -104,6 +106,20 @@ function ListadoEscuderias() {
       });
   }, []);
 
+//helper para extraer el nombre de categoria 
+  const getCategoryName = (cat?: { id?: string; name?: string } | string) => {
+    if (!cat) return "";
+    if (typeof cat === "string") return cat.trim().toLowerCase();
+    return String(cat.name ?? "").trim().toLowerCase();
+  };
+
+  //Separamos por categoria 
+
+const f2Escuderias = escuderias.filter(e => getCategoryName(e.categoria) === 'f2');
+
+const f1Escuderias = escuderias.filter(e => getCategoryName(e.categoria) === 'f1');
+
+
   if (loading) {
     return (
       <div className="relative min-h-screen">
@@ -151,21 +167,24 @@ function ListadoEscuderias() {
 
   return (
     <div className="relative min-h-screen">
+      <div
+        className="absolute inset-0 w-full h-full blur-sm opacity-35"
+        style={{
+          backgroundImage: `url(${new URL('../../assets/vers-lec.jpg', import.meta.url).href})`,
+          backgroundSize: "auto 100%",
+          backgroundPosition: "center",
+        }}
+      />
       <ChromaGrid />
       <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2 text-center">Escuderías</h1>
-          <p className="text-slate-300">
-            Descubre todas las escuderías de la competición
-          </p>
-        </div>
 
-        {/* Grid de Escuderías */}
-        {escuderias.length === 0 ? (
+        <div><img src={new URL('../../assets/f1-logo.png', import.meta.url).href} alt="Logo de Formula 1" className="mx-auto w-50 h-auto object-contain" /></div>
+
+        {/* Grid de Escuderías F1 */}
+        {f1Escuderias.length === 0 ? (
           <Card className="bg-slate-900/50 border-slate-700">
             <CardHeader>
-              <CardTitle className="text-white">No hay escuderías</CardTitle>
+              <CardTitle className="text-white">No hay escuderías F1</CardTitle>
               <CardDescription className="text-slate-400">
                 Aún no se han registrado escuderías en el sistema.
               </CardDescription>
@@ -173,7 +192,7 @@ function ListadoEscuderias() {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {escuderias.map((escuderia) => {
+            {f1Escuderias.map((escuderia) => {
               const flagUrl = getCountryFlag(escuderia.nationality);
               const logoUrl = getEscuderiaLogo(escuderia.name);
               
@@ -222,12 +241,69 @@ function ListadoEscuderias() {
             })}
           </div>
         )}
+
+      {/* LOGO F2 */}
+      <div><img src={new URL('../../assets/f2-logo.png', import.meta.url).href} alt="Logo de Formula 2" className="mx-auto w-50 h-auto object-contain" /></div>
+      <div>
+      {/* Grid de Escuderías F2 */}
+    
+      {f2Escuderias.length === 0 ? (
+          <Card className="bg-slate-900/50 border-slate-700">
+            <CardHeader>
+              <CardTitle className="text-white">No hay escuderías F2</CardTitle>
+              <CardDescription className="text-slate-400">
+                Aún no se han registrado escuderías en el sistema.
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {f2Escuderias.map((escuderia) => {
+              const flagUrl = getCountryFlag(escuderia.nationality);
+              const logoUrl = getEscuderiaLogo(escuderia.name);
+              return (
+                <Card
+                  key={escuderia.id}
+                  className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
+                >
+                  <div className="relative w-full h-64 overflow-hidden">
+                    <img
+                      src={logoUrl}
+                      alt={`Logo de ${escuderia.name}`}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        // reemplazar con placeholder si no existe
+                        target.src = '/src/assets/descalifica2logo.png';
+                        target.className = 'absolute inset-0 w-full h-full object-contain bg-slate-900/50';
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
+                    {flagUrl && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <img
+                          src={flagUrl}
+                          alt={`Bandera de ${escuderia.nationality}`}
+                          className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
+                        />
+                      </div>
+                    )}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+                      <h3 className="text-2xl font-bold text-white tracking-tight">
+                        {escuderia.name}
+                      </h3>
+                    </div>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
+  </div>
   );
 }
 
 export default ListadoEscuderias;
-
-
 
