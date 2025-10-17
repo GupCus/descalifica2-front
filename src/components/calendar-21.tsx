@@ -7,11 +7,16 @@ import { Sesion } from "@/entities/sesion.entity.ts";
 import { cn } from "@/lib/utils.ts";
 import { Carrera } from "@/entities/carrera.entity.ts";
 
-export default function Calendar21({ carreras }: { carreras: Carrera[] }) {
+export default function Calendar21({ carreras }: { carreras?: Carrera[] }) {
   const [selected, setSelected] = React.useState<Date>();
 
-  let sesion: Sesion[] = [];
-  carreras.map(c => sesion = sesion.concat(c.sesiones))
+  if (!carreras || carreras.length === 0) {
+    return <div>No hay carreras</div>;
+  }
+
+  const sesion: Sesion[] = carreras
+  .flatMap(c => c.sesiones || [])
+  .filter((s): s is Sesion => s !== undefined && s !== null);
 
   return (
     <Calendar
@@ -27,9 +32,9 @@ export default function Calendar21({ carreras }: { carreras: Carrera[] }) {
         DayButton: ({ children, modifiers, day, ...props }) => {
           
           const esSesion = sesion.find(s => {
-            const fechaSesion = typeof s.fecha_Hora_sesion === 'string'
-              ? new Date(s.fecha_Hora_sesion)
-              : s.fecha_Hora_sesion;
+            const fechaSesion = typeof s.fecha_Hora_inicio === 'string'
+              ? new Date(s.fecha_Hora_inicio)
+              : s.fecha_Hora_inicio;
             
             return fechaSesion?.toDateString() === day.date.toDateString();
           });
@@ -47,7 +52,7 @@ export default function Calendar21({ carreras }: { carreras: Carrera[] }) {
               
               {children}
               {!modifiers.outside && esSesion && (
-                <span className="text-xs font-bold block">{esSesion.tipoSesion}</span>
+                <span className="text-xs font-bold block">{esSesion.tipo_Sesion}</span>
               )}
             </CalendarDayButton>
           )
