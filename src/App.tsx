@@ -5,7 +5,7 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Pilotos from "./pages/pilotos/Pilotos.tsx";
 import Escuderias from "./pages/escuderias/Escuderias.tsx";
-import Marcas from "./pages/Marcas.tsx";
+import Marcas from "./pages/marcas/Marcas.tsx";
 import Circuitos from "./pages/circuitos/Circuitos.tsx";
 import Categorias from "./pages/Categorias.tsx";
 import Temporadas from "./pages/Temporadas.tsx";
@@ -15,6 +15,8 @@ import NuevoPiloto from "./pages/pilotos/NuevoPiloto.tsx";
 import MenuAdmin from "./pages/MenuAdmin.tsx";
 import NuevaEscuderia from "./pages/escuderias/NuevaEscuderia.tsx";
 import NuevoCircuito from "./pages/circuitos/NuevoCircuito.tsx";
+import GetEscuderia from "./pages/escuderias/GetEscuderia.tsx";
+import NuevaMarca from "./pages/marcas/NuevaMarca.tsx";
 
 function App() {
   return (
@@ -26,6 +28,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="pilotos" element={<Pilotos />} />
         <Route path="escuderias" element={<Escuderias />} />
+        <Route path="/escuderias/:id" element={<GetEscuderia />} />
         <Route path="marcas" element={<Marcas />} />
         <Route path="circuitos" element={<Circuitos />} />
         <Route path="categorias" element={<Categorias />} />
@@ -35,6 +38,7 @@ function App() {
         <Route path="menuadmin/nuevopiloto" element={<NuevoPiloto />} />
         <Route path="menuadmin/nuevaescuderia" element={<NuevaEscuderia />} />
         <Route path="menuadmin/nuevocircuito" element={<NuevoCircuito />} />
+        <Route path="menuadmin/nuevamarca" element={<NuevaMarca />} />
       </Route>
     </Routes>
   );
