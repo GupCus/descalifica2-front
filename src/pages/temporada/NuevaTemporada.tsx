@@ -14,68 +14,49 @@ import { Link } from "react-router-dom";
 
 //DEFINICIONES DE CLASES
 type FormState = {
-  name: string;
-  escuderia: string; // ahora será el id de la escudería
-  num: string;
-  nationality: string;
-  role: string;
+  year: string;
   racing_series: string;
+  winner_driver: string;
+  winner_team: string;
 };
 
+//Escuderia y Piloto declarados por posible implementación futura.
 type Escuderia = {
   id: string;
   name: string;
 };
+
+type Piloto = {
+  id: string;
+  name: string;
+};
+//--------------------------------------------------------------
 
 type Categoria = {
   id: string;
   name: string;
 };
 
-function NuevoPiloto() {
+function NuevaTemporada() {
   const [form, setForm] = useState<FormState>({
-    name: "",
-    escuderia: "",
-    num: "",
-    nationality: "",
-    role: "",
+    year: "",
     racing_series: "",
+    winner_driver: "",
+    winner_team: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
 
   const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
-  //obtiene escuderías para el select
-  useEffect(() => {
-    fetch(`${api}/escuderias`)
-      .then((res) => res.json()) //convierte a JSON
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          setEscuderias(data.data); //si dentro de data es array, lo carga a escuderias
-        } else {
-          setEscuderias([]);
-          console.error(
-            "La respuesta no contiene un array de escuderías.",
-            data
-          );
-        }
-      })
-      .catch((err) => {
-        setEscuderias([]);
-        console.error("Error cargando escuderías", err);
-      });
-  }, [api]);
-
-  //obtiene categorias, también para el select
+  //obtiene categorías para el select
   useEffect(() => {
     fetch(`${api}/categorias`)
       .then((res) => res.json()) //convierte a JSON
       .then((data) => {
         if (Array.isArray(data.data)) {
-          setCategorias(data.data); //si dentro de data es array, lo carga a escuderias
+          setCategorias(data.data); //si dentro de data es array, lo carga a Categorias
         } else {
           setCategorias([]);
           console.error(
@@ -105,7 +86,7 @@ function NuevoPiloto() {
     setMessage(null);
 
     try {
-      const res = await fetch(`${api}/pilotos`, {
+      const res = await fetch(`${api}/temporadas`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -116,18 +97,16 @@ function NuevoPiloto() {
         throw new Error(errText || `HTTP ${res.status}`);
       }
 
-      setMessage("Piloto creado con éxito.");
+      setMessage("Temporada creado con éxito.");
       setForm({
-        name: "",
-        escuderia: "",
-        num: "",
-        nationality: "",
-        role: "",
+        year: "",
         racing_series: "",
+        winner_driver: "",
+        winner_team: "",
       });
     } catch (err: any) {
       console.error(err);
-      setMessage(`Error: ${err.message || "No se pudo crear el piloto"}`);
+      setMessage(`Error: ${err.message || "No se pudo crear la temporada"}`);
     } finally {
       setSubmitting(false);
     }
@@ -144,11 +123,6 @@ function NuevoPiloto() {
           filter: "blur(6px) brightness(0.7)",
         }}
       />
-
-      {/* Quita el overlay o ponle z-index menor que la imagen */}
-      {/* <div className="absolute inset-0 w-full h-full z-0 bg-black/40" /> */}
-
-      {/* Contenido por encima del fondo */}
       <div className="relative z-10 flex min-h-screen">
         <div className="bg-[url('./src/assets/franco-1.jpg')] bg-cover bg-center max-w-[25%] w-full flex-1" />
 
@@ -158,78 +132,16 @@ function NuevoPiloto() {
         >
           <div className="">
             <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
-              Alta pilotos
+              Alta temporada
             </h1>
-            <InputGroup className="mt-5 mb-5 w-96">
-              <InputGroupInput
-                placeholder="Nombre completo"
-                id="name"
-                value={form.name}
-                onChange={handleChange}
-              />
-            </InputGroup>
-            <div className="flex">
-              <InputGroup className="mb-5 w-45 mr-6">
-                <Select
-                  value={form.escuderia}
-                  onValueChange={(value) =>
-                    setForm((s) => ({ ...s, escuderia: value }))
-                  }
-                  required
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Escudería" />
-                  </SelectTrigger>
-                  <SelectContent className="border-secondary">
-                    {escuderias.map((e) => (
-                      <SelectItem key={e.id} value={String(e.id)}>
-                        {e.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </InputGroup>
-              <InputGroup className="mb-5 w-45">
+            <div className="flex mt-5">
+              <InputGroup className=" mb-5 w-45 mr-5">
                 <InputGroupInput
-                  placeholder="Número del piloto"
-                  id="num"
-                  value={form.num}
+                  placeholder="Año"
+                  id="year"
+                  value={form.year}
                   onChange={handleChange}
                 />
-              </InputGroup>
-            </div>
-            <InputGroup className="mb-5 w-96">
-              <InputGroupInput
-                placeholder="Nacionalidad"
-                id="nationality"
-                value={form.nationality}
-                onChange={handleChange}
-              />
-            </InputGroup>
-            <div className="flex">
-              <InputGroup className="mb-5 w-45 mr-6">
-                <Select>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Seleccione un rol" />
-                  </SelectTrigger>
-                  <SelectContent className="border-secondary">
-                    <SelectGroup>
-                      <SelectLabel>Posibles roles</SelectLabel>
-                      <SelectItem value="Primer piloto">
-                        Primer piloto
-                      </SelectItem>
-                      <SelectItem value="Segundo piloto">
-                        Segundo piloto
-                      </SelectItem>
-                      <SelectItem value="Piloto reserva">
-                        Piloto reserva
-                      </SelectItem>
-                      <SelectItem value="Piloto de pruebas">
-                        Piloto de pruebas
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
               </InputGroup>
               <InputGroup className="mb-5 w-45">
                 <Select
@@ -252,6 +164,24 @@ function NuevoPiloto() {
                 </Select>
               </InputGroup>
             </div>
+            <div className="flex justify-between">
+              <InputGroup className="mb-5 w-45">
+                <InputGroupInput
+                  placeholder="Piloto ganador"
+                  id="winner_driver"
+                  value={form.winner_driver}
+                  onChange={handleChange}
+                />
+              </InputGroup>
+              <InputGroup className="mb-5 w-45">
+                <InputGroupInput
+                  placeholder="Escudería ganadora"
+                  id="winner_team"
+                  value={form.winner_team}
+                  onChange={handleChange}
+                />
+              </InputGroup>
+            </div>
           </div>
 
           <div className="flex w-96 justify-between">
@@ -264,7 +194,7 @@ function NuevoPiloto() {
               </Button>
             </Link>
             <Button type="submit" disabled={submitting}>
-              {submitting ? "Enviando..." : "Crear nuevo piloto"}
+              {submitting ? "Enviando..." : "Crear nueva temporada"}
             </Button>
           </div>
 
@@ -277,4 +207,4 @@ function NuevoPiloto() {
   );
 }
 
-export default NuevoPiloto;
+export default NuevaTemporada;

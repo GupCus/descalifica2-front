@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
+import { Link } from "react-router-dom";
 
 type FormState = {
   name: string;
@@ -103,13 +104,11 @@ function NuevaMarca() {
         </div>
 
         <div className="flex w-96 justify-between">
-          <Button
-            type="button"
-            className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
-            onClick={() => window.history.back()}
-          >
-            Cancelar
-          </Button>
+          <Link to="/menuadmin">
+            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
+              Cancelar
+            </Button>
+          </Link>
           <Button type="submit" disabled={submitting}>
             {submitting ? "Enviando..." : "Crear nueva marca"}
           </Button>

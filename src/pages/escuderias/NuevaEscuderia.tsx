@@ -10,6 +10,7 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/select";
+import { Link } from "react-router-dom";
 
 type FormState = {
   name: string;
@@ -217,9 +218,14 @@ function NuevaEscuderia() {
         </div>
 
         <div className="flex w-96 justify-between">
-          <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
-            Cancelar
-          </Button>
+          <Link to="/menuadmin">
+            <Button
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              type="button"
+            >
+              Cancelar
+            </Button>
+          </Link>
           <Button type="submit" disabled={submitting}>
             {submitting ? "Enviando..." : "Crear nueva esc."}
           </Button>
