@@ -121,7 +121,6 @@
   --shadow-xl: 0px 4px 10px 0px hsl(0 0% 0% / 0.40), 0px 8px 10px -1px hsl(0 0% 0% / 0.40);
   --shadow-2xl: 0px 4px 10px 0px hsl(0 0% 0% / 1.00);
   --tracking-normal: 0.03em;
-  --fondodescalifica2: linear-gradient(90deg, var(--primary) 40%, #5a0d2e 100%);
   --fondodescalifica2: linear-gradient(135deg,
         var(--primary) 0%,
         #b31031 30%,

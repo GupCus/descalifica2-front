@@ -1,39 +1,43 @@
-import React, { useState } from "react";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
+import React, { useState, useEffect } from "react";
+import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup,
+  SelectLabel,
+} from "@/components/ui/select";
+import { Link } from "react-router-dom";
 
+//DEFINICIONES DE CLASES
 type FormState = {
   name: string;
-  escuderia: string;
-  num: string;
-  nationality: string;
-  role: string;
-  racing_series: string;
+  country: string;
+  length: string;
+  year: string;
+  imagen: string;
 };
 
-function NuevoPiloto() {
+function NuevoCircuito() {
   const [form, setForm] = useState<FormState>({
     name: "",
-    escuderia: "",
-    num: "",
-    nationality: "",
-    role: "",
-    racing_series: "",
+    country: "",
+    length: "",
+    year: "",
+    imagen: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    > //agregado HTMLSelectElement para resolver error en los select
   ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
@@ -45,7 +49,7 @@ function NuevoPiloto() {
     setMessage(null);
 
     try {
-      const res = await fetch(`${apiBase}/pilotos`, {
+      const res = await fetch(`${api}/circuitos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -56,18 +60,17 @@ function NuevoPiloto() {
         throw new Error(errText || `HTTP ${res.status}`);
       }
 
-      setMessage("Piloto creado con éxito.");
+      setMessage("Circuito creado con éxito.");
       setForm({
         name: "",
-        escuderia: "",
-        num: "",
-        nationality: "",
-        role: "",
-        racing_series: "",
+        country: "",
+        length: "",
+        year: "",
+        imagen: "",
       });
     } catch (err: any) {
       console.error(err);
-      setMessage(`Error: ${err.message || "No se pudo crear el piloto"}`);
+      setMessage(`Error: ${err.message || "No se pudo crear el circuito"}`);
     } finally {
       setSubmitting(false);
     }
@@ -82,11 +85,11 @@ function NuevoPiloto() {
       >
         <div className="">
           <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
-            Alta pilotos
+            Alta circuitos
           </h1>
           <InputGroup className="mt-5 mb-5 w-96">
             <InputGroupInput
-              placeholder="Nombre completo"
+              placeholder="Nombre oficial del circuito"
               id="name"
               value={form.name}
               onChange={handleChange}
@@ -95,43 +98,35 @@ function NuevoPiloto() {
           <div className="flex">
             <InputGroup className="mb-5 w-45 mr-6">
               <InputGroupInput
-                placeholder="Escudería"
-                id="escuderia"
-                value={form.escuderia}
+                placeholder="País"
+                id="country"
+                value={form.country}
                 onChange={handleChange}
               />
             </InputGroup>
             <InputGroup className="mb-5 w-45">
               <InputGroupInput
-                placeholder="Número del piloto"
-                id="num"
-                value={form.num}
+                placeholder="Longitud (km)"
+                id="Longitud"
+                value={form.length}
                 onChange={handleChange}
               />
             </InputGroup>
           </div>
-          <InputGroup className="mb-5 w-96">
-            <InputGroupInput
-              placeholder="Nacionalidad"
-              id="nationality"
-              value={form.nationality}
-              onChange={handleChange}
-            />
-          </InputGroup>
           <div className="flex">
             <InputGroup className="mb-5 w-45 mr-6">
               <InputGroupInput
-                placeholder="Rol"
-                id="role"
-                value={form.role}
+                placeholder="Año de inaguración"
+                id="year"
+                value={form.year}
                 onChange={handleChange}
               />
             </InputGroup>
             <InputGroup className="mb-5 w-45">
               <InputGroupInput
-                placeholder="Categoría"
-                id="racing_series"
-                value={form.racing_series}
+                placeholder="Link imagen del trazado"
+                id="imagen"
+                value={form.imagen}
                 onChange={handleChange}
               />
             </InputGroup>
@@ -139,9 +134,14 @@ function NuevoPiloto() {
         </div>
 
         <div className="flex w-96 justify-between">
-          <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
-            Cancelar
-          </Button>
+          <Link to="/menuadmin">
+            <Button
+              className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
+              type="button"
+            >
+              Cancelar
+            </Button>
+          </Link>
           <Button type="submit" disabled={submitting}>
             {submitting ? "Enviando..." : "Crear nuevo piloto"}
           </Button>
@@ -154,4 +154,4 @@ function NuevoPiloto() {
   );
 }
 
-export default NuevoPiloto;
+export default NuevoCircuito;

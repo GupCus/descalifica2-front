@@ -25,13 +25,16 @@ function RootLayout() {
                   <img
                     src="./src/assets/descalifica2logo.png"
                     alt="Descalifica2"
-                    className="mt-2 mb-2 ml-6 h-auto w-32 object-contain hover:scale-105 transition-transform"
+                    className="mt-2 mb-2 ml-6 h-auto w-32 object-cover [overflow-clip-margin:unset] hover:scale-102 transition-transform"
                   />
                 </Link>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink href="calendario" className="font-semibold">
+                <NavigationMenuLink
+                  href="/calendario"
+                  className="font-semibold"
+                >
                   Calendario
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -41,24 +44,24 @@ function RootLayout() {
                   Wiki
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="z-50">
-                  <NavigationMenuLink href="pilotos">
+                  <NavigationMenuLink href="/pilotos">
                     Pilotos
                   </NavigationMenuLink>
-                  <NavigationMenuLink href="escuderias">
+                  <NavigationMenuLink href="/escuderias">
                     Escuderías
                   </NavigationMenuLink>
-                  <NavigationMenuLink href="marcas">Marcas</NavigationMenuLink>
-                  <NavigationMenuLink href="temporadas">
+                  <NavigationMenuLink href="/marcas">Marcas</NavigationMenuLink>
+                  <NavigationMenuLink href="/temporadas">
                     Temporadas
                   </NavigationMenuLink>
-                  <NavigationMenuLink href="categorias">
+                  <NavigationMenuLink href="/categorias">
                     Categorias
                   </NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink href="dondever" className="font-semibold">
+                <NavigationMenuLink href="/dondever" className="font-semibold">
                   ¿Dónde Ver?
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -70,17 +73,18 @@ function RootLayout() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink href="about" className="font-semibold">
+                <NavigationMenuLink href="/about" className="font-semibold">
                   Sobre Nosotros
                 </NavigationMenuLink>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-
-          <Avatar className="rounded-3xl border cursor-pointer hover:ring-2 hover:ring-accent transition-all mr-6">
-            <AvatarImage src="https://a.espncdn.com/combiner/i?img=/i/headshots/rpm/players/full/5498.png&w=350&h=254" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          <Link to="/menuadmin">
+            <Avatar className="rounded-3xl border cursor-pointer hover:ring-2 hover:ring-accent transition-all mr-6">
+              <AvatarImage src="https://a.espncdn.com/combiner/i?img=/i/headshots/rpm/players/full/5498.png&w=350&h=254" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </Link>
         </div>
       </header>
 
