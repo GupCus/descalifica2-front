@@ -3,61 +3,65 @@ import { CountdownTimer } from "@/components/countdown-timer.tsx";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carrera } from "@/entities/carrera.entity.ts";
 import { Badge } from "@/components/ui/badge";
+import { useEffect, useState } from "react";
+
+import axios from "axios";
+
+const client = axios.create({
+  baseURL: "http://localhost:3000/api/carreras" 
+});
+
+async function getCarreras(): Promise<Carrera[]> {
+  try {
+    const response = await client.get('/');
+    console.log(response);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error al obtener carreras:', error);
+    throw error;
+  }
+}
 
 function Calendario() {
+  const [carreras, setCarreras] = useState<Carrera[]>([]);
 
-  //Sesión y carrera en memoria
-  const carreras: Carrera[] = [
-    {
-      id: 1,
-      name: "🏁 GP de los EEUU",
-      circuito: undefined,
-      temporada: undefined,
-      start_date: new Date(2025, 9, 17),
-      end_date: new Date(2025, 9, 19),
-      sesiones: [
-    {
-      id: 1,
-      name: "FP1",
-      tipoSesion: "FP1",
-      fecha_Hora_sesion: new Date(2025, 9, 17, 14, 30),
-    },
-    {
-      id: 2,
-      name: "QS",
-      tipoSesion: "QS",
-      fecha_Hora_sesion: new Date(2025, 9, 17, 18, 30),
-    },
-    {
-      id: 3,
-      name: "Sprint",
-      tipoSesion: "Sprint",
-      fecha_Hora_sesion: new Date(2025, 9, 18, 14),
-    },
-    {
-      id: 4,
-      name: "Qualy",
-      tipoSesion: "Qualy",
-      fecha_Hora_sesion: new Date(2025, 9, 18, 18),
-    },
-    {
-      id: 5,
-      name: "GP",
-      tipoSesion: "GP",
-      fecha_Hora_sesion: new Date(2025, 9, 19, 16),
-    },
-  ],
-    },
-  ];
+  useEffect(() => {
+    const fetchCarreras = async () => {
+      try {
+        const data = await getCarreras();
+        console.log(data);
+        setCarreras(data);
+      } catch (err) {
+        console.error(err)
+      }
+    };
+    fetchCarreras();
+  }, []);
+
+  if (carreras.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-2xl font-bold text-muted-foreground">
+          No hay carreras programadas
+        </div>
+      </div>
+    );
+  }
 
   const carreraActual = carreras
-  .filter((c) => c.end_date >= new Date()) 
-  .sort((a, b) => a.start_date.getTime() - b.start_date.getTime())[0]; 
+  .filter((c) => new Date(c.end_date) >= new Date()) 
+  .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0]; 
+
+  carreraActual.start_date = new Date(carreraActual.start_date)
+  carreraActual.end_date = new Date(carreraActual.end_date)
 
   const getSesionFecha = (tipo?: string) => {
+    if(!carreraActual.sesiones){
+      return null;
+    }
     return tipo
-      ? carreraActual.sesiones.find((s) => s.tipoSesion === tipo)?.fecha_Hora_sesion
-      : carreraActual.sesiones[0]?.fecha_Hora_sesion;
+      ? new Date(carreraActual.sesiones.find((s) => s.tipo_Sesion === tipo)?.fecha_Hora_inicio)
+      : new Date(carreraActual.sesiones[0]?.fecha_Hora_inicio);
   };
 
   const esHoy = (c:Carrera) =>{
@@ -104,7 +108,7 @@ function Calendario() {
           </div>
         </div>
 
-        {/* Columna derecha */}
+        {/* Columna derecha */ }
         
         <Card className="bg-gradient-to-br from-primary/70 via-accent/70 to-primary/70">
           <CardHeader>
@@ -124,21 +128,22 @@ function Calendario() {
           </CardHeader>
 
           <CardContent>
-            <div className="grid gap-3">
-              {carreraActual.sesiones?.map((sesion) => (
+            <div className="grid gap-3 max-h-80 overflow-y-auto">
+              {carreraActual.sesiones?.map((sesion) => { 
+              return (
                 <div
                   key={sesion.id}
                   className="flex items-center justify-between p-3 rounded-lg bg-background/70 border border-border/50"
                 >
                   <div className="flex items-center gap-3">
                     <Badge
-                      variant={sesion.tipoSesion === "GP" ? "destructive" : "default"}
+                      variant={sesion.tipo_Sesion === "GP" ? "destructive" : "default"}
                       className="font-bold text-sm px-3 py-1"
                     >
-                      {sesion.tipoSesion}
+                      {sesion.tipo_Sesion}
                     </Badge>
                     <span className="font-semibold text-foreground">
-                      {sesion.fecha_Hora_sesion?.toLocaleDateString("es-ES", {
+                      {new Date(sesion.fecha_Hora_inicio).toLocaleDateString("es-ES", {
                         weekday: "long",
                         day: "numeric",
                         month: "short",
@@ -146,13 +151,13 @@ function Calendario() {
                     </span>
                   </div>
                   <span className="text-base font-mono font-bold text-foreground">
-                    {sesion.fecha_Hora_sesion?.toLocaleTimeString("es-ES", {
+                    {new Date(sesion.fecha_Hora_inicio).toLocaleTimeString("es-ES", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
                   </span>
                 </div>
-              ))}
+              )})}
             </div>
           </CardContent>
         </Card>
