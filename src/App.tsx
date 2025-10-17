@@ -15,6 +15,7 @@ import NuevoPiloto from "./pages/pilotos/NuevoPiloto.tsx";
 import MenuAdmin from "./pages/MenuAdmin.tsx";
 import NuevaEscuderia from "./pages/escuderias/NuevaEscuderia.tsx";
 import NuevoCircuito from "./pages/circuitos/NuevoCircuito.tsx";
+import NuevaCarrera from "./pages/Carrera/NuevaCarrera.tsx";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="menuadmin/nuevopiloto" element={<NuevoPiloto />} />
         <Route path="menuadmin/nuevaescuderia" element={<NuevaEscuderia />} />
         <Route path="menuadmin/nuevocircuito" element={<NuevoCircuito />} />
+        <Route path="menuadmin/nuevacarrera" element={<NuevaCarrera />} />
       </Route>
     </Routes>
   );

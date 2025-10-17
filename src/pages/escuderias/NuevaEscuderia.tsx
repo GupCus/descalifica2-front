@@ -197,7 +197,7 @@ function NuevaEscuderia() {
               <Select
                 value={form.categoria}
                 onValueChange={(value) =>
-                  setForm((s) => ({ ...s, racing_series: value }))
+                  setForm((s) => ({ ...s, categoria: value }))
                 }
                 required
               >
