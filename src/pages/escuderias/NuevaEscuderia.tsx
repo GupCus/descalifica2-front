@@ -7,9 +7,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectGroup,
-  SelectLabel,
 } from "@/components/ui/select";
+import fondoFerrari from "../../assets/Ferrari-foto.jpg";
 
 type FormState = {
   name: string;
@@ -49,38 +48,38 @@ function NuevaEscuderia() {
   //getAll categorias
   useEffect(() => {
     fetch(`${api}/categorias`)
-      .then((res) => res.json()) //convierte a JSON
+      .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {
-          setCategorias(data.data); //si dentro de data es array, lo carga a escuderias
+          setCategorias(data.data);
         } else {
           setCategorias([]);
           console.error(
-            "La respuesta no contiene un array de escuderías.",
+            "La respuesta no contiene un array de categorías.",
             data
           );
         }
       })
       .catch((err) => {
         setCategorias([]);
-        console.error("Error cargando escuderías", err);
+        console.error("Error cargando categorías", err);
       });
   }, [api]);
 
   //getAll marcas
   useEffect(() => {
     fetch(`${api}/marcas`)
-      .then((res) => res.json()) //convierte a JSON
+      .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {
-          setMarcas(data.data); //si dentro de data es array, lo carga a escuderias
+          setMarcas(data.data);
         } else {
           setMarcas([]);
           console.error("La respuesta no contiene un array de marcas.", data);
         }
       })
       .catch((err) => {
-        setCategorias([]);
+        setMarcas([]);
         console.error("Error cargando marcas", err);
       });
   }, [api]);
@@ -127,52 +126,70 @@ function NuevaEscuderia() {
   };
 
   return (
-    <div className="flex relative min-h-screen">
-      <div className="bg-[url('./src/assets/franco-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1" />
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 flex-2 mx-8 mt-20 flex flex-col items-center"
-      >
-        <div className="">
-          <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
-            Alta escuderia
+    <div className="relative min-h-screen">
+      <div
+        className="absolute inset-0 w-full h-full z-0"
+        style={{
+          backgroundImage: `url(${fondoFerrari})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(6px) brightness(0.6)",
+        }}
+      />
+
+      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 w-full max-w-2xl mx-8 bg-red-950/90 backdrop-blur-sm rounded-lg p-8 shadow-2xl border border-red-800/50"
+        >
+          <h1 className="text-white-100 mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
+            Alta escudería
           </h1>
-          <InputGroup className="mt-5 mb-5 w-96">
+
+          <InputGroup className="mt-5 mb-5 w-full">
             <InputGroupInput
               placeholder="Nombre"
               id="name"
               value={form.name}
               onChange={handleChange}
+              required
             />
           </InputGroup>
-          <div className="flex">
-            <InputGroup className="mb-5 w-45 mr-6">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputGroup>
               <InputGroupInput
                 placeholder="Año de fundación"
                 id="foundation"
+                type="number"
                 value={form.foundation}
                 onChange={handleChange}
+                required
               />
             </InputGroup>
-            <InputGroup className="mb-5 w-45">
+            <InputGroup>
               <InputGroupInput
                 placeholder="Nacionalidad"
                 id="nationality"
                 value={form.nationality}
                 onChange={handleChange}
+                required
               />
             </InputGroup>
           </div>
-          <InputGroup className="mb-5 w-96">
+
+          <InputGroup className="mb-5 w-full">
             <InputGroupInput
               placeholder="Nombre del motor"
               id="engine"
               value={form.engine}
               onChange={handleChange}
+              required
             />
           </InputGroup>
-          <div className="flex">
-            <InputGroup className="mb-5 w-45 mr-6">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputGroup>
               <Select
                 value={form.marca}
                 onValueChange={(value) =>
@@ -193,7 +210,8 @@ function NuevaEscuderia() {
                 </SelectContent>
               </Select>
             </InputGroup>
-            <InputGroup className="mb-5 w-45">
+
+            <InputGroup>
               <Select
                 value={form.categoria}
                 onValueChange={(value) =>
@@ -214,20 +232,31 @@ function NuevaEscuderia() {
               </Select>
             </InputGroup>
           </div>
-        </div>
 
-        <div className="flex w-96 justify-between">
-          <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
-            Cancelar
-          </Button>
-          <Button type="submit" disabled={submitting}>
-            {submitting ? "Enviando..." : "Crear nueva esc."}
-          </Button>
-        </div>
+          <div className="flex w-full justify-between pt-4">
+            <Button
+              type="button"
+              className="bg-gray-700 hover:bg-gray-800 text-white border border-gray-600"
+              onClick={() => window.history.back()}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="bg-red-700 hover:bg-red-800 text-white border border-red-600"
+            >
+              {submitting ? "Enviando..." : "Crear nueva esc."}
+            </Button>
+          </div>
 
-        {message && <p className="mt-2 text-sm">{message}</p>}
-      </form>
-      <div className="bg-[url('./src/assets/piastri-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1 " />
+          {message && (
+            <p className="mt-2 text-sm text-center font-semibold text-red-200">
+              {message}
+            </p>
+          )}
+        </form>
+      </div>
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import type React from "react";
+import { useState, useEffect } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
 import {
@@ -10,11 +11,12 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/select";
+import fondoFranco from "../../assets/franco-2.jpg";
 
 //DEFINICIONES DE CLASES
 type FormState = {
   name: string;
-  escuderia: string; // ahora será el id de la escudería
+  escuderia: string;
   num: string;
   nationality: string;
   role: string;
@@ -50,10 +52,10 @@ function NuevoPiloto() {
   //obtiene escuderías para el select
   useEffect(() => {
     fetch(`${api}/escuderias`)
-      .then((res) => res.json()) //convierte a JSON
+      .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {
-          setEscuderias(data.data); //si dentro de data es array, lo carga a escuderias
+          setEscuderias(data.data);
         } else {
           setEscuderias([]);
           console.error(
@@ -71,10 +73,10 @@ function NuevoPiloto() {
   //obtiene categorias, también para el select
   useEffect(() => {
     fetch(`${api}/categorias`)
-      .then((res) => res.json()) //convierte a JSON
+      .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {
-          setCategorias(data.data); //si dentro de data es array, lo carga a escuderias
+          setCategorias(data.data);
         } else {
           setCategorias([]);
           console.error(
@@ -92,7 +94,7 @@ function NuevoPiloto() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    > //agregado HTMLSelectElement para resolver error en los select
+    >
   ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
@@ -137,135 +139,151 @@ function NuevoPiloto() {
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
-          backgroundImage: "url('./src/assets/F1-drivers-25.jpg')",
+          backgroundImage: `url(${fondoFranco})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          filter: "blur(6px) brightness(0.7)",
+          filter: "blur(6px) brightness(0.5)",
         }}
       />
 
-      {/* Quita el overlay o ponle z-index menor que la imagen */}
-      {/* <div className="absolute inset-0 w-full h-full z-0 bg-black/40" /> */}
-
-      {/* Contenido por encima del fondo */}
-      <div className="relative z-10 flex min-h-screen">
-        <div className="bg-[url('./src/assets/franco-1.jpg')] bg-cover bg-center max-w-[25%] w-full flex-1" />
-
+      {/* Contenido del formulario */}
+      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 flex-2 mx-8 mt-20 flex flex-col items-center"
+          className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/80 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-gray-700/40"
         >
-          <div className="">
-            <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
-              Alta pilotos
-            </h1>
-            <InputGroup className="mt-5 mb-5 w-96">
+          <h1 className="text-gray-200 mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
+            Alta pilotos
+          </h1>
+
+          <InputGroup className="mt-5 mb-5 w-full">
+            <InputGroupInput
+              placeholder="Nombre completo"
+              id="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+          </InputGroup>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputGroup>
+              <Select
+                value={form.escuderia}
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, escuderia: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Escudería" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  {escuderias.map((e) => (
+                    <SelectItem key={e.id} value={String(e.id)}>
+                      {e.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </InputGroup>
+
+            <InputGroup>
               <InputGroupInput
-                placeholder="Nombre completo"
-                id="name"
-                value={form.name}
+                placeholder="Número del piloto"
+                id="num"
+                value={form.num}
                 onChange={handleChange}
+                required
               />
             </InputGroup>
-            <div className="flex">
-              <InputGroup className="mb-5 w-45 mr-6">
-                <Select
-                  value={form.escuderia}
-                  onValueChange={(value) =>
-                    setForm((s) => ({ ...s, escuderia: value }))
-                  }
-                  required
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Escudería" />
-                  </SelectTrigger>
-                  <SelectContent className="border-secondary">
-                    {escuderias.map((e) => (
-                      <SelectItem key={e.id} value={String(e.id)}>
-                        {e.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </InputGroup>
-              <InputGroup className="mb-5 w-45">
-                <InputGroupInput
-                  placeholder="Número del piloto"
-                  id="num"
-                  value={form.num}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-            </div>
-            <InputGroup className="mb-5 w-96">
-              <InputGroupInput
-                placeholder="Nacionalidad"
-                id="nationality"
-                value={form.nationality}
-                onChange={handleChange}
-              />
-            </InputGroup>
-            <div className="flex">
-              <InputGroup className="mb-5 w-45 mr-6">
-                <Select>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Seleccione un rol" />
-                  </SelectTrigger>
-                  <SelectContent className="border-secondary">
-                    <SelectGroup>
-                      <SelectLabel>Posibles roles</SelectLabel>
-                      <SelectItem value="Primer piloto">
-                        Primer piloto
-                      </SelectItem>
-                      <SelectItem value="Segundo piloto">
-                        Segundo piloto
-                      </SelectItem>
-                      <SelectItem value="Piloto reserva">
-                        Piloto reserva
-                      </SelectItem>
-                      <SelectItem value="Piloto de pruebas">
-                        Piloto de pruebas
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </InputGroup>
-              <InputGroup className="mb-5 w-45">
-                <Select
-                  value={form.racing_series}
-                  onValueChange={(value) =>
-                    setForm((s) => ({ ...s, racing_series: value }))
-                  }
-                  required
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Categoría" />
-                  </SelectTrigger>
-                  <SelectContent className="border-secondary">
-                    {categorias.map((c) => (
-                      <SelectItem key={c.id} value={String(c.id)}>
-                        {c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </InputGroup>
-            </div>
           </div>
 
-          <div className="flex w-96 justify-between">
-            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
+          <InputGroup className="mb-5 w-full">
+            <InputGroupInput
+              placeholder="Nacionalidad"
+              id="nationality"
+              value={form.nationality}
+              onChange={handleChange}
+              required
+            />
+          </InputGroup>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputGroup>
+              <Select
+                value={form.role}
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, role: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Seleccione un rol" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  <SelectGroup>
+                    <SelectLabel>Posibles roles</SelectLabel>
+                    <SelectItem value="Primer piloto">Primer piloto</SelectItem>
+                    <SelectItem value="Segundo piloto">
+                      Segundo piloto
+                    </SelectItem>
+                    <SelectItem value="Piloto reserva">
+                      Piloto reserva
+                    </SelectItem>
+                    <SelectItem value="Piloto de pruebas">
+                      Piloto de pruebas
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </InputGroup>
+
+            <InputGroup>
+              <Select
+                value={form.racing_series}
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, racing_series: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Categoría" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  {categorias.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </InputGroup>
+          </div>
+
+          <div className="flex w-full justify-between pt-4">
+            <Button
+              type="button"
+              className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
+              onClick={() => window.history.back()}
+            >
               Cancelar
             </Button>
-            <Button type="submit" disabled={submitting}>
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-900/50 border-0"
+            >
               {submitting ? "Enviando..." : "Crear nuevo piloto"}
             </Button>
           </div>
 
-          {message && <p className="mt-2 text-sm">{message}</p>}
+          {message && (
+            <p className="mt-2 text-sm text-center font-semibold text-gray-300">
+              {message}
+            </p>
+          )}
         </form>
-
-        <div className="bg-[url('./src/assets/piastri-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1 " />
       </div>
     </div>
   );
