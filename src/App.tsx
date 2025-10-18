@@ -3,7 +3,6 @@ import RootLayout from "./layouts/RootLayout";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import Pilotos from "./pages/pilotos/Pilotos.tsx";
 import ListadoEscuderias from "./pages/escuderias/ListadoEscuderias.tsx";
 import Marcas from "./pages/marcas/Marcas.tsx";
 import Circuitos from "./pages/circuitos/Circuitos.tsx";
@@ -20,6 +19,8 @@ import NuevaMarca from "./pages/marcas/NuevaMarca.tsx";
 import NuevaCarrera from "./pages/Carrera/NuevaCarrera.tsx";
 import NuevaTemporada from "./pages/temporada/NuevaTemporada.tsx";
 import NuevaCategoria from "./pages/categorias/NuevaCategoria.tsx";
+import ListadoPilotos from "./pages/pilotos/ListadoPilotos.tsx";
+
 
 function App() {
   return (
@@ -29,7 +30,7 @@ function App() {
         <Route path="about" element={<About />} />
         <Route path="calendario" element={<Calendario />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="pilotos" element={<Pilotos />} />
+        <Route path="pilotos" element={<ListadoPilotos />} />
         <Route path="escuderias" element={<ListadoEscuderias />} />
         <Route path="marcas" element={<Marcas />} />
         <Route path="circuitos" element={<Circuitos />} />
