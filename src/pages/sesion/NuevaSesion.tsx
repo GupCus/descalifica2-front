@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
-import { Button } from "@/components/ui/button.tsx";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -15,29 +15,39 @@ import axios from "axios";
 import { Carrera } from "@/entities/carrera.entity.ts";
 import { Temporada } from "@/entities/temporada.entity.ts";
 import { Categoria } from "@/entities/categoria.entity.ts";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ChevronDownIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
 
 //DEFINICIONES DE CLASES - FALTA INTEGRAR LOS RESULTADOS!!!!! (capaz es mejor ponerlos en otro lado?)
 type FormState = {
   name: string;
-  tipoSesion: string;
-  fecha_hora_inicio: Date | null;
-  fecha_hora_fin: Date | null;
+  tipo_Sesion: string;
+  fecha_inicio: Date | null;
+  hora_inicio: string;
+  fecha_fin: Date | null;
+  hora_fin: string;
   carrera: string;
 };
 
 //Necesarios para mostrar la carrera, con su año y temporada para mayor claridad.
 
-
 const client = axios.create({
-  baseURL: "http://localhost:3000/api/carreras" 
+  baseURL: "http://localhost:3000/api/carreras",
 });
 async function getCarreras(): Promise<Carrera[]> {
   try {
-    const response = await client.get('/');
+    const response = await client.get("/");
     console.log(response);
     return response.data.data;
   } catch (error) {
-    console.error('Error al obtener carreras:', error);
+    console.error("Error al obtener carreras:", error);
     throw error;
   }
 }
@@ -46,9 +56,11 @@ async function getCarreras(): Promise<Carrera[]> {
 function NuevaSesion() {
   const [form, setForm] = useState<FormState>({
     name: "",
-    tipoSesion: "",
-    fecha_hora_inicio: null,
-    fecha_hora_fin: null,
+    tipo_Sesion: "",
+    fecha_inicio: null,
+    hora_inicio: "00:00:00",
+    fecha_fin: null,
+    hora_fin: "00:00:00",
     carrera: "",
   });
   const [submitting, setSubmitting] = useState(false);
@@ -56,6 +68,9 @@ function NuevaSesion() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [temporadas, setTemporadas] = useState<Temporada[]>([]);
   const [carreras, setCarreras] = useState<Carrera[]>([]);
+  const [openStart, setOpenStart] = useState(false);
+  const [openEnd, setOpenEnd] = useState(false);
+  const [date, setDate] = useState<Date | undefined>(undefined);
 
   const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -109,7 +124,7 @@ function NuevaSesion() {
         console.log(data);
         setCarreras(data);
       } catch (err) {
-        console.error(err)
+        console.error(err);
       }
     };
     fetchCarreras();
@@ -129,24 +144,42 @@ function NuevaSesion() {
     setSubmitting(true);
     setMessage(null);
 
+    //Combinar fecha y hora
+    const getDateTime = (date: Date | null, time: string) => {
+      if (!date || !time) return null; //si alguno de los dos no existe, retorna null
+      const [h, m, s] = time.split(":"); //divide la variable local time (que vino desde afuera) y la separa en 'h' 'm' y 's'
+      const d = new Date(date); //agarra date y guarda en d como Date
+      d.setHours(Number(h), Number(m), Number(s || 0)); //usa el arreglo de [h,m,s] y lo junta para hacer el tiempo, guarda en 'd'
+      return d.toISOString();
+    };
+
+    //Guardar fecha y hora concatenadas al final del form
+    const guardarFechas = {
+      ...form,
+      fecha_Hora_inicio: getDateTime(form.fecha_inicio, form.hora_inicio),
+      fecha_Hora_fin: getDateTime(form.fecha_fin, form.hora_fin),
+    };
+
     try {
       const res = await fetch(`${api}/sesion`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(guardarFechas),
       });
+      console.log(form);
 
       if (!res.ok) {
         const errText = await res.text();
         throw new Error(errText || `HTTP ${res.status}`);
       }
-
       setMessage("Sesión creada con éxito.");
       setForm({
         name: "",
-        tipoSesion: "",
-        fecha_hora_inicio: null,
-        fecha_hora_fin: null,
+        tipo_Sesion: "",
+        fecha_inicio: null,
+        hora_inicio: "00:00:00",
+        fecha_fin: null,
+        hora_fin: "00:00:00",
         carrera: "",
       });
     } catch (err: any) {
@@ -190,9 +223,9 @@ function NuevaSesion() {
               </InputGroup>
               <InputGroup className="mb-5 w-45">
                 <Select
-                  value={form.tipoSesion}
+                  value={form.tipo_Sesion}
                   onValueChange={(value) =>
-                    setForm((s) => ({ ...s, tipoSesion: value }))
+                    setForm((s) => ({ ...s, tipo_Sesion: value }))
                   }
                   required
                 >
@@ -219,8 +252,8 @@ function NuevaSesion() {
                 </Select>
               </InputGroup>
             </div>
-            <div className="flex justify-between">
-              <InputGroup className="mb-5 w-45">
+            <div className="flex">
+              <InputGroup className="mb-5 w-96">
                 <Select
                   value={form.carrera}
                   onValueChange={(value) =>
@@ -231,25 +264,138 @@ function NuevaSesion() {
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Carrera" />
                   </SelectTrigger>
-                  {carreras.length > 0 &&
-                    temporadas.length > 0 &&
-                    categorias.length > 0 && (
-                      <SelectContent className="border-secondary">
-                        {carreras.map((car:Carrera) => {
-                          
-                          console.log({})
-                          return (
-                            <SelectItem key={car.id} value={String(car.id)}>
-                              {(car ? car.name : "??") + " "} 
-                              ({car.temporada ? car.temporada?.year : "??"})
-                              ({car.temporada ? (car.temporada.racing_series ? car.temporada?.racing_series.name : "??") : "??"})
-                            </SelectItem>
-                          );
-                        })}
-                      </SelectContent>
-                    )}
+
+                  <SelectContent className="border-secondary">
+                    {carreras.map((car: Carrera) => {
+                      console.log({});
+                      return (
+                        <SelectItem key={car.id} value={String(car.id)}>
+                          {(car ? car.name : "??") + " "}(
+                          {car.temporada ? car.temporada?.year : "??"}) (
+                          {car.temporada
+                            ? car.temporada.racing_series
+                              ? car.temporada?.racing_series.name
+                              : "??"
+                            : "??"}
+                          )
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
                 </Select>
               </InputGroup>
+            </div>
+            <div className="mb-5">
+              <div className="flex gap-4">
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="fecha_inicio" className="px-1">
+                    Fecha de inicio
+                  </Label>
+                  <Popover open={openStart} onOpenChange={setOpenStart}>
+                    <PopoverTrigger>
+                      <Button
+                        variant="outline"
+                        id="fecha_inicio"
+                        className="w-56 justify-between font-normal"
+                        type="button"
+                      >
+                        {form.fecha_inicio
+                          ? form.fecha_inicio.toLocaleDateString()
+                          : "Elegir fecha de inicio"}
+                        <ChevronDownIcon />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto overflow-hidden p-0 border-none"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={form.fecha_inicio ?? undefined}
+                        captionLayout="dropdown"
+                        onSelect={(date) => {
+                          if (date)
+                            setForm((prev) => ({
+                              ...prev,
+                              fecha_inicio: date,
+                            }));
+                          setOpenStart(false);
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="flex flex-col gap-3 w-35">
+                  <Label htmlFor="hora_inicio" className="px-1">
+                    Hora de inicio
+                  </Label>
+                  <Input
+                    type="time"
+                    id="hora_inicio"
+                    step="1"
+                    defaultValue="00:00:00"
+                    value={form.hora_inicio}
+                    onChange={handleChange}
+                    className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="flex gap-4">
+                <div className="flex flex-col gap-3">
+                  <Label htmlFor="fecha_fin" className="px-1">
+                    Fecha de finalización
+                  </Label>
+                  <Popover open={openEnd} onOpenChange={setOpenEnd}>
+                    <PopoverTrigger>
+                      <Button
+                        variant="outline"
+                        id="fecha_fin"
+                        className="w-56 justify-between font-normal"
+                        type="button"
+                      >
+                        {form.fecha_fin
+                          ? form.fecha_fin.toLocaleDateString()
+                          : "Elegir fecha de finalización"}
+                        <ChevronDownIcon />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto overflow-hidden p-0 border-none"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={form.fecha_fin ?? undefined}
+                        captionLayout="dropdown"
+                        onSelect={(date) => {
+                          if (date)
+                            setForm((prev) => ({
+                              ...prev,
+                              fecha_fin: date,
+                            }));
+                          setOpenEnd(false);
+                        }}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="flex flex-col gap-3 w-35">
+                  <Label htmlFor="hora_fin" className="px-1">
+                    Hora de fin
+                  </Label>
+                  <Input
+                    type="time"
+                    id="hora_fin"
+                    step="1"
+                    defaultValue="01:30:00"
+                    value={form.hora_fin}
+                    onChange={handleChange}
+                    className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -263,7 +409,7 @@ function NuevaSesion() {
               </Button>
             </Link>
             <Button type="submit" disabled={submitting}>
-              {submitting ? "Enviando..." : "Crear nueva temporada"}
+              {submitting ? "Enviando..." : "Crear nueva sesión"}
             </Button>
           </div>
 
