@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/popover";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import fondoSesion from "../../assets/sesion.webp";
 
 //DEFINICIONES DE CLASES - FALTA INTEGRAR LOS RESULTADOS!!!!! (capaz es mejor ponerlos en otro lado?)
 type FormState = {
@@ -192,228 +193,235 @@ function NuevaSesion() {
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
-          backgroundImage: "url('./src/assets/F1-drivers-25.jpg')",
+          backgroundImage: `url(${fondoSesion})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          filter: "blur(6px) brightness(0.7)",
+          filter: "blur(6px) brightness(0.5)",
         }}
       />
-      <div className="relative z-10 flex min-h-screen">
-        <div className="bg-[url('./src/assets/franco-1.jpg')] bg-cover bg-center max-w-[25%] w-full flex-1" />
 
+      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 flex-2 mx-8 mt-20 flex flex-col items-center"
+          className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-yellow-700/40"
         >
-          <div className="">
-            <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
-              Alta sesión
-            </h1>
-            <div className="flex mt-5">
-              <InputGroup className=" mb-5 w-45 mr-5">
-                <InputGroupInput
-                  placeholder="Nombre"
-                  id="name"
-                  value={form.name}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-              <InputGroup className="mb-5 w-45">
-                <Select
-                  value={form.tipo_Sesion}
-                  onValueChange={(value) =>
-                    setForm((s) => ({ ...s, tipo_Sesion: value }))
-                  }
-                  required
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Tipo de sesión" />
-                  </SelectTrigger>
-                  <SelectContent className="border-secondary">
-                    <SelectItem value="Free Practice 1">
-                      Free Practice 1
-                    </SelectItem>
-                    <SelectItem value="Free Practice 2">
-                      Free Practice 2
-                    </SelectItem>
-                    <SelectItem value="Free Practice 3">
-                      Free Practice 3
-                    </SelectItem>
-                    <SelectItem value="Qualifying">Qualifying</SelectItem>
-                    <SelectItem value="Race">Race</SelectItem>
-                    <SelectItem value="Sprint Qualifying">
-                      Sprint Qualifying
-                    </SelectItem>
-                    <SelectItem value="Sprint Race">Sprint Race</SelectItem>
-                  </SelectContent>
-                </Select>
-              </InputGroup>
-            </div>
-            <div className="flex">
-              <InputGroup className="mb-5 w-96">
-                <Select
-                  value={form.carrera}
-                  onValueChange={(value) =>
-                    setForm((s) => ({ ...s, carrera: value }))
-                  }
-                  required
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Carrera" />
-                  </SelectTrigger>
+          <h1
+            className="text-white-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase"
+            style={{ fontFamily: "'Oswald', sans-serif" }}
+          >
+            Alta Sesión
+          </h1>
 
-                  <SelectContent className="border-secondary">
-                    {carreras.map((car: Carrera) => {
-                      console.log({});
-                      return (
-                        <SelectItem key={car.id} value={String(car.id)}>
-                          {(car ? car.name : "??") + " "}(
-                          {car.temporada ? car.temporada?.year : "??"}) (
-                          {car.temporada
-                            ? car.temporada.racing_series
-                              ? car.temporada?.racing_series.name
-                              : "??"
-                            : "??"}
-                          )
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-              </InputGroup>
-            </div>
-            <div className="mb-5">
-              <div className="flex gap-4">
-                <div className="flex flex-col gap-3">
-                  <Label htmlFor="fecha_inicio" className="px-1">
-                    Fecha de inicio
-                  </Label>
-                  <Popover open={openStart} onOpenChange={setOpenStart}>
-                    <PopoverTrigger>
-                      <Button
-                        variant="outline"
-                        id="fecha_inicio"
-                        className="w-56 justify-between font-normal"
-                        type="button"
-                      >
-                        {form.fecha_inicio
-                          ? form.fecha_inicio.toLocaleDateString()
-                          : "Elegir fecha de inicio"}
-                        <ChevronDownIcon />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto overflow-hidden p-0 border-none"
-                      align="start"
-                    >
-                      <Calendar
-                        mode="single"
-                        selected={form.fecha_inicio ?? undefined}
-                        captionLayout="dropdown"
-                        onSelect={(date) => {
-                          if (date)
-                            setForm((prev) => ({
-                              ...prev,
-                              fecha_inicio: date,
-                            }));
-                          setOpenStart(false);
-                        }}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="flex flex-col gap-3 w-35">
-                  <Label htmlFor="hora_inicio" className="px-1">
-                    Hora de inicio
-                  </Label>
-                  <Input
-                    type="time"
-                    id="hora_inicio"
-                    step="1"
-                    defaultValue="00:00:00"
-                    value={form.hora_inicio}
-                    onChange={handleChange}
-                    className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputGroup>
+              <InputGroupInput
+                placeholder="Nombre"
+                id="name"
+                value={form.name}
+                onChange={handleChange}
+                className="focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
+              />
+            </InputGroup>
+
+            <InputGroup>
+              <Select
+                value={form.tipo_Sesion}
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, tipo_Sesion: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600">
+                  <SelectValue placeholder="Tipo de sesión" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  <SelectItem value="Free Practice 1">
+                    Free Practice 1
+                  </SelectItem>
+                  <SelectItem value="Free Practice 2">
+                    Free Practice 2
+                  </SelectItem>
+                  <SelectItem value="Free Practice 3">
+                    Free Practice 3
+                  </SelectItem>
+                  <SelectItem value="Qualifying">Qualifying</SelectItem>
+                  <SelectItem value="Race">Race</SelectItem>
+                  <SelectItem value="Sprint Qualifying">
+                    Sprint Qualifying
+                  </SelectItem>
+                  <SelectItem value="Sprint Race">Sprint Race</SelectItem>
+                </SelectContent>
+              </Select>
+            </InputGroup>
+          </div>
+
+          <InputGroup className="w-full">
+            <Select
+              value={form.carrera}
+              onValueChange={(value) =>
+                setForm((s) => ({ ...s, carrera: value }))
+              }
+              required
+            >
+              <SelectTrigger className="w-full focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600">
+                <SelectValue placeholder="Carrera" />
+              </SelectTrigger>
+              <SelectContent className="border-secondary">
+                {carreras.map((car: Carrera) => {
+                  console.log({});
+                  return (
+                    <SelectItem key={car.id} value={String(car.id)}>
+                      {(car ? car.name : "??") + " "}(
+                      {car.temporada ? car.temporada?.year : "??"}) (
+                      {car.temporada
+                        ? car.temporada.racing_series
+                          ? car.temporada?.racing_series.name
+                          : "??"
+                        : "??"}
+                      )
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </InputGroup>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="fecha_inicio" className="text-white-100">
+                Fecha de inicio
+              </Label>
+              <Popover open={openStart} onOpenChange={setOpenStart}>
+                <PopoverTrigger>
+                  <Button
+                    variant="outline"
+                    id="fecha_inicio"
+                    className="w-full justify-between font-normal focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
+                    type="button"
+                  >
+                    {form.fecha_inicio
+                      ? form.fecha_inicio.toLocaleDateString()
+                      : "Elegir fecha de inicio"}
+                    <ChevronDownIcon className="h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto overflow-hidden p-0 border-none"
+                  align="start"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={form.fecha_inicio ?? undefined}
+                    captionLayout="dropdown"
+                    onSelect={(date) => {
+                      if (date)
+                        setForm((prev) => ({
+                          ...prev,
+                          fecha_inicio: date,
+                        }));
+                      setOpenStart(false);
+                    }}
                   />
-                </div>
-              </div>
+                </PopoverContent>
+              </Popover>
             </div>
-            <div>
-              <div className="flex gap-4">
-                <div className="flex flex-col gap-3">
-                  <Label htmlFor="fecha_fin" className="px-1">
-                    Fecha de finalización
-                  </Label>
-                  <Popover open={openEnd} onOpenChange={setOpenEnd}>
-                    <PopoverTrigger>
-                      <Button
-                        variant="outline"
-                        id="fecha_fin"
-                        className="w-56 justify-between font-normal"
-                        type="button"
-                      >
-                        {form.fecha_fin
-                          ? form.fecha_fin.toLocaleDateString()
-                          : "Elegir fecha de finalización"}
-                        <ChevronDownIcon />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto overflow-hidden p-0 border-none"
-                      align="start"
-                    >
-                      <Calendar
-                        mode="single"
-                        selected={form.fecha_fin ?? undefined}
-                        captionLayout="dropdown"
-                        onSelect={(date) => {
-                          if (date)
-                            setForm((prev) => ({
-                              ...prev,
-                              fecha_fin: date,
-                            }));
-                          setOpenEnd(false);
-                        }}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="flex flex-col gap-3 w-35">
-                  <Label htmlFor="hora_fin" className="px-1">
-                    Hora de fin
-                  </Label>
-                  <Input
-                    type="time"
-                    id="hora_fin"
-                    step="1"
-                    defaultValue="01:30:00"
-                    value={form.hora_fin}
-                    onChange={handleChange}
-                    className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                  />
-                </div>
-              </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="hora_inicio" className="text-white-100">
+                Hora de inicio
+              </Label>
+              <Input
+                type="time"
+                id="hora_inicio"
+                step="1"
+                defaultValue="00:00:00"
+                value={form.hora_inicio}
+                onChange={handleChange}
+                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
+              />
             </div>
           </div>
 
-          <div className="flex w-96 justify-between">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="fecha_fin" className="text-white-100">
+                Fecha de finalización
+              </Label>
+              <Popover open={openEnd} onOpenChange={setOpenEnd}>
+                <PopoverTrigger>
+                  <Button
+                    variant="outline"
+                    id="fecha_fin"
+                    className="w-full justify-between font-normal focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
+                    type="button"
+                  >
+                    {form.fecha_fin
+                      ? form.fecha_fin.toLocaleDateString()
+                      : "Elegir fecha de finalización"}
+                    <ChevronDownIcon className="h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent
+                  className="w-auto overflow-hidden p-0 border-none"
+                  align="start"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={form.fecha_fin ?? undefined}
+                    captionLayout="dropdown"
+                    onSelect={(date) => {
+                      if (date)
+                        setForm((prev) => ({
+                          ...prev,
+                          fecha_fin: date,
+                        }));
+                      setOpenEnd(false);
+                    }}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="hora_fin" className="text-white-100">
+                Hora de fin
+              </Label>
+              <Input
+                type="time"
+                id="hora_fin"
+                step="1"
+                defaultValue="01:30:00"
+                value={form.hora_fin}
+                onChange={handleChange}
+                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
+              />
+            </div>
+          </div>
+
+          <div className="flex w-full justify-between pt-4">
             <Link to="/menuadmin">
               <Button
-                className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
                 type="button"
               >
                 Cancelar
               </Button>
             </Link>
-            <Button type="submit" disabled={submitting}>
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold shadow-lg shadow-yellow-900/50 border-0"
+            >
               {submitting ? "Enviando..." : "Crear nueva sesión"}
             </Button>
           </div>
 
-          {message && <p className="mt-2 text-sm">{message}</p>}
+          {message && (
+            <p className="mt-2 text-sm text-center font-semibold text-yellow-200">
+              {message}
+            </p>
+          )}
         </form>
-
-        <div className="bg-[url('./src/assets/piastri-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1 " />
       </div>
     </div>
   );

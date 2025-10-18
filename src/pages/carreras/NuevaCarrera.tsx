@@ -54,7 +54,6 @@ function NuevaCarrera() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
   const [openStart, setOpenStart] = React.useState(false);
   const [openEnd, setOpenEnd] = React.useState(false);
   const [circuitos, setCircuitos] = useState<Circuito[]>([]);
