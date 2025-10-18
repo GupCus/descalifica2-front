@@ -18,7 +18,7 @@ type FormState = {
   tipoSesion: string;
   fecha_hora_inicio: Date | null;
   fecha_hora_fin: Date | null;
-  carrera_id: string;
+  carrera: string;
 };
 
 //Necesarios para mostrar la carrera, con su año y temporada para mayor claridad.
@@ -26,6 +26,7 @@ type Carrera = {
   id: string;
   name: string;
   temporada: string;
+  circuito: string;
 };
 
 type Temporada = {
@@ -47,7 +48,7 @@ function NuevaSesion() {
     tipoSesion: "",
     fecha_hora_inicio: null,
     fecha_hora_fin: null,
-    carrera_id: "",
+    carrera: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -57,13 +58,13 @@ function NuevaSesion() {
 
   const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
-  //getAll categorias
+  // getAll categorias
   useEffect(() => {
     fetch(`${api}/categorias`)
-      .then((res) => res.json()) //convierte a JSON
+      .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {
-          setCategorias(data.data); //si dentro de data es array, lo carga a Categorias
+          setCategorias(data.data);
         } else {
           setCategorias([]);
           console.error(
@@ -149,7 +150,7 @@ function NuevaSesion() {
         tipoSesion: "",
         fecha_hora_inicio: null,
         fecha_hora_fin: null,
-        carrera_id: "",
+        carrera: "",
       });
     } catch (err: any) {
       console.error(err);
@@ -224,7 +225,7 @@ function NuevaSesion() {
             <div className="flex justify-between">
               <InputGroup className="mb-5 w-45">
                 <Select
-                  value={form.carrera_id}
+                  value={form.carrera}
                   onValueChange={(value) =>
                     setForm((s) => ({ ...s, carrera: value }))
                   }
@@ -233,24 +234,38 @@ function NuevaSesion() {
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Carrera" />
                   </SelectTrigger>
-                  <SelectContent className="border-secondary">
-                    {carreras.map((car) => {
-                      const temporada = temporadas.find(
-                        (tem) => String(tem.id) === String(car.temporada)
-                      );
-                      const categoria = categorias.find(
-                        (cat) =>
-                          String(cat.id) === String(temporada?.racing_series)
-                      );
-                      return (
-                        <SelectItem key={car.id} value={String(car.id)}>
-                          {car.name}
-                          {temporada && ` (${temporada.year})`}
-                          {categoria && ` (${categoria.name})`}
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
+                  {carreras.length > 0 &&
+                    temporadas.length > 0 &&
+                    categorias.length > 0 && (
+                      <SelectContent className="border-secondary">
+                        {carreras.map((car) => {
+                          const temporada = temporadas.find(
+                            (tem) => String(tem.id) === String(car.temporada)
+                          );
+                          const categoria = categorias.find(
+                            (cat) =>
+                              String(temporada?.racing_series) ===
+                              String(cat.id)
+                          );
+                          console.log({
+                            car,
+                            temporada,
+                            categoria,
+                            carTemporada: car.temporada,
+                            temporadaId: temporada?.id,
+                            racingSeries: temporada?.racing_series,
+                            categoriaId: categoria?.id,
+                          });
+                          return (
+                            <SelectItem key={car.id} value={String(car.id)}>
+                              {`${car.name} (${temporada?.year || "?"}) (${
+                                categoria?.name || "?"
+                              })`}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    )}
                 </Select>
               </InputGroup>
             </div>
