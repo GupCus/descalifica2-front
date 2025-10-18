@@ -17,9 +17,10 @@ import NuevaEscuderia from "./pages/escuderias/NuevaEscuderia.tsx";
 import NuevoCircuito from "./pages/circuitos/NuevoCircuito.tsx";
 import GetEscuderia from "./pages/escuderias/GetEscuderia.tsx";
 import NuevaMarca from "./pages/marcas/NuevaMarca.tsx";
-import NuevaCarrera from "./pages/Carrera/NuevaCarrera.tsx";
+import NuevaCarrera from "./pages/carrera/NuevaCarrera.tsx";
 import NuevaTemporada from "./pages/temporada/NuevaTemporada.tsx";
 import NuevaCategoria from "./pages/categorias/NuevaCategoria.tsx";
+import NuevaSesion from "./pages/sesion/NuevaSesion.tsx";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="menuadmin/nuevacarrera" element={<NuevaCarrera />} />
         <Route path="menuadmin/nuevatemporada" element={<NuevaTemporada />} />
         <Route path="menuadmin/nuevacategoria" element={<NuevaCategoria />} />
+        <Route path="menuadmin/nuevasesion" element={<NuevaSesion />} />
       </Route>
     </Routes>
   );

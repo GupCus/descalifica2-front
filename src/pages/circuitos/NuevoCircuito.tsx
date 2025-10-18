@@ -107,7 +107,7 @@ function NuevoCircuito() {
             <InputGroup className="mb-5 w-45">
               <InputGroupInput
                 placeholder="Longitud (km)"
-                id="Longitud"
+                id="length"
                 value={form.length}
                 onChange={handleChange}
               />
@@ -143,7 +143,7 @@ function NuevoCircuito() {
             </Button>
           </Link>
           <Button type="submit" disabled={submitting}>
-            {submitting ? "Enviando..." : "Crear nuevo piloto"}
+            {submitting ? "Enviando..." : "Crear nuevo circuito"}
           </Button>
         </div>
 
