@@ -7,10 +7,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectGroup,
-  SelectLabel,
 } from "@/components/ui/select";
-import { Link } from "react-router-dom";
+import fondoHamVers from "../../assets/HamVers-1.jpg";
 
 //DEFINICIONES DE CLASES
 type FormState = {
@@ -19,18 +17,6 @@ type FormState = {
   winner_driver: string;
   winner_team: string;
 };
-
-//Escuderia y Piloto declarados por posible implementación futura.
-type Escuderia = {
-  id: string;
-  name: string;
-};
-
-type Piloto = {
-  id: string;
-  name: string;
-};
-//--------------------------------------------------------------
 
 type Categoria = {
   id: string;
@@ -53,10 +39,10 @@ function NuevaTemporada() {
   //obtiene categorías para el select
   useEffect(() => {
     fetch(`${api}/categorias`)
-      .then((res) => res.json()) //convierte a JSON
+      .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {
-          setCategorias(data.data); //si dentro de data es array, lo carga a Categorias
+          setCategorias(data.data);
         } else {
           setCategorias([]);
           console.error(
@@ -74,7 +60,7 @@ function NuevaTemporada() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    > //agregado HTMLSelectElement para resolver error en los select
+    >
   ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
@@ -97,7 +83,7 @@ function NuevaTemporada() {
         throw new Error(errText || `HTTP ${res.status}`);
       }
 
-      setMessage("Temporada creado con éxito.");
+      setMessage("Temporada creada con éxito.");
       setForm({
         year: "",
         racing_series: "",
@@ -117,91 +103,107 @@ function NuevaTemporada() {
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
-          backgroundImage: "url('./src/assets/F1-drivers-25.jpg')",
+          backgroundImage: `url(${fondoHamVers})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          filter: "blur(6px) brightness(0.7)",
+          filter: "blur(6px) brightness(0.5)",
         }}
       />
-      <div className="relative z-10 flex min-h-screen">
-        <div className="bg-[url('./src/assets/franco-1.jpg')] bg-cover bg-center max-w-[25%] w-full flex-1" />
 
+      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 flex-2 mx-8 mt-20 flex flex-col items-center"
+          className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/80 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-purple-700/40"
         >
-          <div className="">
-            <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
-              Alta temporada
-            </h1>
-            <div className="flex mt-5">
-              <InputGroup className=" mb-5 w-45 mr-5">
-                <InputGroupInput
-                  placeholder="Año"
-                  id="year"
-                  value={form.year}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-              <InputGroup className="mb-5 w-45">
-                <Select
-                  value={form.racing_series}
-                  onValueChange={(value) =>
-                    setForm((s) => ({ ...s, racing_series: value }))
-                  }
-                  required
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Categoría" />
-                  </SelectTrigger>
-                  <SelectContent className="border-secondary">
-                    {categorias.map((c) => (
-                      <SelectItem key={c.id} value={String(c.id)}>
-                        {c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </InputGroup>
-            </div>
-            <div className="flex justify-between">
-              <InputGroup className="mb-5 w-45">
-                <InputGroupInput
-                  placeholder="Piloto ganador"
-                  id="winner_driver"
-                  value={form.winner_driver}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-              <InputGroup className="mb-5 w-45">
-                <InputGroupInput
-                  placeholder="Escudería ganadora"
-                  id="winner_team"
-                  value={form.winner_team}
-                  onChange={handleChange}
-                />
-              </InputGroup>
-            </div>
+          <h1
+            className="text-purple-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase"
+            style={{ fontFamily: "'Oswald', sans-serif" }}
+          >
+            Alta Temporada
+          </h1>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputGroup>
+              <InputGroupInput
+                placeholder="Año"
+                id="year"
+                type="number"
+                value={form.year}
+                onChange={handleChange}
+                required
+                min="1950"
+                max={new Date().getFullYear() + 1}
+                className="focus-visible:ring-purple-500 focus-visible:border-purple-500 hover:border-purple-600"
+              />
+            </InputGroup>
+
+            <InputGroup>
+              <Select
+                value={form.racing_series}
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, racing_series: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full focus-visible:ring-purple-500 focus-visible:border-purple-500 hover:border-purple-600">
+                  <SelectValue placeholder="Categoría" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  {categorias.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </InputGroup>
           </div>
 
-          <div className="flex w-96 justify-between">
-            <Link to="/menuadmin">
-              <Button
-                className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                type="button"
-              >
-                Cancelar
-              </Button>
-            </Link>
-            <Button type="submit" disabled={submitting}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputGroup>
+              <InputGroupInput
+                placeholder="Piloto ganador"
+                id="winner_driver"
+                value={form.winner_driver}
+                onChange={handleChange}
+                className="focus-visible:ring-purple-500 focus-visible:border-purple-500 hover:border-purple-600"
+              />
+            </InputGroup>
+
+            <InputGroup>
+              <InputGroupInput
+                placeholder="Escudería ganadora"
+                id="winner_team"
+                value={form.winner_team}
+                onChange={handleChange}
+                className="focus-visible:ring-purple-500 focus-visible:border-purple-500 hover:border-purple-600"
+              />
+            </InputGroup>
+          </div>
+
+          <div className="flex w-full justify-between pt-4">
+            <Button
+              type="button"
+              className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
+              onClick={() => window.history.back()}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-lg shadow-purple-900/50 border-0"
+            >
               {submitting ? "Enviando..." : "Crear nueva temporada"}
             </Button>
           </div>
 
-          {message && <p className="mt-2 text-sm">{message}</p>}
+          {message && (
+            <p className="mt-2 text-sm text-center font-semibold text-purple-200">
+              {message}
+            </p>
+          )}
         </form>
-
-        <div className="bg-[url('./src/assets/piastri-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1 " />
       </div>
     </div>
   );

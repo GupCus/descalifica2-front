@@ -59,7 +59,6 @@ function NuevaMarca() {
   };
   return (
     <div className="relative min-h-screen">
-      {/* Fondo Porsche blurreado */}
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
@@ -70,7 +69,6 @@ function NuevaMarca() {
         }}
       />
 
-      {/* Contenido del formulario */}
       <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <form
           onSubmit={handleSubmit}

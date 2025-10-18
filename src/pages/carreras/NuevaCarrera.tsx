@@ -170,7 +170,6 @@ function NuevaCarrera() {
 
   return (
     <div className="relative min-h-screen">
-      {/* Fondo blurreado */}
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
@@ -181,7 +180,6 @@ function NuevaCarrera() {
         }}
       />
 
-      {/* Contenido del formulario */}
       <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <form
           onSubmit={handleSubmit}
@@ -206,7 +204,6 @@ function NuevaCarrera() {
           </InputGroup>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* BOTÓN FECHA INICIO - NO TOCADO */}
             <Popover open={openStart} onOpenChange={setOpenStart}>
               <PopoverTrigger>
                 <Button
@@ -238,7 +235,6 @@ function NuevaCarrera() {
               </PopoverContent>
             </Popover>
 
-            {/* BOTÓN FECHA FIN - NO TOCADO */}
             <Popover open={openEnd} onOpenChange={setOpenEnd}>
               <PopoverTrigger>
                 <Button

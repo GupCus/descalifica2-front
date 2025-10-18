@@ -16,7 +16,7 @@ import NuevaEscuderia from "./pages/escuderias/NuevaEscuderia.tsx";
 import NuevoCircuito from "./pages/circuitos/NuevoCircuito.tsx";
 import GetEscuderia from "./pages/escuderias/GetEscuderia.tsx";
 import NuevaMarca from "./pages/marcas/NuevaMarca.tsx";
-import NuevaCarrera from "./pages/carrera/NuevaCarrera.tsx";
+import NuevaCarrera from "./pages/carreras/NuevaCarrera.tsx";
 import NuevaTemporada from "./pages/temporada/NuevaTemporada.tsx";
 import NuevaCategoria from "./pages/categorias/NuevaCategoria.tsx";
 import ListadoPilotos from "./pages/pilotos/ListadoPilotos.tsx";
