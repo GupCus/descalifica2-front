@@ -11,6 +11,10 @@ import {
   SelectLabel,
 } from "@/components/ui/select";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { Carrera } from "@/entities/carrera.entity.ts";
+import { Temporada } from "@/entities/temporada.entity.ts";
+import { Categoria } from "@/entities/categoria.entity.ts";
 
 //DEFINICIONES DE CLASES - FALTA INTEGRAR LOS RESULTADOS!!!!! (capaz es mejor ponerlos en otro lado?)
 type FormState = {
@@ -22,24 +26,21 @@ type FormState = {
 };
 
 //Necesarios para mostrar la carrera, con su año y temporada para mayor claridad.
-type Carrera = {
-  id: string;
-  name: string;
-  temporada: string;
-  circuito: string;
-};
 
-type Temporada = {
-  id: string;
-  year: string;
-  racing_series: string;
-};
 
-type Categoria = {
-  id: string;
-  name: string;
-};
-
+const client = axios.create({
+  baseURL: "http://localhost:3000/api/carreras" 
+});
+async function getCarreras(): Promise<Carrera[]> {
+  try {
+    const response = await client.get('/');
+    console.log(response);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error al obtener carreras:', error);
+    throw error;
+  }
+}
 //--------------------------------------------------------------
 
 function NuevaSesion() {
@@ -102,21 +103,17 @@ function NuevaSesion() {
 
   //getAll carreras
   useEffect(() => {
-    fetch(`${api}/carreras`)
-      .then((res) => res.json()) //convierte a JSON
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          setCarreras(data.data); //si dentro de data es array, lo carga a Carreras
-        } else {
-          setCarreras([]);
-          console.error("La respuesta no contiene un array de carreras.", data);
-        }
-      })
-      .catch((err) => {
-        setCarreras([]);
-        console.error("Error cargando carreras", err);
-      });
-  }, [api]);
+    const fetchCarreras = async () => {
+      try {
+        const data = await getCarreras();
+        console.log(data);
+        setCarreras(data);
+      } catch (err) {
+        console.error(err)
+      }
+    };
+    fetchCarreras();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -238,29 +235,14 @@ function NuevaSesion() {
                     temporadas.length > 0 &&
                     categorias.length > 0 && (
                       <SelectContent className="border-secondary">
-                        {carreras.map((car) => {
-                          const temporada = temporadas.find(
-                            (tem) => String(tem.id) === String(car.temporada)
-                          );
-                          const categoria = categorias.find(
-                            (cat) =>
-                              String(temporada?.racing_series) ===
-                              String(cat.id)
-                          );
-                          console.log({
-                            car,
-                            temporada,
-                            categoria,
-                            carTemporada: car.temporada,
-                            temporadaId: temporada?.id,
-                            racingSeries: temporada?.racing_series,
-                            categoriaId: categoria?.id,
-                          });
+                        {carreras.map((car:Carrera) => {
+                          
+                          console.log({})
                           return (
                             <SelectItem key={car.id} value={String(car.id)}>
-                              {`${car.name} (${temporada?.year || "?"}) (${
-                                categoria?.name || "?"
-                              })`}
+                              {(car ? car.name : "??") + " "} 
+                              ({car.temporada ? car.temporada?.year : "??"})
+                              ({car.temporada ? (car.temporada.racing_series ? car.temporada?.racing_series.name : "??") : "??"})
                             </SelectItem>
                           );
                         })}
