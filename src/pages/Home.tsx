@@ -47,7 +47,7 @@ function Home() {
   :
   carreras
   .filter((c) => new Date(c.end_date) < new Date()) 
-  .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
+  .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime() );
 
 
   return (
@@ -90,14 +90,14 @@ function Home() {
           Últimos grandes premios:{" "}
         </h4>
         <Accordion
-          className="max-w-3xl w-full mx-auto px-4 bg-secondary rounded-lg"
+          className="max-w-5xl w-full mx-auto px-4 bg-secondary rounded-lg"
           type="single"
           collapsible
         >
           { carrerasAnteriores ?
             carrerasAnteriores.map((gp) => (
             <AccordionItem key={gp.id} value={gp.id ? gp.id.toString() : ""}>
-              <AccordionTrigger className="mx-auto">
+              <AccordionTrigger className="mx-auto text-2xl font-semibold">
                 {gp.name}
               </AccordionTrigger>
 
