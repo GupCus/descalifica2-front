@@ -2,26 +2,22 @@ import { useState, useEffect } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectGroup,
-  SelectLabel,
 } from "@/components/ui/select";
 import * as React from "react";
-import { Calendar as CalendarIcon, ChevronDownIcon } from "lucide-react";
+import { Calendar as ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
-import { Label } from "@/components/ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import fondoCarrera from "../../assets/Monaco-Fondo.webp";
 
 //DEFINICIONES DE CLASES
 type FormState = {
@@ -70,10 +66,10 @@ function NuevaCarrera() {
   //getAll circuitos
   useEffect(() => {
     fetch(`${api}/circuitos`)
-      .then((res) => res.json()) //convierte a JSON
+      .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {
-          setCircuitos(data.data); //si dentro de data es array, lo carga a escuderias
+          setCircuitos(data.data);
         } else {
           setCircuitos([]);
           console.error(
@@ -91,10 +87,10 @@ function NuevaCarrera() {
   //getAll temporadas
   useEffect(() => {
     fetch(`${api}/temporadas`)
-      .then((res) => res.json()) //convierte a JSON
+      .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data.data)) {
-          setTemporadas(data.data); //si dentro de data es array, lo carga a escuderias
+          setTemporadas(data.data);
         } else {
           setTemporadas([]);
           console.error(
@@ -133,7 +129,7 @@ function NuevaCarrera() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    > //agregado HTMLSelectElement para resolver error en los select
+    >
   ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
@@ -173,39 +169,56 @@ function NuevaCarrera() {
   };
 
   return (
-    <div className="flex relative min-h-screen">
-      <div className="bg-[url('./src/assets/franco-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1" />
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 flex-2 mx-8 mt-20 flex flex-col items-center"
-      >
-        <div className="">
-          <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
-            Nueva carrera
+    <div className="relative min-h-screen">
+      {/* Fondo blurreado */}
+      <div
+        className="absolute inset-0 w-full h-full z-0"
+        style={{
+          backgroundImage: `url(${fondoCarrera})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(6px) brightness(0.5)",
+        }}
+      />
+
+      {/* Contenido del formulario */}
+      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/80 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-gray-700/40"
+        >
+          <h1
+            className="text-gray-200 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase"
+            style={{ fontFamily: "'Oswald', sans-serif" }}
+          >
+            Nueva Carrera
           </h1>
-          <div className="flex mt-10">
-            <InputGroup className="mb-5 w-96">
-              <InputGroupInput
-                placeholder="Nombre"
-                id="name"
-                value={form.name}
-                onChange={handleChange}
-              />
-            </InputGroup>
-          </div>
-          <div className="flex justify-between">
+
+          <InputGroup className="mt-5 mb-5 w-full">
+            <InputGroupInput
+              placeholder="Nombre de la carrera"
+              id="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              className="focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600"
+            />
+          </InputGroup>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* BOTÓN FECHA INICIO - NO TOCADO */}
             <Popover open={openStart} onOpenChange={setOpenStart}>
               <PopoverTrigger>
                 <Button
                   variant="outline"
                   id="date"
-                  className="w-45 justify-between font-normal"
+                  className="w-full justify-between font-normal focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600"
                   type="button"
                 >
                   {form.start_date
                     ? form.start_date.toLocaleDateString()
                     : "Fecha de inicio"}
-                  <ChevronDownIcon />
+                  <ChevronDownIcon className="h-4 w-4 opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent
@@ -224,18 +237,20 @@ function NuevaCarrera() {
                 />
               </PopoverContent>
             </Popover>
+
+            {/* BOTÓN FECHA FIN - NO TOCADO */}
             <Popover open={openEnd} onOpenChange={setOpenEnd}>
               <PopoverTrigger>
                 <Button
                   variant="outline"
                   id="date"
-                  className="w-45 justify-between font-normal"
+                  className="w-full justify-between font-normal focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600"
                   type="button"
                 >
                   {form.end_date
                     ? form.end_date.toLocaleDateString()
                     : "Fecha de fin"}
-                  <ChevronDownIcon />
+                  <ChevronDownIcon className="h-4 w-4 opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent
@@ -254,8 +269,9 @@ function NuevaCarrera() {
               </PopoverContent>
             </Popover>
           </div>
-          <div className="flex mt-5">
-            <InputGroup className="mb-5 w-45 mr-6">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputGroup>
               <Select
                 value={form.circuito}
                 onValueChange={(value) =>
@@ -263,7 +279,7 @@ function NuevaCarrera() {
                 }
                 required
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600">
                   <SelectValue placeholder="Circuito" />
                 </SelectTrigger>
                 <SelectContent className="border-secondary">
@@ -275,7 +291,8 @@ function NuevaCarrera() {
                 </SelectContent>
               </Select>
             </InputGroup>
-            <InputGroup className="mb-5 w-45">
+
+            <InputGroup>
               <Select
                 value={form.temporada}
                 onValueChange={(value) =>
@@ -283,7 +300,7 @@ function NuevaCarrera() {
                 }
                 required
               >
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600">
                   <SelectValue placeholder="Temporada" />
                 </SelectTrigger>
                 <SelectContent className="border-secondary">
@@ -302,25 +319,32 @@ function NuevaCarrera() {
               </Select>
             </InputGroup>
           </div>
-        </div>
 
-        <div className="flex w-96 justify-between">
-          <Link to="/menuadmin">
+          <div className="flex w-full justify-between pt-4">
+            <Link to="/menuadmin">
+              <Button
+                className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
+                type="button"
+              >
+                Cancelar
+              </Button>
+            </Link>
             <Button
-              className="bg-secondary text-secondary-foreground hover:bg-secondary/80"
-              type="button"
+              type="submit"
+              disabled={submitting}
+              className="bg-slate-600 hover:bg-slate-700 text-white font-semibold shadow-lg shadow-slate-900/50 border-0"
             >
-              Cancelar
+              {submitting ? "Enviando..." : "Crear nueva carrera"}
             </Button>
-          </Link>
-          <Button type="submit" disabled={submitting}>
-            {submitting ? "Enviando..." : "Crear nueva carrera"}
-          </Button>
-        </div>
+          </div>
 
-        {message && <p className="mt-2 text-sm">{message}</p>}
-      </form>
-      <div className="bg-[url('./src/assets/piastri-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1 " />
+          {message && (
+            <p className="mt-2 text-sm text-center font-semibold text-gray-300">
+              {message}
+            </p>
+          )}
+        </form>
+      </div>
     </div>
   );
 }

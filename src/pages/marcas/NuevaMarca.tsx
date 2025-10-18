@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
-import { Link } from "react-router-dom";
+import fondoPorsche from "../../assets/Porsche.jpeg";
 
 type FormState = {
   name: string;
@@ -58,18 +58,35 @@ function NuevaMarca() {
     }
   };
   return (
-    <div className="flex relative min-h-screen">
-      <div className="bg-[url('./src/assets/franco-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1" />
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 flex-2 mx-8 mt-20 flex flex-col items-center"
-      >
-        <div className="">
-          <h1 className="text-primary-foreground mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
+    <div className="relative min-h-screen">
+      {/* Fondo Porsche blurreado */}
+      <div
+        className="absolute inset-0 w-full h-full z-0"
+        style={{
+          backgroundImage: `url(${fondoPorsche})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(6px) brightness(0.5)",
+        }}
+      />
+
+      {/* Contenido del formulario */}
+      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/65 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-gray-700/40"
+        >
+          <h1
+            className="text-gray-200 mt-5 scroll-m-20 text-4xl font-bold tracking-wider text-center uppercase"
+            style={{
+              fontFamily: "'Orbitron', 'Rajdhani',sans-serif",
+              letterSpacing: "0.1em",
+            }}
+          >
             Alta marca
           </h1>
 
-          <InputGroup className="mt-5 mb-5 w-96">
+          <InputGroup className="mt-5 mb-5 w-full">
             <InputGroupInput
               placeholder="Nombre de la marca"
               id="name"
@@ -79,7 +96,7 @@ function NuevaMarca() {
             />
           </InputGroup>
 
-          <InputGroup className="mb-5 w-96">
+          <InputGroup className="mb-5 w-full">
             <InputGroupInput
               placeholder="Nacionalidad"
               id="nationality"
@@ -89,7 +106,7 @@ function NuevaMarca() {
             />
           </InputGroup>
 
-          <InputGroup className="mb-5 w-96">
+          <InputGroup className="mb-5 w-full">
             <InputGroupInput
               type="number"
               placeholder="Año de fundación"
@@ -101,22 +118,31 @@ function NuevaMarca() {
               max={new Date().getFullYear()}
             />
           </InputGroup>
-        </div>
 
-        <div className="flex w-96 justify-between">
-          <Link to="/menuadmin">
-            <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/80">
+          <div className="flex w-full justify-between pt-4">
+            <Button
+              type="button"
+              className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
+              onClick={() => window.history.back()}
+            >
               Cancelar
             </Button>
-          </Link>
-          <Button type="submit" disabled={submitting}>
-            {submitting ? "Enviando..." : "Crear nueva marca"}
-          </Button>
-        </div>
+            <Button
+              type="submit"
+              disabled={submitting}
+              className="bg-red-800 hover:bg-red-900 text-white font-semibold shadow-lg shadow-red-900/50 border-0"
+            >
+              {submitting ? "Enviando..." : "Crear nueva marca"}
+            </Button>
+          </div>
 
-        {message && <p className="mt-2 text-sm">{message}</p>}
-      </form>
-      <div className="bg-[url('./src/assets/piastri-1.webp')] bg-cover bg-center max-w-[25%] w-full flex-1 " />
+          {message && (
+            <p className="mt-2 text-sm text-center font-semibold text-gray-300">
+              {message}
+            </p>
+          )}
+        </form>
+      </div>
     </div>
   );
 }

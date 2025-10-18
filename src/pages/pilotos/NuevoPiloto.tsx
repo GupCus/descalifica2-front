@@ -12,7 +12,6 @@ import {
   SelectLabel,
 } from "@/components/ui/select";
 import fondoFranco from "../../assets/franco-2.jpg";
-import { Link } from "react-router-dom";
 
 //DEFINICIONES DE CLASES
 type FormState = {
@@ -152,8 +151,14 @@ function NuevoPiloto() {
           onSubmit={handleSubmit}
           className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/80 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-gray-700/40"
         >
-          <h1 className="text-gray-200 mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
-            Alta pilotos
+          <h1
+            className="text-gray-200 mt-5 scroll-m-20 text-4xl font-bold tracking-wider text-center uppercase"
+            style={{
+              fontFamily: "'Orbitron', 'Rajdhani',sans-serif",
+              letterSpacing: "0.1em",
+            }}
+          >
+            Alta marca
           </h1>
 
           <InputGroup className="mt-5 mb-5 w-full">

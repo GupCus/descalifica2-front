@@ -27,7 +27,7 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
     return (
       <>
         <header className="w-full">
-          <ButtonGroup className="flex flex-wrap">
+          <ButtonGroup className="flex ">
             {sesiones.map((s) => (
               <Button
                 key={s.id}
