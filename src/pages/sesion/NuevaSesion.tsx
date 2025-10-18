@@ -7,8 +7,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectGroup,
-  SelectLabel,
 } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -60,17 +58,16 @@ function NuevaSesion() {
     fecha_inicio: null,
     hora_inicio: "00:00:00",
     fecha_fin: null,
-    hora_fin: "00:00:00",
+    hora_fin: "",
     carrera: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [categorias, setCategorias] = useState<Categoria[]>([]);
-  const [temporadas, setTemporadas] = useState<Temporada[]>([]);
+  const [, setCategorias] = useState<Categoria[]>([]);
+  const [, setTemporadas] = useState<Temporada[]>([]);
   const [carreras, setCarreras] = useState<Carrera[]>([]);
   const [openStart, setOpenStart] = useState(false);
   const [openEnd, setOpenEnd] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(undefined);
 
   const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
