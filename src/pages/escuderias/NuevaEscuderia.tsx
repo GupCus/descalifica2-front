@@ -142,7 +142,13 @@ function NuevaEscuderia() {
           onSubmit={handleSubmit}
           className="space-y-4 w-full max-w-2xl mx-8 bg-red-950/90 backdrop-blur-sm rounded-lg p-8 shadow-2xl border border-red-800/50"
         >
-          <h1 className="text-white-100 mt-5 scroll-m-20 text-4xl font-semibold tracking-tight text-center">
+          <h1
+            className="text-gray-200 mt-5 scroll-m-20 text-4xl font-bold tracking-wider text-center uppercase"
+            style={{
+              fontFamily: "'Orbitron', 'Rajdhani',sans-serif",
+              letterSpacing: "0.1em",
+            }}
+          >
             Alta escudería
           </h1>
 
