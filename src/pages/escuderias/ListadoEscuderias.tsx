@@ -152,6 +152,14 @@ const f1Escuderias = escuderias.filter(e => getCategoryName(e.categoria) === 'f1
   if (error) {
     return (
       <div className="relative min-h-screen">
+        <div
+        className="absolute inset-0 w-full h-full blur-sm opacity-35"
+        style={{
+          backgroundImage: `url(${new URL('../../assets/vers-lec.jpg', import.meta.url).href})`,
+          backgroundSize: "auto 100%",
+          backgroundPosition: "center",
+        }}
+        />
         <ChromaGrid />
         <div className="relative z-10 container mx-auto px-4 py-8">
           <Card className="bg-red-900/50 border-red-700">

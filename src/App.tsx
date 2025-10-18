@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import ListadoEscuderias from "./pages/escuderias/ListadoEscuderias.tsx";
-import Marcas from "./pages/marcas/Marcas.tsx";
+import ListadoMarcas from "./pages/marcas/ListadoMarcas.tsx";
 import Circuitos from "./pages/circuitos/Circuitos.tsx";
 import Categorias from "./pages/categorias/Categorias.tsx";
 import Temporadas from "./pages/temporada/Temporadas.tsx";
@@ -32,7 +32,7 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="pilotos" element={<ListadoPilotos />} />
         <Route path="escuderias" element={<ListadoEscuderias />} />
-        <Route path="marcas" element={<Marcas />} />
+        <Route path="marcas" element={<ListadoMarcas />} />
         <Route path="circuitos" element={<Circuitos />} />
         <Route path="categorias" element={<Categorias />} />
         <Route path="temporadas" element={<Temporadas />} />
