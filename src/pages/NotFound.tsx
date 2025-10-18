@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
+import FotoVerstappen from "../assets/verstappen-patada-baku.jpg";
 function NotFound() {
   return (
     <div className="relative min-h-screen">
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
-          backgroundImage: "url('./src/assets/verstappen-patada-baku.jpg')",
+          backgroundImage: `url(${FotoVerstappen})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           filter: "blur(6px)",

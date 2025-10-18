@@ -113,10 +113,10 @@ function NuevaTemporada() {
       <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/80 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-purple-700/40"
+          className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/65 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-purple-700/40"
         >
           <h1
-            className="text-purple-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase"
+            className="text-white-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase"
             style={{ fontFamily: "'Oswald', sans-serif" }}
           >
             Alta Temporada

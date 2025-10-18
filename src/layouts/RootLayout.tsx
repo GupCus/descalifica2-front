@@ -8,6 +8,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import logoDescalifica2 from "../assets/descalifica2logo.png";
 
 function RootLayout() {
   return (
@@ -23,7 +24,7 @@ function RootLayout() {
               <NavigationMenuItem>
                 <Link to="/">
                   <img
-                    src="./src/assets/descalifica2logo.png"
+                    src={logoDescalifica2}
                     alt="Descalifica2"
                     className="mt-2 mb-2 ml-6 h-auto w-32 object-cover [overflow-clip-margin:unset] hover:scale-102 transition-transform"
                   />
