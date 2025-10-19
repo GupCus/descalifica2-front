@@ -5,10 +5,9 @@ import { Temporada } from './temporada.entity.js';
 
 export class Carrera extends baseEntity {
     
-    start_date!: Date;
-    end_date!: Date;
-    circuito?: Circuito;
-    temporada?: Temporada;
-    //Cambios del front a adaptar al back Circuito -> circuito y agrege el arreglo de sesiones
-    sesiones!:Sesion[]
+    start_date?: Date;
+    end_date?: Date;
+    circuito?: Circuito | number | string;
+    temporada?: Temporada | number | string;
+    sesiones?:Sesion[] | number[] | string[];
 }
