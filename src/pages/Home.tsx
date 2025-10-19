@@ -7,38 +7,17 @@ import {
 } from "@/components/ui/accordion";
 import TextType from "@/components/ui/TextType.tsx";
 import { Carrera } from "@/entities/carrera.entity.ts";
-
-//api
-import axios from "axios";
+import { getCarrera } from "@/services/carrera.service.ts";
 import { useEffect, useState } from "react";
-const client = axios.create({
-  baseURL: "http://localhost:3000/api/carreras" 
-});
-async function getCarreras(): Promise<Carrera[]> {
-  try {
-    const response = await client.get('/');
-    console.log(response);
-    return response.data.data;
-  } catch (error) {
-    console.error('Error al obtener carreras:', error);
-    throw error;
-  }
-}
+
 function Home() {
 
   const [carreras, setCarreras] = useState<Carrera[]>([]);
   
   useEffect(() => {
-    const fetchCarreras = async () => {
-      try {
-        const data = await getCarreras();
-        console.log(data);
-        setCarreras(data);
-      } catch (err) {
-        console.error(err)
-      }
-    };
-    fetchCarreras();
+    getCarrera()
+      .then(data => setCarreras(data))
+      .catch(err => console.error(err));
   }, []);
   
   const carrerasAnteriores = 

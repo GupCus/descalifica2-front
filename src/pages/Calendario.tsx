@@ -4,38 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Carrera } from "@/entities/carrera.entity.ts";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
+import { getCarrera } from "@/services/carrera.service.ts";
 
-//api
-import axios from "axios";
-const client = axios.create({
-  baseURL: "http://localhost:3000/api/carreras" 
-});
-async function getCarreras(): Promise<Carrera[]> {
-  try {
-    const response = await client.get('/');
-    console.log(response);
-    return response.data.data;
-  } catch (error) {
-    console.error('Error al obtener carreras:', error);
-    throw error;
-  }
-}
 
 //Componente
 function Calendario() {
   const [carreras, setCarreras] = useState<Carrera[]>([]);
 
   useEffect(() => {
-    const fetchCarreras = async () => {
-      try {
-        const data = await getCarreras();
-        console.log(data);
-        setCarreras(data);
-      } catch (err) {
-        console.error(err)
-      }
-    };
-    fetchCarreras();
+    getCarrera()
+      .then(data => setCarreras(data))
+      .catch(err => console.error(err));
   }, []);
 
   //Si todavía no llegaron las carreras, retorna mensaje vacío

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Check, X } from "lucide-react";
 
-interface Carrera {
+interface CarreraCanal {
   id: number;
   nombre: string;
   fecha: string;
@@ -12,10 +12,10 @@ interface Carrera {
 }
 
 function DondeVer() {
-  const [carreras, setCarreras] = useState<Carrera[]>([]);
+  const [carreras, setCarreraCanals] = useState<CarreraCanal[]>([]);
 
   useEffect(() => {
-    const calendario: Carrera[] = [
+    const calendario: CarreraCanal[] = [
       {
         id: 1,
         nombre: "GP AUSTRALIA",
@@ -234,7 +234,7 @@ function DondeVer() {
       },
     ];
 
-    setCarreras(calendario);
+    setCarreraCanals(calendario);
   }, []);
 
   return (
