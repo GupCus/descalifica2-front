@@ -2,14 +2,8 @@ import { useEffect, useState } from "react";
 import { ChromaGrid } from "@/components/ui/Chroma-grid";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-
-type Marca = {
-  id: string;
-  name: string;
-  nationality?: string;
-};
-
-const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+import { Marca } from "@/entities/marca.entity.ts";
+import { getMarca } from "@/services/marca.service.ts";
 
 const getMarcaLogo = (name?: string) => {
   if (!name) return "";
@@ -66,21 +60,13 @@ function ListadoMarcas() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${api}/marcas`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al cargar marcas");
-        return res.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data.data)) setMarcas(data.data);
-        else if (Array.isArray(data)) setMarcas(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error fetching marcas:", err);
-        setError(err.message);
-        setLoading(false);
-      });
+    getMarca()
+      .then(data => setMarcas(data))
+      .catch(err => {
+              setMarcas([]);
+              setError("Error cargando marcas " + err);
+            })
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) {

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
 import fondoPorsche from "../../assets/Porsche.jpeg";
+import { NuevaMarca } from "@/entities/marca.entity.ts";
+import { postMarca } from "@/services/marca.service.ts";
 
 type FormState = {
   name: string;
@@ -18,11 +20,7 @@ function NuevaMarca() {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -32,30 +30,20 @@ function NuevaMarca() {
     setSubmitting(true);
     setMessage(null);
 
-    try {
-      const res = await fetch(`${api}/marcas`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || `HTTP ${res.status}`);
+  const nuevamarca:NuevaMarca = {
+        name: form.name,
+        nationality: form.nationality,
+        foundation: form.foundation,
       }
-
-      setMessage("Marca creada con éxito.");
-      setForm({
+  postMarca(nuevamarca)
+  .then(() => setMessage("Marca creada con éxito."))
+  .then(() => setForm({
         name: "",
         nationality: "",
         foundation: "",
-      });
-    } catch (err: any) {
-      console.error(err);
-      setMessage(`Error: ${err.message || "No se pudo crear la marca"}`);
-    } finally {
-      setSubmitting(false);
-    }
+      }))
+  .catch(err => setMessage(`Error: ${err.message || "No se pudo crear la marca"}`))
+  .finally(() => setSubmitting(false))
   };
   return (
     <div className="relative min-h-screen">
