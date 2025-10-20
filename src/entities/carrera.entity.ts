@@ -5,9 +5,18 @@ import { Temporada } from './temporada.entity.js';
 
 export class Carrera extends baseEntity {
     
-    start_date?: Date;
-    end_date?: Date;
-    circuito?: Circuito | number | string;
-    temporada?: Temporada | number | string;
-    sesiones?:Sesion[] | number[] | string[];
+    start_date!: Date;
+    end_date!: Date;
+    circuito?: Circuito ;
+    temporada?: Temporada;
+    sesiones?:Sesion[] ;
+}
+
+export class NewCarrera extends baseEntity {
+    
+    start_date!: Date;
+    end_date!: Date;
+    circuito?: number | string;
+    temporada?: number | string;
+
 }

@@ -25,7 +25,7 @@ import { Categoria } from "@/entities/categoria.entity.ts";
 import { getTemporada } from "@/services/temporada.service.ts";
 import { getCircuito } from "@/services/circuito.service.ts";
 import { postCarrera } from "@/services/carrera.service.ts";
-import { Carrera } from "@/entities/carrera.entity.ts";
+import { NewCarrera } from "@/entities/carrera.entity.ts";
 
 //Definicion del form
 type FormState = {
@@ -56,13 +56,22 @@ function NuevaCarrera() {
   useEffect(() => {
         getCircuito()
           .then(data => setCircuitos(data))
-          .catch(err => console.error(err));
+          .catch(err => {
+              setCategorias([]);
+              console.error("Error cargando circuitos", err);
+            });
         getTemporada()
           .then(data => setTemporadas(data))
-          .catch(err => console.error(err));
+          .catch(err => {
+              setCategorias([]);
+              console.error("Error cargando temporadas", err);
+            });
         getCategoria()
           .then(data => setCategorias(data))
-          .catch(err => console.error(err));
+          .catch(err => {
+              setCategorias([]);
+              console.error("Error cargando categorías", err);
+            });
   }, []);
 
   //handlers
@@ -76,10 +85,10 @@ function NuevaCarrera() {
     setSubmitting(true);
     setMessage(null);
 
-    const nuevacarrera:Carrera = {
+    const nuevacarrera:NewCarrera = {
       name: form.name,
-      start_date: form.start_date ?? undefined, 
-      end_date: form.end_date ?? undefined, 
+      start_date: form.start_date!, 
+      end_date: form.end_date!, 
       circuito: form.circuito,
       temporada: form.temporada
     }

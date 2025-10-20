@@ -30,6 +30,8 @@ function Calendario() {
   const getSesionFecha = (tipo?: string) => {
     if(!carreraActual){
       return undefined
+    } else if(!carreraActual.sesiones){
+      return undefined
     } else if (!tipo) {
       return new Date(carreraActual.sesiones[0].fecha_Hora_inicio);
     } else {

@@ -1,4 +1,4 @@
-import { Carrera } from "@/entities/carrera.entity.ts";
+import { Carrera, NewCarrera } from "@/entities/carrera.entity.ts";
 import axios from "axios";
 
 const URL_API = import.meta.env.VITE_API_URL;
@@ -17,7 +17,7 @@ export async function getOneCarrera(id: number): Promise<Carrera> {
   return response.data.data;
 }
 
-export async function postCarrera(data: Carrera): Promise<Carrera> {
+export async function postCarrera(data: NewCarrera): Promise<Carrera> {
   const response = await client.post('/', data);
   return response.data.data;
 }
