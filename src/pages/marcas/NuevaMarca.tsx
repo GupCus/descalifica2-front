@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
 import fondoPorsche from "../../assets/Porsche.jpeg";
-import { NuevaMarca } from "@/entities/marca.entity.ts";
+import { NewMarca } from "@/entities/marca.entity.ts";
 import { postMarca } from "@/services/marca.service.ts";
 
 type FormState = {
@@ -30,10 +30,10 @@ function NuevaMarca() {
     setSubmitting(true);
     setMessage(null);
 
-  const nuevamarca:NuevaMarca = {
+  const nuevamarca:NewMarca = {
         name: form.name,
         nationality: form.nationality,
-        foundation: form.foundation,
+        foundation: Number(form.foundation),
       }
   postMarca(nuevamarca)
   .then(() => setMessage("Marca creada con éxito."))
