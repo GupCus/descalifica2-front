@@ -1,11 +1,19 @@
-import { baseEntity } from './baseEntity.entity.js';
-import { Categoria } from './categoria.entity.js';
-import { Carrera } from './carrera.entity.js';
+import { Categoria } from "./categoria.entity.js";
+import { Carrera } from "./carrera.entity.js";
 
-export class Temporada extends baseEntity {
-  year?: number;
+export class Temporada {
+  id?: number;
+  year!: number | string;
   races?: Carrera[];
-  racing_series?: Categoria;
+  racing_series!: Categoria;
   winner_driver?: string;
   winner_team?: string;
+}
+
+export class NewTemporada {
+  id?: number;
+  year!: number | string;
+  racing_series!: string | number;
+  winner_driver?: string | number;
+  winner_team?: string | number;
 }
