@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
 import fondoWEC from "../../assets/wec.jpg";
+import { Categoria } from "@/entities/categoria.entity.ts";
+import { postCategoria } from "@/services/categoria.service.ts";
 
 //DEFINICIONES DE CLASES
 type FormState = {
@@ -17,11 +19,7 @@ function NuevaCategoria() {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -31,30 +29,19 @@ function NuevaCategoria() {
     setSubmitting(true);
     setMessage(null);
 
-    try {
-      const res = await fetch(`${api}/categorias`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || `HTTP ${res.status}`);
-      }
-
-      setMessage("Categoría creada con éxito.");
-      setForm({
-        name: "",
-        description: "",
-      });
-    } catch (err: any) {
-      console.error(err);
-      setMessage(`Error: ${err.message || "No se pudo crear la categoría"}`);
-    } finally {
-      setSubmitting(false);
+    const nuevacategoria:Categoria = {
+      name: form.name,
+      description: form.description
     }
-  };
+    postCategoria(nuevacategoria)
+    .then(() => setMessage("Categoria creada con éxito."))
+    .then(() => setForm({
+                  name: "",
+                  description: "",
+                }))
+    .catch(err => setMessage(`Error: ${err.message || "No se pudo crear la categoría"}`))
+    .finally(() => setSubmitting(false))
+  }
 
   return (
     <div className="relative min-h-screen">
