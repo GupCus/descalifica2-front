@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
 import fondoSpa from "../../assets/Spa-Fondo.jpg";
+import { Circuito } from "@/entities/circuito.entity.ts";
+import { postCircuito } from "@/services/circuito.service.ts";
 
 //DEFINICIONES DE CLASES
 type FormState = {
@@ -23,11 +25,8 @@ function NuevoCircuito() {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -37,34 +36,25 @@ function NuevoCircuito() {
     setSubmitting(true);
     setMessage(null);
 
-    try {
-      const res = await fetch(`${api}/circuitos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || `HTTP ${res.status}`);
-      }
-
-      setMessage("Circuito creado con éxito.");
-      setForm({
+    const nuevocircuito:Circuito = {
+      name: form.name,
+      country: form.country,
+      length: form.length,
+      year: form.year,
+      imagen: form.imagen,
+    }
+    postCircuito(nuevocircuito)
+    .then(() => setMessage("Circuito creado con éxito."))
+    .then(() => setForm({
         name: "",
         country: "",
         length: "",
         year: "",
         imagen: "",
-      });
-    } catch (err: any) {
-      console.error(err);
-      setMessage(`Error: ${err.message || "No se pudo crear el circuito"}`);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
+      }))
+    .catch(err => setMessage(`Error: ${err.message || "No se pudo crear el circuito"}`))
+    .finally(() => setSubmitting(false))
+  }
   return (
     <div className="relative min-h-screen">
       {/* Fondo Spa blurreado */}
