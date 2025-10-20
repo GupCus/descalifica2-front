@@ -8,5 +8,14 @@ export class Sesion extends baseEntity {
   fecha_Hora_fin!: Date; 
   carrera?: Carrera;
   resultados?: Piloto[];
+}
+
+export class NewSesion extends baseEntity {
+  tipo_Sesion!: string;
+  fecha_Hora_inicio?: Date;
+  fecha_Hora_fin?: Date; 
+  carrera?: string | number;
+  resultados?: string[] | number[];
 
 }
+

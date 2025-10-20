@@ -1,4 +1,4 @@
-import { Piloto } from "@/entities/piloto.entity.ts";
+import { NewPiloto, Piloto } from "@/entities/piloto.entity.ts";
 import axios from "axios";
 
 const URL_API = import.meta.env.VITE_API_URL;
@@ -17,7 +17,7 @@ export async function getOnePiloto(id: number): Promise<Piloto> {
   return response.data.data;
 }
 
-export async function postPiloto(data: Piloto): Promise<Piloto> {
+export async function postPiloto(data: NewPiloto): Promise<Piloto> {
   const response = await client.post('/', data);
   return response.data.data;
 }

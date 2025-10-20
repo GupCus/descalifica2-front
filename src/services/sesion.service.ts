@@ -1,4 +1,4 @@
-import { Sesion } from "@/entities/sesion.entity.ts";
+import { NewSesion, Sesion } from "@/entities/sesion.entity.ts";
 import axios from "axios";
 
 const URL_API = import.meta.env.VITE_API_URL;
@@ -17,7 +17,7 @@ export async function getOneSesion(id: number): Promise<Sesion> {
   return response.data.data;
 }
 
-export async function postSesion(data: Sesion): Promise<Sesion> {
+export async function postSesion(data: NewSesion): Promise<Sesion> {
   const response = await client.post('/', data);
   return response.data.data;
 }
