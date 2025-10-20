@@ -12,32 +12,28 @@ import {
   SelectLabel,
 } from "@/components/ui/select";
 import fondoFranco from "../../assets/franco-2.jpg";
+import { Escuderia } from "@/entities/escuderia.entity.ts";
+import { Categoria } from "@/entities/categoria.entity.ts";
+import { getEscuderia } from "@/services/escuderia.service.ts";
+import { getCategoria } from "@/services/categoria.service.ts";
+import { postPiloto } from "@/services/piloto.service.ts";
+import { NewPiloto } from "@/entities/piloto.entity.ts";
 
 //DEFINICIONES DE CLASES
 type FormState = {
   name: string;
   escuderia: string;
-  num: string;
+  num: number;
   nationality: string;
   role: string;
   racing_series: string;
-};
-
-type Escuderia = {
-  id: string;
-  name: string;
-};
-
-type Categoria = {
-  id: string;
-  name: string;
 };
 
 function NuevoPiloto() {
   const [form, setForm] = useState<FormState>({
     name: "",
     escuderia: "",
-    num: "",
+    num: 0,
     nationality: "",
     role: "",
     racing_series: "",
@@ -46,56 +42,19 @@ function NuevoPiloto() {
   const [message, setMessage] = useState<string | null>(null);
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
-
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  const [, setError] = useState<string | null>();
 
   //obtiene escuderías para el select
   useEffect(() => {
-    fetch(`${api}/escuderias`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          setEscuderias(data.data);
-        } else {
-          setEscuderias([]);
-          console.error(
-            "La respuesta no contiene un array de escuderías.",
-            data
-          );
-        }
-      })
-      .catch((err) => {
-        setEscuderias([]);
-        console.error("Error cargando escuderías", err);
-      });
-  }, [api]);
+    getEscuderia()
+    .then(data => setEscuderias(data))
+    .catch(err => setError(err))
+    getCategoria()
+    .then(data => setCategorias(data))
+    .catch(err => setError(err))
+  }, []);
 
-  //obtiene categorias, también para el select
-  useEffect(() => {
-    fetch(`${api}/categorias`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          setCategorias(data.data);
-        } else {
-          setCategorias([]);
-          console.error(
-            "La respuesta no contiene un array de categorías.",
-            data
-          );
-        }
-      })
-      .catch((err) => {
-        setCategorias([]);
-        console.error("Error cargando categorías", err);
-      });
-  }, [api]);
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -105,33 +64,26 @@ function NuevoPiloto() {
     setSubmitting(true);
     setMessage(null);
 
-    try {
-      const res = await fetch(`${api}/pilotos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || `HTTP ${res.status}`);
+  const nuevoPiloto:NewPiloto= {
+        name: form.name,
+        escuderia: form.escuderia,
+        num: form.num,
+        nationality: form.nationality,
+        role: form.role,
+        racing_series: form.racing_series,
       }
-
-      setMessage("Piloto creado con éxito.");
-      setForm({
-        name: "",
-        escuderia: "",
-        num: "",
-        nationality: "",
-        role: "",
-        racing_series: "",
-      });
-    } catch (err: any) {
-      console.error(err);
-      setMessage(`Error: ${err.message || "No se pudo crear el piloto"}`);
-    } finally {
-      setSubmitting(false);
-    }
+  postPiloto(nuevoPiloto)
+  .then(() => setMessage("Piloto creado con éxito."))
+  .then(() => setForm({
+    name: "",
+    escuderia: "",
+    num: 0,
+    nationality: "",
+    role: "",
+    racing_series: "",
+  }))
+  .catch(err => setMessage(`Error: ${err.message || "No se pudo crear el piloto"}`))
+  .finally(() => setSubmitting(false))
   };
 
   return (
