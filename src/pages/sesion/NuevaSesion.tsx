@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
+import { InputGroup } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -9,10 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { Carrera } from "@/entities/carrera.entity.ts";
-import { Temporada } from "@/entities/temporada.entity.ts";
-import { Categoria } from "@/entities/categoria.entity.ts";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -23,6 +20,9 @@ import {
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import fondoSesion from "../../assets/sesion.webp";
+import { getCarrera } from "@/services/carrera.service.ts";
+import { NewSesion } from "@/entities/sesion.entity.ts";
+import { postSesion } from "@/services/sesion.service.ts";
 
 //DEFINICIONES DE CLASES - FALTA INTEGRAR LOS RESULTADOS!!!!! (capaz es mejor ponerlos en otro lado?)
 type FormState = {
@@ -35,22 +35,19 @@ type FormState = {
   carrera: string;
 };
 
-//Necesarios para mostrar la carrera, con su año y temporada para mayor claridad.
-
-const client = axios.create({
-  baseURL: "http://localhost:3000/api/carreras",
-});
-async function getCarreras(): Promise<Carrera[]> {
-  try {
-    const response = await client.get("/");
-    console.log(response);
-    return response.data.data;
-  } catch (error) {
-    console.error("Error al obtener carreras:", error);
-    throw error;
-  }
-}
-//--------------------------------------------------------------
+const getTipoSesionAbreviacion = (tipoSesion: string): string => {
+  const abreviaciones: Record<string, string> = {
+    "Free Practice 1": "FP1",
+    "Free Practice 2": "FP2",
+    "Free Practice 3": "FP3",
+    "Qualifying": "Q",
+    "Sprint Qualifying": "SQ",
+    "Sprint Race": "Sprint",
+    "Race": "GP",
+  };
+  
+  return abreviaciones[tipoSesion] || tipoSesion;
+};
 
 function NuevaSesion() {
   const [form, setForm] = useState<FormState>({
@@ -64,75 +61,18 @@ function NuevaSesion() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [, setCategorias] = useState<Categoria[]>([]);
-  const [, setTemporadas] = useState<Temporada[]>([]);
   const [carreras, setCarreras] = useState<Carrera[]>([]);
   const [openStart, setOpenStart] = useState(false);
-  const [openEnd, setOpenEnd] = useState(false);
+  const [, setError] = useState<string | null>();
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-
-  // getAll categorias
+  // Gets
   useEffect(() => {
-    fetch(`${api}/categorias`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          setCategorias(data.data);
-        } else {
-          setCategorias([]);
-          console.error(
-            "La respuesta no contiene un array de categorías.",
-            data
-          );
-        }
-      })
-      .catch((err) => {
-        setCategorias([]);
-        console.error("Error cargando categorías", err);
-      });
-  }, [api]);
-
-  //getAll temporadas
-  useEffect(() => {
-    fetch(`${api}/temporadas`)
-      .then((res) => res.json()) //convierte a JSON
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          setTemporadas(data.data); //si dentro de data es array, lo carga a Temporadas
-        } else {
-          setTemporadas([]);
-          console.error(
-            "La respuesta no contiene un array de temporadas.",
-            data
-          );
-        }
-      })
-      .catch((err) => {
-        setTemporadas([]);
-        console.error("Error cargando temporadas", err);
-      });
-  }, [api]);
-
-  //getAll carreras
-  useEffect(() => {
-    const fetchCarreras = async () => {
-      try {
-        const data = await getCarreras();
-        console.log(data);
-        setCarreras(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchCarreras();
+    getCarrera()
+      .then(data => setCarreras(data))
+      .catch(err => setError(err));
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    > //agregado HTMLSelectElement para resolver error en los select
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -144,34 +84,24 @@ function NuevaSesion() {
 
     //Combinar fecha y hora
     const getDateTime = (date: Date | null, time: string) => {
-      if (!date || !time) return null; //si alguno de los dos no existe, retorna null
+      if (!date || !time) return undefined; //si alguno de los dos no existe, retorna null
       const [h, m, s] = time.split(":"); //divide la variable local time (que vino desde afuera) y la separa en 'h' 'm' y 's'
       const d = new Date(date); //agarra date y guarda en d como Date
       d.setHours(Number(h), Number(m), Number(s || 0)); //usa el arreglo de [h,m,s] y lo junta para hacer el tiempo, guarda en 'd'
-      return d.toISOString();
+      return d;
     };
 
-    //Guardar fecha y hora concatenadas al final del form
-    const guardarFechas = {
-      ...form,
+    const nuevaSesion: NewSesion = {
+      name: form.name,
+      tipo_Sesion: form.tipo_Sesion,
       fecha_Hora_inicio: getDateTime(form.fecha_inicio, form.hora_inicio),
       fecha_Hora_fin: getDateTime(form.fecha_fin, form.hora_fin),
+      carrera: form.carrera,
     };
 
-    try {
-      const res = await fetch(`${api}/sesion`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(guardarFechas),
-      });
-      console.log(form);
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || `HTTP ${res.status}`);
-      }
-      setMessage("Sesión creada con éxito.");
-      setForm({
+    postSesion(nuevaSesion)
+      .then(() => setMessage("Sesión creada con éxito."))
+      .then(() => setForm({
         name: "",
         tipo_Sesion: "",
         fecha_inicio: null,
@@ -179,13 +109,9 @@ function NuevaSesion() {
         fecha_fin: null,
         hora_fin: "00:00:00",
         carrera: "",
-      });
-    } catch (err: any) {
-      console.error(err);
-      setMessage(`Error: ${err.message || "No se pudo crear la sesión"}`);
-    } finally {
-      setSubmitting(false);
-    }
+      }))
+      .catch(err => setMessage(`Error: ${err.message || "No se pudo crear la sesión"}`))
+      .finally(() => setSubmitting(false));
   };
 
   return (
@@ -212,49 +138,6 @@ function NuevaSesion() {
             Alta Sesión
           </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputGroup>
-              <InputGroupInput
-                placeholder="Nombre"
-                id="name"
-                value={form.name}
-                onChange={handleChange}
-                className="focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
-              />
-            </InputGroup>
-
-            <InputGroup>
-              <Select
-                value={form.tipo_Sesion}
-                onValueChange={(value) =>
-                  setForm((s) => ({ ...s, tipo_Sesion: value }))
-                }
-                required
-              >
-                <SelectTrigger className="w-full focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600">
-                  <SelectValue placeholder="Tipo de sesión" />
-                </SelectTrigger>
-                <SelectContent className="border-secondary">
-                  <SelectItem value="Free Practice 1">
-                    Free Practice 1
-                  </SelectItem>
-                  <SelectItem value="Free Practice 2">
-                    Free Practice 2
-                  </SelectItem>
-                  <SelectItem value="Free Practice 3">
-                    Free Practice 3
-                  </SelectItem>
-                  <SelectItem value="Qualifying">Qualifying</SelectItem>
-                  <SelectItem value="Race">Race</SelectItem>
-                  <SelectItem value="Sprint Qualifying">
-                    Sprint Qualifying
-                  </SelectItem>
-                  <SelectItem value="Sprint Race">Sprint Race</SelectItem>
-                </SelectContent>
-              </Select>
-            </InputGroup>
-          </div>
-
           <InputGroup className="w-full">
             <Select
               value={form.carrera}
@@ -268,64 +151,77 @@ function NuevaSesion() {
               </SelectTrigger>
               <SelectContent className="border-secondary">
                 {carreras.map((car: Carrera) => {
-                  console.log({});
                   return (
                     <SelectItem key={car.id} value={String(car.id)}>
-                      {(car ? car.name : "??") + " "}(
-                      {car.temporada ? car.temporada?.year : "??"}) (
-                      {car.temporada
-                        ? car.temporada.racing_series
-                          ? car.temporada?.racing_series.name
-                          : "??"
-                        : "??"}
-                      )
+                      {car?.name || "??"} ({car.temporada?.year || "??"}) ({car.temporada?.racing_series?.name || "??"})
                     </SelectItem>
                   );
                 })}
               </SelectContent>
             </Select>
           </InputGroup>
+          <InputGroup>
+            <Select
+              value={form.name}
+              onValueChange={(value) =>
+                setForm((s) => ({ ...s, name: value, tipo_Sesion: getTipoSesionAbreviacion(value) }))
+              }
+              required
+            >
+              <SelectTrigger className="w-full focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600">
+                <SelectValue placeholder="Tipo de sesión" />
+              </SelectTrigger>
+              <SelectContent className="border-secondary">
+                <SelectItem value="Free Practice 1">Free Practice 1</SelectItem>
+                <SelectItem value="Free Practice 2">Free Practice 2</SelectItem>
+                <SelectItem value="Free Practice 3">Free Practice 3</SelectItem>
+                <SelectItem value="Qualifying">Qualifying</SelectItem>
+                <SelectItem value="Race">Race</SelectItem>
+                <SelectItem value="Sprint Qualifying">Sprint Qualifying</SelectItem>
+                <SelectItem value="Sprint Race">Sprint Race</SelectItem>
+              </SelectContent>
+            </Select>
+          </InputGroup>
+
+          <Label htmlFor="fecha_inicio" className="text-white-100">
+            Fecha de inicio
+          </Label>
+          <Popover open={openStart} onOpenChange={setOpenStart}>
+            <PopoverTrigger>
+              <Button
+                variant="outline"
+                id="fecha_inicio"
+                className="w-150 justify-between font-normal focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
+                type="button"
+              >
+                {form.fecha_inicio
+                  ? form.fecha_inicio.toLocaleDateString()
+                  : "Elegir fecha de inicio"}
+                <ChevronDownIcon className="h-4 w-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-auto overflow-hidden p-0 border-none"
+              align="start"
+            >
+              <Calendar
+                mode="single"
+                selected={form.fecha_inicio ?? undefined}
+                captionLayout="dropdown"
+                onSelect={(date) => {
+                  if (date)
+                    setForm((prev) => ({
+                      ...prev,
+                      fecha_inicio: date,
+                      fecha_fin: date,
+                    }));
+                  setOpenStart(false);
+                }}
+              />
+            </PopoverContent>
+          </Popover>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="fecha_inicio" className="text-white-100">
-                Fecha de inicio
-              </Label>
-              <Popover open={openStart} onOpenChange={setOpenStart}>
-                <PopoverTrigger>
-                  <Button
-                    variant="outline"
-                    id="fecha_inicio"
-                    className="w-full justify-between font-normal focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
-                    type="button"
-                  >
-                    {form.fecha_inicio
-                      ? form.fecha_inicio.toLocaleDateString()
-                      : "Elegir fecha de inicio"}
-                    <ChevronDownIcon className="h-4 w-4 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto overflow-hidden p-0 border-none"
-                  align="start"
-                >
-                  <Calendar
-                    mode="single"
-                    selected={form.fecha_inicio ?? undefined}
-                    captionLayout="dropdown"
-                    onSelect={(date) => {
-                      if (date)
-                        setForm((prev) => ({
-                          ...prev,
-                          fecha_inicio: date,
-                        }));
-                      setOpenStart(false);
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
             <div className="flex flex-col gap-2">
               <Label htmlFor="hora_inicio" className="text-white-100">
                 Hora de inicio
@@ -340,48 +236,6 @@ function NuevaSesion() {
                 className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
               />
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="fecha_fin" className="text-white-100">
-                Fecha de finalización
-              </Label>
-              <Popover open={openEnd} onOpenChange={setOpenEnd}>
-                <PopoverTrigger>
-                  <Button
-                    variant="outline"
-                    id="fecha_fin"
-                    className="w-full justify-between font-normal focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
-                    type="button"
-                  >
-                    {form.fecha_fin
-                      ? form.fecha_fin.toLocaleDateString()
-                      : "Elegir fecha de finalización"}
-                    <ChevronDownIcon className="h-4 w-4 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent
-                  className="w-auto overflow-hidden p-0 border-none"
-                  align="start"
-                >
-                  <Calendar
-                    mode="single"
-                    selected={form.fecha_fin ?? undefined}
-                    captionLayout="dropdown"
-                    onSelect={(date) => {
-                      if (date)
-                        setForm((prev) => ({
-                          ...prev,
-                          fecha_fin: date,
-                        }));
-                      setOpenEnd(false);
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
             <div className="flex flex-col gap-2">
               <Label htmlFor="hora_fin" className="text-white-100">
                 Hora de fin
