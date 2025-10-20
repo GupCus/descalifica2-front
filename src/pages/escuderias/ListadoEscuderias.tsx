@@ -2,26 +2,8 @@ import { useEffect, useState } from "react";
 import { ChromaGrid } from "@/components/ui/Chroma-grid";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-
-type Escuderia = {
-  id: string;
-  name: string;
-  fundation: number;
-  nationality: string;
-  engine: string;
-  marca?: {
-    id: string;
-    name: string;
-  } | string;
-  categoria?: {
-    id: string;
-    name: string;
-  } | string;
-};
-
-
-
-const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+import { getEscuderia } from "@/services/escuderia.service.ts";
+import { Escuderia } from "@/entities/escuderia.entity.ts";
 
 // Helper function para obtener la bandera del país automáticamente
 const getCountryFlag = (nationality: string): string => {
@@ -84,41 +66,14 @@ function ListadoEscuderias() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${api}/escuderias`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Error al cargar las escuderías");
-        }
-        return res.json();
+    getEscuderia()
+      .then(data => setEscuderias(data))
+      .catch(err => {
+        setError(err.message);
+        console.error("Error cargando escuderías", err);
       })
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          setEscuderias(data.data);
-        } else if (Array.isArray(data)) {
-          setEscuderias(data);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching escuderias:", error);
-        setError(error.message);
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
   }, []);
-
-//helper para extraer el nombre de categoria 
-  const getCategoryName = (cat?: { id?: string; name?: string } | string) => {
-    if (!cat) return "";
-    if (typeof cat === "string") return cat.trim().toLowerCase();
-    return String(cat.name ?? "").trim().toLowerCase();
-  };
-
-  //Separamos por categoria 
-
-const f2Escuderias = escuderias.filter(e => getCategoryName(e.categoria) === 'f2');
-
-const f1Escuderias = escuderias.filter(e => getCategoryName(e.categoria) === 'f1');
-
 
   if (loading) {
     return (
@@ -172,6 +127,26 @@ const f1Escuderias = escuderias.filter(e => getCategoryName(e.categoria) === 'f1
       </div>
     );
   }
+
+  //helper para extraer el nombre de categoria 
+  const getCategoryName = (cat?: { id?: string; name?: string } | string) => {
+    if (!cat) return "";
+    if (typeof cat === "string") return cat.trim().toLowerCase();
+    return String(cat.name ?? "").trim().toLowerCase();
+  };
+
+  //Separamos por categoria 
+
+  const f2Escuderias = escuderias.filter(e => {
+    if (!e.categoria) return false;
+    return getCategoryName(e.categoria.name) === 'f2' || e.categoria.name === "Fórmula 2";
+  });
+  
+  const f1Escuderias = escuderias.filter(e => {
+    if (!e.categoria) return false;
+    return getCategoryName(e.categoria.name) === 'f1'|| e.categoria.name === "Fórmula 1";
+  });
+
 
   return (
     <div className="relative min-h-screen">

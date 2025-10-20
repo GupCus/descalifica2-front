@@ -5,9 +5,16 @@ import { Categoria } from './categoria.entity.js';
 
 export class Escuderia extends baseEntity {
   pilotos?: Piloto[];
-  fundation!: number;
+  fundation!: string;
   nationality!: string;
   engine!: string;
   marca!: Marca;
   categoria!: Categoria;
+}
+export class NewEscuderia extends baseEntity {
+  fundation!: string;
+  nationality!: string;
+  engine!: string;
+  marca!: string | number;
+  categoria!: string | number;
 }

@@ -1,40 +1,22 @@
+import { Escuderia } from "@/entities/escuderia.entity.ts";
+import { getEscuderia } from "@/services/escuderia.service.ts";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
-type Escuderia = {
-  id: string;
-  name: string;
-  foundation: string;
-  nationality: string;
-  engine: string;
-  marca: string;
-  categoria: string;
-};
 
 function GetEscuderia() {
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
   useEffect(() => {
-    fetch(`${api}/escuderias`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Error ${res.status}: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setEscuderias(data.data);
-        setLoading(false);
-      })
-      .catch((err) => {
+    getEscuderia()
+      .then(data => setEscuderias(data))
+      .catch(err => {
         setError(err.message);
         setLoading(false);
         console.error("Error cargando escuderías", err);
       });
-  }, [api]);
+  }, []);
 
   if (loading) {
     return (
@@ -75,7 +57,7 @@ function GetEscuderia() {
                 </p>
                 <p className="text-gray-400">
                   <span className="font-semibold">Categoría:</span>{" "}
-                  {escuderia.categoria}
+                  {escuderia.categoria.name}
                 </p>
               </div>
 

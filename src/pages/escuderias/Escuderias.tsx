@@ -1,22 +1,14 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { Escuderia } from "@/entities/escuderia.entity.ts";
+import { getOneEscuderia } from "@/services/escuderia.service.ts";
 
-type Escuderia = {
-  id: string;
-  name: string;
-  foundation: string;
-  nationality: string;
-  engine: string;
-  marca: string;
-  categoria: string;
-};
 
 function Escuderias() {
   const { id } = useParams<{ id: string }>();
   const [escuderia, setEscuderia] = useState<Escuderia | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
   useEffect(() => {
     if (!id) {
@@ -24,24 +16,14 @@ function Escuderias() {
       setLoading(false);
       return;
     }
-
-    fetch(`${api}/escuderias/${id}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Error ${res.status}: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        setEscuderia(data.data);
-        setLoading(false);
-      })
-      .catch((err) => {
+    getOneEscuderia(parseInt(id))
+      .then(data => setEscuderia(data))
+      .catch(err => {
         setError(err.message);
-        setLoading(false);
         console.error("Error cargando escudería", err);
-      });
-  }, [api, id]);
+      })
+      .finally(() => setLoading(false));
+  }, [id]);
 
   if (loading) {
     return (
@@ -88,7 +70,7 @@ function Escuderias() {
             <div className="space-y-4">
               <div className="bg-gray-700 p-4 rounded-lg">
                 <p className="text-gray-400 text-sm mb-1">Fundación</p>
-                <p className="text-xl font-semibold">{escuderia.foundation}</p>
+                <p className="text-xl font-semibold">{escuderia.fundation}</p>
               </div>
 
               <div className="bg-gray-700 p-4 rounded-lg">
@@ -105,12 +87,12 @@ function Escuderias() {
             <div className="space-y-4">
               <div className="bg-gray-700 p-4 rounded-lg">
                 <p className="text-gray-400 text-sm mb-1">Marca</p>
-                <p className="text-xl font-semibold">{escuderia.marca}</p>
+                <p className="text-xl font-semibold">{escuderia.marca.name}</p>
               </div>
 
               <div className="bg-gray-700 p-4 rounded-lg">
                 <p className="text-gray-400 text-sm mb-1">Categoría</p>
-                <p className="text-xl font-semibold">{escuderia.categoria}</p>
+                <p className="text-xl font-semibold">{escuderia.categoria.name}</p>
               </div>
             </div>
           </div>

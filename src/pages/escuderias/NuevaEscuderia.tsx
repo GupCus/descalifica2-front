@@ -9,6 +9,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import fondoFerrari from "../../assets/Ferrari-foto.jpg";
+import { Categoria } from "@/entities/categoria.entity.ts";
+import { Marca } from "@/entities/marca.entity.ts";
+import { getCategoria } from "@/services/categoria.service.ts";
+import { getMarca } from "@/services/marca.service.ts";
+import { NewEscuderia } from "@/entities/escuderia.entity.ts";
+import { postEscuderia } from "@/services/escuderia.service.ts";
 
 type FormState = {
   name: string;
@@ -17,16 +23,6 @@ type FormState = {
   engine: string;
   marca: string;
   categoria: string;
-};
-
-type Categoria = {
-  id: string;
-  name: string;
-};
-
-type Marca = {
-  id: string;
-  name: string;
 };
 
 function NuevaEscuderia() {
@@ -43,50 +39,24 @@ function NuevaEscuderia() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [marcas, setMarcas] = useState<Marca[]>([]);
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-
-  //getAll categorias
+  //Gets
   useEffect(() => {
-    fetch(`${api}/categorias`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          setCategorias(data.data);
-        } else {
-          setCategorias([]);
-          console.error(
-            "La respuesta no contiene un array de categorías.",
-            data
-          );
-        }
-      })
-      .catch((err) => {
-        setCategorias([]);
-        console.error("Error cargando categorías", err);
-      });
-  }, [api]);
+    getCategoria()
+      .then(data => setCategorias(data))
+      .catch(err => {
+              setCategorias([]);
+              console.error("Error cargando categorías", err);
+            });
+    getMarca()
+      .then(data => setMarcas(data))
+      .catch(err => {
+              setMarcas([]);
+              console.error("Error cargando marcas", err);
+            });
+  }, []);
 
-  //getAll marcas
-  useEffect(() => {
-    fetch(`${api}/marcas`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          setMarcas(data.data);
-        } else {
-          setMarcas([]);
-          console.error("La respuesta no contiene un array de marcas.", data);
-        }
-      })
-      .catch((err) => {
-        setMarcas([]);
-        console.error("Error cargando marcas", err);
-      });
-  }, [api]);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  //handlers
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -96,33 +66,26 @@ function NuevaEscuderia() {
     setSubmitting(true);
     setMessage(null);
 
-    try {
-      const res = await fetch(`${api}/escuderias`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(errText || `HTTP ${res.status}`);
+  const nuevaescuderia:NewEscuderia= {
+        name: form.name,
+        fundation: form.foundation,
+        engine: form.engine,
+        nationality: form.nationality,
+        marca: form.marca,
+        categoria: form.categoria,
       }
-
-      setMessage("Escudería creada con éxito.");
-      setForm({
+  postEscuderia(nuevaescuderia)
+  .then(() => setMessage("Escudería creada con éxito."))
+  .then(() => setForm({
         name: "",
         foundation: "",
         engine: "",
         nationality: "",
         marca: "",
         categoria: "",
-      });
-    } catch (err: any) {
-      console.error(err);
-      setMessage(`Error: ${err.message || "No se pudo crear la escudería"}`);
-    } finally {
-      setSubmitting(false);
-    }
+      }))
+  .catch(err => setMessage(`Error: ${err.message || "No se pudo crear la escudería"}`))
+  .finally(() => setSubmitting(false))
   };
 
   return (
