@@ -14,6 +14,6 @@ export class NewTemporada {
   id?: number;
   year!: number | string;
   racing_series!: string | number;
-  winner_driver?: string | number;
-  winner_team?: string | number;
+  winner_driver?: string | null;
+  winner_team?: string | null;
 }

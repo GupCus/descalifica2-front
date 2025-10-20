@@ -13,24 +13,30 @@ import { NewTemporada } from "@/entities/temporada.entity.ts";
 import { postTemporada } from "@/services/temporada.service.ts";
 import { Categoria } from "@/entities/categoria.entity.ts";
 import { getCategoria } from "@/services/categoria.service.ts";
+import { getPiloto } from "@/services/piloto.service.ts";
+import { getEscuderia } from "@/services/escuderia.service.ts";
+import { Piloto } from "@/entities/piloto.entity.ts";
+import { Escuderia } from "@/entities/escuderia.entity.ts";
 
 type FormState = {
   year: string;
   racing_series: string;
-  winner_driver: string;
-  winner_team: string;
+  winner_driver: string | null;
+  winner_team: string | null;
 };
 
 function NuevaTemporada() {
   const [form, setForm] = useState<FormState>({
     year: "",
     racing_series: "",
-    winner_driver: "",
-    winner_team: "",
+    winner_driver: null,
+    winner_team: null,
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [pilotos, setPilotos] = useState<Piloto[]>([]);
+  const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -48,6 +54,20 @@ function NuevaTemporada() {
       .catch((err) => {
         setCategorias([]);
         console.error("Error cargando categorías", err);
+      });
+
+    getPiloto()
+      .then((data) => setPilotos(data))
+      .catch((err) => {
+        setPilotos([]);
+        console.error("Error cargando pilotos", err);
+      });
+
+    getEscuderia()
+      .then((data) => setEscuderias(data))
+      .catch((err) => {
+        setEscuderias([]);
+        console.error("Error cargando escuderías ", err);
       });
   }, []);
 
@@ -68,8 +88,8 @@ function NuevaTemporada() {
         setForm({
           year: "",
           racing_series: "",
-          winner_driver: "",
-          winner_team: "",
+          winner_driver: null,
+          winner_team: null,
         })
       )
       .catch((err) =>
@@ -141,23 +161,57 @@ function NuevaTemporada() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputGroup>
-              <InputGroupInput
-                placeholder="Piloto ganador"
-                id="winner_driver"
-                value={form.winner_driver}
-                onChange={handleChange}
-                className="focus-visible:ring-purple-500 focus-visible:border-purple-500 hover:border-purple-600"
-              />
+              <Select
+                value={form.winner_driver ?? undefined}
+                onValueChange={(value) =>
+                  setForm((s) => ({
+                    ...s,
+                    winner_driver: value === "null" ? null : value,
+                  }))
+                }
+              >
+                <SelectTrigger className="w-full focus-visible:ring-purple-500 focus-visible:border-purple-500 hover:border-purple-600">
+                  <SelectValue placeholder="Piloto ganador" />
+                </SelectTrigger>
+
+                <SelectContent className="border-secondary">
+                  <SelectItem value="null">
+                    En progreso/sin ganador definido.
+                  </SelectItem>
+                  {pilotos.map((p) => (
+                    <SelectItem key={p.id} value={String(p.id)}>
+                      {p.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </InputGroup>
 
             <InputGroup>
-              <InputGroupInput
-                placeholder="Escudería ganadora"
-                id="winner_team"
-                value={form.winner_team}
-                onChange={handleChange}
-                className="focus-visible:ring-purple-500 focus-visible:border-purple-500 hover:border-purple-600"
-              />
+              <Select
+                value={form.winner_team ?? undefined}
+                onValueChange={(value) =>
+                  setForm((s) => ({
+                    ...s,
+                    winner_team: value === "null" ? null : value,
+                  }))
+                }
+              >
+                <SelectTrigger className="w-full focus-visible:ring-purple-500 focus-visible:border-purple-500 hover:border-purple-600">
+                  <SelectValue placeholder="Escudería ganadora" />
+                </SelectTrigger>
+
+                <SelectContent className="border-secondary">
+                  <SelectItem value="null">
+                    En progreso/sin ganador definido.
+                  </SelectItem>
+                  {escuderias.map((e) => (
+                    <SelectItem key={e.id} value={String(e.id)}>
+                      {e.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </InputGroup>
           </div>
 
