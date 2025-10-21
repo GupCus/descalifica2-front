@@ -47,14 +47,18 @@ function NuevoPiloto() {
   //obtiene escuderías para el select
   useEffect(() => {
     getEscuderia()
-    .then(data => setEscuderias(data))
-    .catch(err => setError(err))
+      .then((data) => setEscuderias(data))
+      .catch((err) => setError(err));
     getCategoria()
-    .then(data => setCategorias(data))
-    .catch(err => setError(err))
+      .then((data) => setCategorias(data))
+      .catch((err) => setError(err));
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -64,26 +68,30 @@ function NuevoPiloto() {
     setSubmitting(true);
     setMessage(null);
 
-  const nuevoPiloto:NewPiloto= {
-        name: form.name,
-        escuderia: form.escuderia,
-        num: form.num,
-        nationality: form.nationality,
-        role: form.role,
-        racing_series: form.racing_series,
-      }
-  postPiloto(nuevoPiloto)
-  .then(() => setMessage("Piloto creado con éxito."))
-  .then(() => setForm({
-    name: "",
-    escuderia: "",
-    num: 0,
-    nationality: "",
-    role: "",
-    racing_series: "",
-  }))
-  .catch(err => setMessage(`Error: ${err.message || "No se pudo crear el piloto"}`))
-  .finally(() => setSubmitting(false))
+    const nuevoPiloto: NewPiloto = {
+      name: form.name,
+      escuderia: form.escuderia,
+      num: form.num,
+      nationality: form.nationality,
+      role: form.role,
+      racing_series: form.racing_series,
+    };
+    postPiloto(nuevoPiloto)
+      .then(() => setMessage("Piloto creado con éxito."))
+      .then(() =>
+        setForm({
+          name: "",
+          escuderia: "",
+          num: 0,
+          nationality: "",
+          role: "",
+          racing_series: "",
+        })
+      )
+      .catch((err) =>
+        setMessage(`Error: ${err.message || "No se pudo crear el piloto"}`)
+      )
+      .finally(() => setSubmitting(false));
   };
 
   return (
@@ -110,7 +118,7 @@ function NuevoPiloto() {
               letterSpacing: "0.1em",
             }}
           >
-            Alta marca
+            Alta piloto
           </h1>
 
           <InputGroup className="mt-5 mb-5 w-full">
