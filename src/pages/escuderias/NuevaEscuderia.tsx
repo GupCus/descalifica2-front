@@ -168,7 +168,7 @@ function NuevaEscuderia() {
               <Select
                 value={form.brand}
                 onValueChange={(value) =>
-                  setForm((s) => ({ ...s, marca: value }))
+                  setForm((s) => ({ ...s, brand: value }))
                 }
                 required
               >

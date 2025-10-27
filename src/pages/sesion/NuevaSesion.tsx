@@ -58,7 +58,7 @@ function NuevaSesion() {
     fecha_inicio: null,
     hora_inicio: "00:00:00",
     fecha_fin: null,
-    hora_fin: "",
+    hora_fin: "00:00:00",
     race: "",
   });
   const [submitting, setSubmitting] = useState(false);
