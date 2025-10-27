@@ -11,7 +11,7 @@ type FormState = {
   country: string;
   length: string;
   year: string;
-  imagen: string;
+  track_map_url: string;
 };
 
 function NuevoCircuito() {
@@ -20,13 +20,14 @@ function NuevoCircuito() {
     country: "",
     length: "",
     year: "",
-    imagen: "",
+    track_map_url: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -36,25 +37,29 @@ function NuevoCircuito() {
     setSubmitting(true);
     setMessage(null);
 
-    const nuevocircuito:Circuito = {
+    const nuevocircuito: Circuito = {
       name: form.name,
       country: form.country,
       length: form.length,
       year: form.year,
-      imagen: form.imagen,
-    }
+      track_map_url: form.track_map_url,
+    };
     postCircuito(nuevocircuito)
-    .then(() => setMessage("Circuito creado con éxito."))
-    .then(() => setForm({
-        name: "",
-        country: "",
-        length: "",
-        year: "",
-        imagen: "",
-      }))
-    .catch(err => setMessage(`Error: ${err.message || "No se pudo crear el circuito"}`))
-    .finally(() => setSubmitting(false))
-  }
+      .then(() => setMessage("Circuito creado con éxito."))
+      .then(() =>
+        setForm({
+          name: "",
+          country: "",
+          length: "",
+          year: "",
+          track_map_url: "",
+        })
+      )
+      .catch((err) =>
+        setMessage(`Error: ${err.message || "No se pudo crear el circuito"}`)
+      )
+      .finally(() => setSubmitting(false));
+  };
   return (
     <div className="relative min-h-screen">
       {/* Fondo Spa blurreado */}
@@ -130,8 +135,8 @@ function NuevoCircuito() {
             <InputGroup>
               <InputGroupInput
                 placeholder="Link imagen del trazado"
-                id="imagen"
-                value={form.imagen}
+                id="track_map_url"
+                value={form.track_map_url}
                 onChange={handleChange}
                 required
               />

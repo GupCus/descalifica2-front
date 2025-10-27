@@ -27,12 +27,12 @@ import { postSesion } from "@/services/sesion.service.ts";
 //DEFINICIONES DE CLASES - FALTA INTEGRAR LOS RESULTADOS!!!!! (capaz es mejor ponerlos en otro lado?)
 type FormState = {
   name: string;
-  tipo_Sesion: string;
+  type: string;
   fecha_inicio: Date | null;
   hora_inicio: string;
   fecha_fin: Date | null;
   hora_fin: string;
-  carrera: string;
+  race: string;
 };
 
 const getTipoSesionAbreviacion = (tipoSesion: string): string => {
@@ -40,24 +40,26 @@ const getTipoSesionAbreviacion = (tipoSesion: string): string => {
     "Free Practice 1": "FP1",
     "Free Practice 2": "FP2",
     "Free Practice 3": "FP3",
-    "Qualifying": "Q",
+    Qualifying: "Q",
     "Sprint Qualifying": "SQ",
     "Sprint Race": "Sprint",
-    "Race": "GP",
+    Race: "GP",
   };
-  
+
   return abreviaciones[tipoSesion] || tipoSesion;
 };
 
 function NuevaSesion() {
+  //fecha_inicio, hora_inicio, fecha_fin y hora_fin no son los datos finales, se concatenan antes de enviarse al back.
+  //Los datos finales son start_time y end_time.
   const [form, setForm] = useState<FormState>({
     name: "",
-    tipo_Sesion: "",
+    type: "",
     fecha_inicio: null,
     hora_inicio: "00:00:00",
     fecha_fin: null,
     hora_fin: "",
-    carrera: "",
+    race: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -68,11 +70,15 @@ function NuevaSesion() {
   // Gets
   useEffect(() => {
     getCarrera()
-      .then(data => setCarreras(data))
-      .catch(err => setError(err));
+      .then((data) => setCarreras(data))
+      .catch((err) => setError(err));
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -93,24 +99,28 @@ function NuevaSesion() {
 
     const nuevaSesion: NewSesion = {
       name: form.name,
-      tipo_Sesion: form.tipo_Sesion,
-      fecha_Hora_inicio: getDateTime(form.fecha_inicio, form.hora_inicio),
-      fecha_Hora_fin: getDateTime(form.fecha_fin, form.hora_fin),
-      carrera: form.carrera,
+      type: form.type,
+      start_time: getDateTime(form.fecha_inicio, form.hora_inicio),
+      end_time: getDateTime(form.fecha_fin, form.hora_fin),
+      race: form.race,
     };
 
     postSesion(nuevaSesion)
       .then(() => setMessage("Sesión creada con éxito."))
-      .then(() => setForm({
-        name: "",
-        tipo_Sesion: "",
-        fecha_inicio: null,
-        hora_inicio: "00:00:00",
-        fecha_fin: null,
-        hora_fin: "00:00:00",
-        carrera: "",
-      }))
-      .catch(err => setMessage(`Error: ${err.message || "No se pudo crear la sesión"}`))
+      .then(() =>
+        setForm({
+          name: "",
+          type: "",
+          fecha_inicio: null,
+          hora_inicio: "00:00:00",
+          fecha_fin: null,
+          hora_fin: "00:00:00",
+          race: "",
+        })
+      )
+      .catch((err) =>
+        setMessage(`Error: ${err.message || "No se pudo crear la sesión"}`)
+      )
       .finally(() => setSubmitting(false));
   };
 
@@ -140,10 +150,8 @@ function NuevaSesion() {
 
           <InputGroup className="w-full">
             <Select
-              value={form.carrera}
-              onValueChange={(value) =>
-                setForm((s) => ({ ...s, carrera: value }))
-              }
+              value={form.race}
+              onValueChange={(value) => setForm((s) => ({ ...s, race: value }))}
               required
             >
               <SelectTrigger className="w-full focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600">
@@ -153,7 +161,8 @@ function NuevaSesion() {
                 {carreras.map((car: Carrera) => {
                   return (
                     <SelectItem key={car.id} value={String(car.id)}>
-                      {car?.name || "??"} ({car.temporada?.year || "??"}) ({car.temporada?.racing_series?.name || "??"})
+                      {car?.name || "??"} ({car.season?.year || "??"}) (
+                      {car.season?.racing_series?.name || "??"})
                     </SelectItem>
                   );
                 })}
@@ -164,7 +173,11 @@ function NuevaSesion() {
             <Select
               value={form.name}
               onValueChange={(value) =>
-                setForm((s) => ({ ...s, name: value, tipo_Sesion: getTipoSesionAbreviacion(value) }))
+                setForm((s) => ({
+                  ...s,
+                  name: value,
+                  tipo_Sesion: getTipoSesionAbreviacion(value),
+                }))
               }
               required
             >
@@ -177,7 +190,9 @@ function NuevaSesion() {
                 <SelectItem value="Free Practice 3">Free Practice 3</SelectItem>
                 <SelectItem value="Qualifying">Qualifying</SelectItem>
                 <SelectItem value="Race">Race</SelectItem>
-                <SelectItem value="Sprint Qualifying">Sprint Qualifying</SelectItem>
+                <SelectItem value="Sprint Qualifying">
+                  Sprint Qualifying
+                </SelectItem>
                 <SelectItem value="Sprint Race">Sprint Race</SelectItem>
               </SelectContent>
             </Select>

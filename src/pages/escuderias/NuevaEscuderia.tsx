@@ -21,8 +21,8 @@ type FormState = {
   foundation: string;
   nationality: string;
   engine: string;
-  marca: string;
-  categoria: string;
+  brand: string;
+  racing_series: string;
 };
 
 function NuevaEscuderia() {
@@ -31,8 +31,8 @@ function NuevaEscuderia() {
     foundation: "",
     engine: "",
     nationality: "",
-    marca: "",
-    categoria: "",
+    brand: "",
+    racing_series: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -42,21 +42,23 @@ function NuevaEscuderia() {
   //Gets
   useEffect(() => {
     getCategoria()
-      .then(data => setCategorias(data))
-      .catch(err => {
-              setCategorias([]);
-              console.error("Error cargando categorías", err);
-            });
+      .then((data) => setCategorias(data))
+      .catch((err) => {
+        setCategorias([]);
+        console.error("Error cargando categorías", err);
+      });
     getMarca()
-      .then(data => setMarcas(data))
-      .catch(err => {
-              setMarcas([]);
-              console.error("Error cargando marcas", err);
-            });
+      .then((data) => setMarcas(data))
+      .catch((err) => {
+        setMarcas([]);
+        console.error("Error cargando marcas", err);
+      });
   }, []);
 
   //handlers
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -66,26 +68,30 @@ function NuevaEscuderia() {
     setSubmitting(true);
     setMessage(null);
 
-  const nuevaescuderia:NewEscuderia= {
-        name: form.name,
-        fundation: form.foundation,
-        engine: form.engine,
-        nationality: form.nationality,
-        marca: form.marca,
-        categoria: form.categoria,
-      }
-  postEscuderia(nuevaescuderia)
-  .then(() => setMessage("Escudería creada con éxito."))
-  .then(() => setForm({
-        name: "",
-        foundation: "",
-        engine: "",
-        nationality: "",
-        marca: "",
-        categoria: "",
-      }))
-  .catch(err => setMessage(`Error: ${err.message || "No se pudo crear la escudería"}`))
-  .finally(() => setSubmitting(false))
+    const nuevaescuderia: NewEscuderia = {
+      name: form.name,
+      fundation: form.foundation,
+      engine: form.engine,
+      nationality: form.nationality,
+      brand: form.brand,
+      racing_series: form.racing_series,
+    };
+    postEscuderia(nuevaescuderia)
+      .then(() => setMessage("Escudería creada con éxito."))
+      .then(() =>
+        setForm({
+          name: "",
+          foundation: "",
+          engine: "",
+          nationality: "",
+          brand: "",
+          racing_series: "",
+        })
+      )
+      .catch((err) =>
+        setMessage(`Error: ${err.message || "No se pudo crear la escudería"}`)
+      )
+      .finally(() => setSubmitting(false));
   };
 
   return (
@@ -160,7 +166,7 @@ function NuevaEscuderia() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputGroup>
               <Select
-                value={form.marca}
+                value={form.brand}
                 onValueChange={(value) =>
                   setForm((s) => ({ ...s, marca: value }))
                 }
@@ -182,9 +188,9 @@ function NuevaEscuderia() {
 
             <InputGroup>
               <Select
-                value={form.categoria}
+                value={form.racing_series}
                 onValueChange={(value) =>
-                  setForm((s) => ({ ...s, categoria: value }))
+                  setForm((s) => ({ ...s, racing_series: value }))
                 }
                 required
               >

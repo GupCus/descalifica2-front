@@ -6,6 +6,6 @@ import { Piloto } from "./piloto.entity.js";
 export class Categoria extends baseEntity {
   description?: string;
   drivers?: Piloto[];
-  escuderias?: Escuderia[];
+  teams?: Escuderia[];
   seasons?: Temporada[];
 }

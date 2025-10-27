@@ -20,7 +20,9 @@ function NuevaMarca() {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -30,20 +32,24 @@ function NuevaMarca() {
     setSubmitting(true);
     setMessage(null);
 
-  const nuevamarca:NewMarca = {
-        name: form.name,
-        nationality: form.nationality,
-        foundation: Number(form.foundation),
-      }
-  postMarca(nuevamarca)
-  .then(() => setMessage("Marca creada con éxito."))
-  .then(() => setForm({
-        name: "",
-        nationality: "",
-        foundation: "",
-      }))
-  .catch(err => setMessage(`Error: ${err.message || "No se pudo crear la marca"}`))
-  .finally(() => setSubmitting(false))
+    const nuevamarca: NewMarca = {
+      name: form.name,
+      nationality: form.nationality,
+      foundation: Number(form.foundation),
+    };
+    postMarca(nuevamarca)
+      .then(() => setMessage("Marca creada con éxito."))
+      .then(() =>
+        setForm({
+          name: "",
+          nationality: "",
+          foundation: "",
+        })
+      )
+      .catch((err) =>
+        setMessage(`Error: ${err.message || "No se pudo crear la marca"}`)
+      )
+      .finally(() => setSubmitting(false));
   };
   return (
     <div className="relative min-h-screen">

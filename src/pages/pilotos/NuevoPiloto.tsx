@@ -22,7 +22,7 @@ import { NewPiloto } from "@/entities/piloto.entity.ts";
 //DEFINICIONES DE CLASES
 type FormState = {
   name: string;
-  escuderia: string;
+  team: string;
   num: number;
   nationality: string;
   role: string;
@@ -32,7 +32,7 @@ type FormState = {
 function NuevoPiloto() {
   const [form, setForm] = useState<FormState>({
     name: "",
-    escuderia: "",
+    team: "",
     num: 0,
     nationality: "",
     role: "",
@@ -70,7 +70,7 @@ function NuevoPiloto() {
 
     const nuevoPiloto: NewPiloto = {
       name: form.name,
-      escuderia: form.escuderia,
+      team: form.team,
       num: form.num,
       nationality: form.nationality,
       role: form.role,
@@ -81,7 +81,7 @@ function NuevoPiloto() {
       .then(() =>
         setForm({
           name: "",
-          escuderia: "",
+          team: "",
           num: 0,
           nationality: "",
           role: "",
@@ -134,9 +134,9 @@ function NuevoPiloto() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputGroup>
               <Select
-                value={form.escuderia}
+                value={form.team}
                 onValueChange={(value) =>
-                  setForm((s) => ({ ...s, escuderia: value }))
+                  setForm((s) => ({ ...s, team: value }))
                 }
                 required
               >

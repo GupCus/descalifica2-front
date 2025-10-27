@@ -32,8 +32,8 @@ type FormState = {
   name: string;
   start_date: Date | null;
   end_date: Date | null;
-  circuito: string;
-  temporada: string;
+  track: string;
+  season: string;
 };
 
 function NuevaCarrera() {
@@ -41,8 +41,8 @@ function NuevaCarrera() {
     name: "",
     start_date: null,
     end_date: null,
-    circuito: "",
-    temporada: "",
+    track: "",
+    season: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -54,28 +54,32 @@ function NuevaCarrera() {
 
   //Gets necesarios
   useEffect(() => {
-        getCircuito()
-          .then(data => setCircuitos(data))
-          .catch(err => {
-              setCategorias([]);
-              console.error("Error cargando circuitos", err);
-            });
-        getTemporada()
-          .then(data => setTemporadas(data))
-          .catch(err => {
-              setCategorias([]);
-              console.error("Error cargando temporadas", err);
-            });
-        getCategoria()
-          .then(data => setCategorias(data))
-          .catch(err => {
-              setCategorias([]);
-              console.error("Error cargando categorías", err);
-            });
+    getCircuito()
+      .then((data) => setCircuitos(data))
+      .catch((err) => {
+        setCategorias([]);
+        console.error("Error cargando circuitos", err);
+      });
+    getTemporada()
+      .then((data) => setTemporadas(data))
+      .catch((err) => {
+        setCategorias([]);
+        console.error("Error cargando temporadas", err);
+      });
+    getCategoria()
+      .then((data) => setCategorias(data))
+      .catch((err) => {
+        setCategorias([]);
+        console.error("Error cargando categorías", err);
+      });
   }, []);
 
   //handlers
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
@@ -85,25 +89,29 @@ function NuevaCarrera() {
     setSubmitting(true);
     setMessage(null);
 
-    const nuevacarrera:NewCarrera = {
+    const nuevacarrera: NewCarrera = {
       name: form.name,
-      start_date: form.start_date!, 
-      end_date: form.end_date!, 
-      circuito: form.circuito,
-      temporada: form.temporada
-    }
+      start_date: form.start_date!,
+      end_date: form.end_date!,
+      track: form.track,
+      season: form.season,
+    };
     postCarrera(nuevacarrera)
-    .then(() => setMessage("Carrera creada con éxito."))
-    .then(() => setForm({
-                  name: "",
-                  start_date: null,
-                  end_date: null,
-                  circuito: "",
-                  temporada: "",
-                }))
-    .catch(err => setMessage(`Error: ${err.message || "No se pudo crear la carrera"}`))
-    .finally(() => setSubmitting(false))
-  }
+      .then(() => setMessage("Carrera creada con éxito."))
+      .then(() =>
+        setForm({
+          name: "",
+          start_date: null,
+          end_date: null,
+          track: "",
+          season: "",
+        })
+      )
+      .catch((err) =>
+        setMessage(`Error: ${err.message || "No se pudo crear la carrera"}`)
+      )
+      .finally(() => setSubmitting(false));
+  };
 
   return (
     <div className="relative min-h-screen">
@@ -206,9 +214,9 @@ function NuevaCarrera() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputGroup>
               <Select
-                value={form.circuito}
+                value={form.track}
                 onValueChange={(value) =>
-                  setForm((s) => ({ ...s, circuito: value }))
+                  setForm((s) => ({ ...s, track: value }))
                 }
                 required
               >
@@ -227,9 +235,9 @@ function NuevaCarrera() {
 
             <InputGroup>
               <Select
-                value={form.temporada}
+                value={form.season}
                 onValueChange={(value) =>
-                  setForm((s) => ({ ...s, temporada: value }))
+                  setForm((s) => ({ ...s, season: value }))
                 }
                 required
               >
@@ -281,6 +289,5 @@ function NuevaCarrera() {
     </div>
   );
 }
-
 
 export default NuevaCarrera;

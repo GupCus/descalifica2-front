@@ -1,13 +1,13 @@
-import { baseEntity } from './baseEntity.entity.js';
-import { Escuderia } from './escuderia.entity.js';
+import { baseEntity } from "./baseEntity.entity.js";
+import { Escuderia } from "./escuderia.entity.js";
 
 export class Marca extends baseEntity {
   nationality!: string;
   foundation!: number;
-  escuderias?: Escuderia[];
+  teams?: Escuderia[];
 }
 export class NewMarca extends baseEntity {
   nationality!: string;
   foundation!: number;
-  escuderias?: Escuderia[];
+  teams?: Escuderia[];
 }

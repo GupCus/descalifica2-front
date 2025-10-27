@@ -10,8 +10,8 @@ function GetEscuderia() {
 
   useEffect(() => {
     getEscuderia()
-      .then(data => setEscuderias(data))
-      .catch(err => {
+      .then((data) => setEscuderias(data))
+      .catch((err) => {
         setError(err.message);
         setLoading(false);
         console.error("Error cargando escuderías", err);
@@ -57,7 +57,7 @@ function GetEscuderia() {
                 </p>
                 <p className="text-gray-400">
                   <span className="font-semibold">Categoría:</span>{" "}
-                  {escuderia.categoria.name}
+                  {escuderia.brand.name}
                 </p>
               </div>
 

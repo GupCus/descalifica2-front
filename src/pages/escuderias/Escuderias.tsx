@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Escuderia } from "@/entities/escuderia.entity.ts";
 import { getOneEscuderia } from "@/services/escuderia.service.ts";
 
-
 function Escuderias() {
   const { id } = useParams<{ id: string }>();
   const [escuderia, setEscuderia] = useState<Escuderia | null>(null);
@@ -17,8 +16,8 @@ function Escuderias() {
       return;
     }
     getOneEscuderia(parseInt(id))
-      .then(data => setEscuderia(data))
-      .catch(err => {
+      .then((data) => setEscuderia(data))
+      .catch((err) => {
         setError(err.message);
         console.error("Error cargando escudería", err);
       })
@@ -87,12 +86,12 @@ function Escuderias() {
             <div className="space-y-4">
               <div className="bg-gray-700 p-4 rounded-lg">
                 <p className="text-gray-400 text-sm mb-1">Marca</p>
-                <p className="text-xl font-semibold">{escuderia.marca.name}</p>
+                <p className="text-xl font-semibold">{escuderia.brand.name}</p>
               </div>
 
               <div className="bg-gray-700 p-4 rounded-lg">
                 <p className="text-gray-400 text-sm mb-1">Categoría</p>
-                <p className="text-xl font-semibold">{escuderia.categoria.name}</p>
+                <p className="text-xl font-semibold">{escuderia.brand.name}</p>
               </div>
             </div>
           </div>
