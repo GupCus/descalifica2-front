@@ -9,12 +9,12 @@ export class Escuderia extends baseEntity {
   nationality!: string;
   engine!: string;
   marca!: Marca;
-  categoria!: Categoria;
+  racing_series!: Categoria;
 }
 export class NewEscuderia extends baseEntity {
   fundation!: string;
   nationality!: string;
   engine!: string;
   marca!: string | number;
-  categoria!: string | number;
+  racing_series!: string | number;
 }

@@ -36,7 +36,7 @@ function ListadoTemporadas() {
   const f2Temporadas = temporadas.filter(t => t.racing_series?.name === 'F2');
   console.log('F1 Temporadas:', f1Temporadas.map(t => t.year));
   return (
-    <div className="relative min-h-screen flex items-center justify-center px-4 py-12">
+    <div className="relative min-h-screen flex items-center justify-center px-4 py-2">
       <div
         className="absolute inset-0 w-full h-full blur-sm opacity-20"
         style={{
@@ -48,8 +48,8 @@ function ListadoTemporadas() {
       <div className="w-full max-w-5xl z-10 ">
         <div className =" grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Lista F1 */}
-          <div className="bg-transparent p-4 rounded-lg">
-            <div className="flex justify-center mb-4">
+          <div className="bg-transparent p-2 rounded-lg">
+            <div className="flex justify-center mb-2">
               <img src={new URL('../../assets/f1-logo.png', import.meta.url).href} alt="logof1" className="mx-auto w-50 h-auto object-contain"/>
             </div>
           <div className="max-h-[50vg] ">
@@ -60,17 +60,16 @@ function ListadoTemporadas() {
                 items={f1Temporadas.map(t => `Temporada ${t.year}`)}
                 showGradients={false}
                 displayScrollbar={true}
-                className="max-h-[50vh] overflow-y-auto pr-4 space-y-4"
+                className="max-h-[60vh] overflow-y-auto pr-4 space-y-4"
               />
             )}
           </div>
           </div>
           {/* Lista F2 */}
-          <div className="bg-transparent p-4 rounded-lg">
-          <div className="flex justify-center mb-4">
+          <div className="bg-transparent p-2 rounded-lg">
+          <div className="flex justify-center mb-2">
             <img src={new URL('../../assets/f2-logo.png', import.meta.url).href} alt="Logo de Formula 2" className="mx-auto w-50 h-auto object-contain" />
           </div>
-          {/* Lista F2 */}
           <div className="overflow-hidden">
             {f2Temporadas.length === 0 ? (
               <div className="text-slate-400 p-4">No hay temporadas F2.</div>
@@ -79,7 +78,7 @@ function ListadoTemporadas() {
                 items={f2Temporadas.map(t => `Temporada ${t.year}`)}
                 showGradients={false}
                 displayScrollbar={true}
-                className="max-h-[50vh] overflow-hidden"
+                className="max-h-[60vh] overflow-hidden"
               />
             )}
           </div>

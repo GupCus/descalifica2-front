@@ -138,13 +138,13 @@ function ListadoEscuderias() {
   //Separamos por categoria 
 
   const f2Escuderias = escuderias.filter(e => {
-    if (!e.categoria) return false;
-    return getCategoryName(e.categoria.name) === 'f2' || e.categoria.name === "Fórmula 2";
+    if (!e.racing_series) return false;
+    return getCategoryName(e.racing_series.name) === 'f2' || e.racing_series.name === "Fórmula 2";
   });
   
   const f1Escuderias = escuderias.filter(e => {
-    if (!e.categoria) return false;
-    return getCategoryName(e.categoria.name) === 'f1'|| e.categoria.name === "Fórmula 1";
+    if (!e.racing_series) return false;
+    return getCategoryName(e.racing_series.name) === 'f1'|| e.racing_series.name === "Fórmula 1";
   });
 
 
