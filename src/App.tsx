@@ -21,6 +21,7 @@ import NuevaTemporada from "./pages/temporada/NuevaTemporada.tsx";
 import NuevaCategoria from "./pages/categorias/NuevaCategoria.tsx";
 import ListadoPilotos from "./pages/pilotos/ListadoPilotos.tsx";
 import NuevaSesion from "./pages/sesion/NuevaSesion.tsx";
+import CargarDatosSesion from "./pages/sesion/CargarDatosSesion.tsx";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
         <Route path="menuadmin/nuevatemporada" element={<NuevaTemporada />} />
         <Route path="menuadmin/nuevacategoria" element={<NuevaCategoria />} />
         <Route path="menuadmin/nuevasesion" element={<NuevaSesion />} />
+        <Route path="menuadmin/cargarsesion" element={<CargarDatosSesion />} />
       </Route>
     </Routes>
   );

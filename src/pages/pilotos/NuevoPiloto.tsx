@@ -23,7 +23,7 @@ import { NewPiloto } from "@/entities/piloto.entity.ts";
 type FormState = {
   name: string;
   team: string;
-  num: number;
+  num: number | string;
   nationality: string;
   role: string;
   racing_series: string;
@@ -33,7 +33,7 @@ function NuevoPiloto() {
   const [form, setForm] = useState<FormState>({
     name: "",
     team: "",
-    num: 0,
+    num: "",
     nationality: "",
     role: "",
     racing_series: "",
@@ -82,7 +82,7 @@ function NuevoPiloto() {
         setForm({
           name: "",
           team: "",
-          num: 0,
+          num: "",
           nationality: "",
           role: "",
           racing_series: "",

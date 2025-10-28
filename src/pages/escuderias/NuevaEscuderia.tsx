@@ -21,7 +21,7 @@ type FormState = {
   foundation: string;
   nationality: string;
   engine: string;
-  brand: string;
+  brand: string | null;
   racing_series: string;
 };
 
@@ -68,12 +68,14 @@ function NuevaEscuderia() {
     setSubmitting(true);
     setMessage(null);
 
+    const valorBrand = form.brand === "Ninguna" ? null : form.brand;
+
     const nuevaescuderia: NewEscuderia = {
       name: form.name,
       fundation: form.foundation,
       engine: form.engine,
       nationality: form.nationality,
-      brand: form.brand,
+      brand: valorBrand,
       racing_series: form.racing_series,
     };
     postEscuderia(nuevaescuderia)
@@ -166,9 +168,12 @@ function NuevaEscuderia() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputGroup>
               <Select
-                value={form.brand}
+                value={form.brand ?? ""}
                 onValueChange={(value) =>
-                  setForm((s) => ({ ...s, brand: value }))
+                  setForm((s) => ({
+                    ...s,
+                    brand: value,
+                  }))
                 }
                 required
               >

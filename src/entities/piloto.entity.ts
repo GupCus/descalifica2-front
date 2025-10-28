@@ -12,7 +12,7 @@ export class Piloto extends baseEntity {
 
 export class NewPiloto extends baseEntity {
   team!: number | string;
-  num!: number;
+  num!: number | string;
   nationality!: string;
   role!: string;
   racing_series!: number | string;

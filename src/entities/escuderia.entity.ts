@@ -15,6 +15,6 @@ export class NewEscuderia extends baseEntity {
   fundation!: string;
   nationality!: string;
   engine!: string;
-  brand!: string | number;
+  brand!: string | number | null;
   racing_series!: string | number;
 }
