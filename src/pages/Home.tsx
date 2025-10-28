@@ -50,7 +50,7 @@ function Home() {
               "Welcome to the best motorsport forum.",
               "Willkommen im berühmtesten Motorsportforum.",
               "Bem-vindo ao mais melhor fórum do automobilismo",
-              "Hikinawa kyoto nagasaki hiroyima",
+              "モータースポーツに関する最高のフォーラムへようこそ",
             ]}
             typingSpeed={75}
             pauseDuration={3500}

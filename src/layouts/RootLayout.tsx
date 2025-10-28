@@ -51,6 +51,9 @@ function RootLayout() {
                   <NavigationMenuLink href="/escuderias">
                     Escuderías
                   </NavigationMenuLink>
+                  <NavigationMenuLink href="/circuitos">
+                    Circuitos
+                  </NavigationMenuLink>
                   <NavigationMenuLink href="/marcas">Marcas</NavigationMenuLink>
                   <NavigationMenuLink href="/temporadas">
                     Temporadas

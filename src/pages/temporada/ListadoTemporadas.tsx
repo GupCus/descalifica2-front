@@ -38,7 +38,7 @@ function ListadoTemporadas() {
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-12">
       <div
-        className="absolute inset-0 w-full h-full blur-sm opacity-20"
+        className="absolute inset-0 w-full h-full -z-10 blur-sm opacity-20"
         style={{
           backgroundImage: `url(${new URL('../../assets/fondo-temporadas.jpg', import.meta.url).href})`,
           backgroundSize: "auto cover",
@@ -60,7 +60,7 @@ function ListadoTemporadas() {
                 items={f1Temporadas.map(t => `Temporada ${t.year}`)}
                 showGradients={false}
                 displayScrollbar={true}
-                className="max-h-[50vh] overflow-y-auto pr-4 space-y-4"
+                className="max-h-[60vh] overflow-y-auto pr-4 space-y-4"
               />
             )}
           </div>
@@ -79,7 +79,7 @@ function ListadoTemporadas() {
                 items={f2Temporadas.map(t => `Temporada ${t.year}`)}
                 showGradients={false}
                 displayScrollbar={true}
-                className="max-h-[50vh] overflow-hidden"
+                className="max-h-[60vh] overflow-hidden"
               />
             )}
           </div>
