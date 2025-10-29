@@ -4,6 +4,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Skeleton} from "@/components/ui/skeleton";
 import {Circuito} from "@/entities/circuito.entity.ts";
 import {getCircuito} from "@/services/circuito.service.ts";
+import { Link } from "react-router-dom";
 
 // Helper function para obtener la bandera del país automáticamente
 const getCountryFlag = (country: string): string => {
@@ -146,19 +147,19 @@ function ListadoCircuitos() {
               const flagUrl = getCountryFlag(circuito.country);
               const circuitoImgUrl = getImagenCircuito(circuito.name);
               return (
-                <Card
-                  key={circuito.id}
-                  className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
-                >
-                  <div className="relative w-full h-48 overflow-hidden">
-                    <img
-                      src={circuitoImgUrl}
+                <Link to={`/circuitos/${circuito.id}`} key={circuito.id} className="block">
+                  <Card
+                    key={circuito.id}
+                    className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0">
+                    <div className="relative w-full h-48 overflow-hidden">
+                      <img
+                        src={circuitoImgUrl}
                       alt={circuito.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           // reemplazar con placeholder si no existe
-                          target.src = "/src/assets/descalifica2logo.png";
+                          target.src = new URL("../../assets/descalifica2logo.png", import.meta.url).href;
                           target.className =
                             "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
                         }}
@@ -180,13 +181,13 @@ function ListadoCircuitos() {
                     </div>
                     
                   </div>
-                </Card>
-              );
-            })}
-          </div>
+                  </Card>
+                </Link>
+            );
+          })}
+        </div>
         )}
       </div>
-      
     </div>
   );
 }
