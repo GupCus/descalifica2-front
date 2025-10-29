@@ -41,7 +41,7 @@ function ListadoTemporadas() {
         className="absolute inset-0 w-full h-full -z-10 blur-sm opacity-20"
         style={{
           backgroundImage: `url(${new URL('../../assets/fondo-temporadas.jpg', import.meta.url).href})`,
-          backgroundSize: "auto cover",
+          backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       />

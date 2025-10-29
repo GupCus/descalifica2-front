@@ -7,7 +7,7 @@ export class Sesion extends baseEntity {
   start_time!: Date;
   end_time!: Date;
   race?: Carrera;
-  results?: Piloto[];
+  results?: [string, string][];
 }
 
 export class NewSesion extends baseEntity {
@@ -15,5 +15,5 @@ export class NewSesion extends baseEntity {
   start_time?: Date;
   end_time?: Date;
   race?: string | number;
-  results?: string[] | number[];
+  results?: [string, string][];
 }

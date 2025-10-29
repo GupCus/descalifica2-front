@@ -96,13 +96,13 @@ function ListadoCircuitos() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card key={i} className="bg-slate-900/50 border-slate-700 overflow-hidden">
+              <Card key={i} className="bg-slate-900/50 border-slate-700 overflow-hidden h-40">
                 <CardHeader>
                   <CardTitle>
                     <Skeleton className="h-6 w-32" />
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-2">
                   <Skeleton className="h-4 w-full" />
                 </CardContent>
               </Card>
@@ -121,34 +121,72 @@ function ListadoCircuitos() {
   }
   return (
     <div className="relative min-h-screen">
-      <div className = 'absolute inset-0 w-full h-full blur-sm opacity-35'
-        style ={{
+      <div className='absolute inset-0 w-full h-full blur-sm opacity-70'
+        style={{
           backgroundImage: `url(${new URL('../../assets/circuitosFondo.jpg', import.meta.url).href})`,
-          backgroundSize: "auto 100% ",
+          backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       ></div>
       <ChromaGrid />
       <div className="relative z-10 container mx-auto px-4 py-8">
+        <header className="mb-6 text-center">
+          <h1 className="text-white text-4xl md:text-5xl font-bold tracking-tight drop-shadow-lg">Circuitos</h1>
+        </header>
+
         {circuitos.length === 0 ? (
-          <Card className = 'bg-slate-900/50 border-slate-700'>
+          <Card className='bg-slate-900/50 border-slate-700'>
             <CardHeader>
               <CardTitle>No hay circuitos disponibles</CardTitle>
             </CardHeader>
           </Card>
         ) : (
-          circuitos.map((circuito) => (
-            <Card key={circuito.id} className="bg-slate-900/50 border-slate-700">
-              <CardHeader>
-                <CardTitle>{circuito.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <img src={getImagenCircuito(circuito.name)} alt={circuito.name} />
-              </CardContent>
-            </Card>
-          ))
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+            {circuitos.map((circuito) => {
+              const flagUrl = getCountryFlag(circuito.country);
+              const circuitoImgUrl = getImagenCircuito(circuito.name);
+              return (
+                <Card
+                  key={circuito.id}
+                  className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
+                >
+                  <div className="relative w-full h-48 overflow-hidden">
+                    <img
+                      src={circuitoImgUrl}
+                      alt={circuito.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      onError={(e) => {
+                        const t = e.currentTarget as HTMLImageElement;
+                        t.onerror = null;
+                        t.src = new URL("../../assets/descalifica2logo.png", import.meta.url).href;
+                        t.classList.add("absolute", "inset-0", "w-full", "h-full", "object-contain", "bg-slate-900/50", "overflow-hidden");
+                      }}
+                    />
+                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
+
+                    {flagUrl && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <img
+                          src={flagUrl}
+                          alt={`Bandera de ${circuito.country}`}
+                          className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
+                        />
+                      </div>
+                    )}
+
+                    <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+                      <h3 className="text-2xl font-bold text-white tracking-tight">{circuito.name}</h3>
+                    </div>
+                    
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
         )}
       </div>
+      
     </div>
   );
 }

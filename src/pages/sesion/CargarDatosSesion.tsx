@@ -7,7 +7,7 @@ import { Sesion } from "@/entities/sesion.entity.ts";
 import { Piloto } from "@/entities/piloto.entity.ts";
 import { getPiloto } from "@/services/piloto.service.ts";
 import { getCarrera } from "@/services/carrera.service.ts";
-import { getSesion } from "@/services/sesion.service.ts";
+import { getSesion, putSesion } from "@/services/sesion.service.ts";
 import {
   Select,
   SelectContent,
@@ -45,14 +45,27 @@ function CargarDatosSesion() {
       .catch((err) => setError(err));
   }, []);
 
+  /* DEBUGGING COMENTADO POR AHORA
+  console.log(`CATEGORIAS`);
+  console.log(categorias);
+  console.log(`CARRERAS`);
+  console.log(carreras);
+  console.log(`PILOTOS`);
+  console.log(pilotos);
+*/
+
   // Filtrar carreras y pilotos según la categoría seleccionada
   const carrerasFiltradas = carreras.filter(
     (c) => String(c.id) === String(categoria)
   );
+  //console.log(carrerasFiltradas);
   const pilotosFiltrados = pilotos.filter(
-    (p) => String(p.racing_series) === String(categoria)
+    (p) => String(p.racing_series.id) === String(categoria)
   );
+  //console.log("PILOTOS FILTRADOS");
+  //console.log(pilotosFiltrados);
   const sesionesFiltradas = sesiones.filter((s) => String(s.race) === carrera);
+  //console.log(sesionesFiltradas);
 
   // Resetear selección dependiente
   useEffect(() => {
@@ -64,25 +77,41 @@ function CargarDatosSesion() {
     setSesion("");
   }, [carrera]);
 
-  const handleTiempoChange = (pilotoId: string, value: string) => {
+  const handleTiempoChange = (pilotoName: string, value: string) => {
     setTiempos((prev) => {
-      const index = prev.findIndex(([id]) => id === pilotoId);
+      const index = prev.findIndex(([id]) => id === pilotoName);
       if (index !== -1) {
-        // Si ya existe, actualiza el tiempo
         const updated = [...prev];
-        updated[index] = [pilotoId, value];
+        updated[index] = [pilotoName, value];
         return updated;
       } else {
-        // Si no existe, agrega el nuevo
-        return [...prev, [pilotoId, value]];
+        return [...prev, [pilotoName, value]];
       }
     });
   };
 
-  const handleGuardar = () => {
-    // Aquí deberías enviar { categoria, carrera, sesion, tiempos } al backend
+  const handleGuardar = async () => {
+    if (!sesion) return;
+
+    const sesionActual = sesiones.find((s) => String(s.id) === sesion);
+    if (!sesionActual) {
+      alert("Sesión no encontrada");
+      return;
+    }
+
+    const sesionActualizada: Sesion = {
+      ...sesionActual,
+      results: tiempos,
+    };
+
+    try {
+      await putSesion(sesionActual.id!, sesionActualizada);
+      alert("Tiempos guardados correctamente");
+    } catch (err) {
+      alert("Error al guardar los tiempos");
+    }
+
     console.log({ categoria, carrera, sesion, tiempos });
-    // TODO: llamada al backend
   };
 
   return (
@@ -169,7 +198,6 @@ function CargarDatosSesion() {
               </SelectContent>
             </Select>
           </div>
-          {/* Inputs de tiempos por piloto */}
           {sesion && (
             <div>
               <h3 className="text-white-100 text-xl font-semibold mb-2">
@@ -178,7 +206,9 @@ function CargarDatosSesion() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {pilotosFiltrados.map((piloto) => {
                   const tiempoActual =
-                    tiempos.find(([id]) => id === String(piloto.id))?.[1] || "";
+                    tiempos.find(
+                      ([name]) => name === String(piloto.name)
+                    )?.[1] || "";
                   return (
                     <div key={piloto.id} className="flex flex-col gap-1">
                       <Label className="text-white-100">{piloto.name}</Label>
@@ -186,7 +216,7 @@ function CargarDatosSesion() {
                         type="text"
                         value={tiempoActual}
                         onChange={(e) =>
-                          handleTiempoChange(String(piloto.id), e.target.value)
+                          handleTiempoChange(piloto.name, e.target.value)
                         }
                         placeholder="00:00.000"
                         className="bg-background"
