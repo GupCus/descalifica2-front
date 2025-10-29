@@ -18,6 +18,13 @@ import { getEscuderia } from "@/services/escuderia.service.ts";
 import { getCategoria } from "@/services/categoria.service.ts";
 import { postPiloto } from "@/services/piloto.service.ts";
 import { NewPiloto } from "@/entities/piloto.entity.ts";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Calendar as ChevronDownIcon } from "lucide-react";
 
 //DEFINICIONES DE CLASES
 type FormState = {
@@ -25,6 +32,7 @@ type FormState = {
   team: string;
   num: number | string;
   nationality: string;
+  birth_date: Date | null; // <-- Cambia de string a Date | null
   role: string;
   racing_series: string;
 };
@@ -35,6 +43,7 @@ function NuevoPiloto() {
     team: "",
     num: "",
     nationality: "",
+    birth_date: null, // <-- Cambia de "" a null
     role: "",
     racing_series: "",
   });
@@ -43,6 +52,7 @@ function NuevoPiloto() {
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [, setError] = useState<string | null>();
+  const [openBirthDate, setOpenBirthDate] = useState(false);
 
   //obtiene escuderías para el select
   useEffect(() => {
@@ -68,14 +78,25 @@ function NuevoPiloto() {
     setSubmitting(true);
     setMessage(null);
 
+    // Validar que se haya seleccionado fecha
+    if (!form.birth_date) {
+      setMessage("Por favor selecciona una fecha de nacimiento");
+      setSubmitting(false);
+      return;
+    }
+
     const nuevoPiloto: NewPiloto = {
       name: form.name,
       team: form.team,
       num: form.num,
       nationality: form.nationality,
+      birth_date: form.birth_date.toISOString().split("T")[0], // <-- Siempre habrá fecha por la validación
       role: form.role,
       racing_series: form.racing_series,
     };
+
+    console.log("Datos a enviar:", nuevoPiloto);
+
     postPiloto(nuevoPiloto)
       .then(() => setMessage("Piloto creado con éxito."))
       .then(() =>
@@ -84,13 +105,22 @@ function NuevoPiloto() {
           team: "",
           num: "",
           nationality: "",
+          birth_date: null,
           role: "",
           racing_series: "",
         })
       )
-      .catch((err) =>
-        setMessage(`Error: ${err.message || "No se pudo crear el piloto"}`)
-      )
+      .catch((err) => {
+        console.error("Error completo:", err);
+        console.error("Respuesta del servidor:", err.response?.data);
+        setMessage(
+          `Error: ${
+            err.response?.data?.error ||
+            err.message ||
+            "No se pudo crear el piloto"
+          }`
+        );
+      })
       .finally(() => setSubmitting(false));
   };
 
@@ -173,6 +203,39 @@ function NuevoPiloto() {
               required
             />
           </InputGroup>
+
+          <Popover open={openBirthDate} onOpenChange={setOpenBirthDate}>
+            <PopoverTrigger className="w-full">
+              <Button
+                variant="outline"
+                className={`w-full justify-between font-normal h-10 ${
+                  !form.birth_date ? "text-muted-foreground" : ""
+                }`}
+                type="button"
+              >
+                {form.birth_date
+                  ? form.birth_date.toLocaleDateString()
+                  : "Fecha de nacimiento *"}
+                <ChevronDownIcon className="h-4 w-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-auto overflow-hidden p-0 border-none"
+              align="start"
+            >
+              <Calendar
+                mode="single"
+                selected={form.birth_date ?? undefined}
+                captionLayout="dropdown"
+                onSelect={(date) => {
+                  if (date) setForm((prev) => ({ ...prev, birth_date: date }));
+                  setOpenBirthDate(false);
+                }}
+                fromYear={1950}
+                toYear={new Date().getFullYear()}
+              />
+            </PopoverContent>
+          </Popover>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <InputGroup>
