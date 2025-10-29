@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import fondoGrilla from "../../assets/grilla-cola-2021.jpg";
 import { getCategoria } from "@/services/categoria.service.ts";
 import { Categoria } from "@/entities/categoria.entity.ts";
@@ -29,6 +30,7 @@ function CargarDatosSesion() {
   const [sesion, setSesion] = useState<string>("");
   const [tiempos, setTiempos] = useState<[string, string][]>([]);
   const [, setError] = useState<string | null>();
+  const [message, setMessage] = useState<string | null>();
 
   useEffect(() => {
     getCategoria()
@@ -77,6 +79,19 @@ function CargarDatosSesion() {
     setSesion("");
   }, [carrera]);
 
+  useEffect(() => {
+    if (!sesion) {
+      setTiempos([]);
+      return;
+    }
+    const sesionActual = sesiones.find((s) => String(s.id) === sesion);
+    if (sesionActual && Array.isArray(sesionActual.results)) {
+      setTiempos(sesionActual.results);
+    } else {
+      setTiempos([]);
+    }
+  }, [sesion, sesiones]);
+
   const handleTiempoChange = (pilotoName: string, value: string) => {
     setTiempos((prev) => {
       const index = prev.findIndex(([id]) => id === pilotoName);
@@ -95,7 +110,7 @@ function CargarDatosSesion() {
 
     const sesionActual = sesiones.find((s) => String(s.id) === sesion);
     if (!sesionActual) {
-      alert("Sesión no encontrada");
+      setMessage("Sesión no encontrada");
       return;
     }
 
@@ -106,9 +121,9 @@ function CargarDatosSesion() {
 
     try {
       await putSesion(sesionActual.id!, sesionActualizada);
-      alert("Tiempos guardados correctamente");
+      setMessage("Tiempos guardados correctamente");
     } catch (err) {
-      alert("Error al guardar los tiempos");
+      setMessage("Error al guardar los tiempos");
     }
 
     console.log({ categoria, carrera, sesion, tiempos });
@@ -228,7 +243,15 @@ function CargarDatosSesion() {
             </div>
           )}
           {/* Botón de guardar */}
-          <div className="flex justify-end pt-4">
+          <div className="flex w-full justify-between pt-4">
+            <Link to="/menuadmin">
+              <Button
+                className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
+                type="button"
+              >
+                Cancelar
+              </Button>
+            </Link>
             <Button
               type="submit"
               disabled={!sesion}
@@ -237,6 +260,11 @@ function CargarDatosSesion() {
               Guardar
             </Button>
           </div>
+          {message && (
+            <p className="mt-2 text-sm text-center font-semibold text-yellow-200">
+              {message}
+            </p>
+          )}
         </form>
       </div>
     </div>

@@ -47,7 +47,7 @@ function MenuAdmin() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <Link to="nuevasesion" className="w-full">
               <Button className="w-full h-12 bg-slate-600 hover:bg-slate-700 text-white font-semibold shadow-lg shadow-slate-900/50 border-0 transition-all hover:scale-105">
                 Nueva SESIÓN
@@ -66,6 +66,14 @@ function MenuAdmin() {
             <Link to="nuevatemporada" className="w-full">
               <Button className="w-full h-12 bg-slate-600 hover:bg-slate-700 text-white font-semibold shadow-lg shadow-slate-900/50 border-0 transition-all hover:scale-105">
                 Nueva TEMPORADA
+              </Button>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Link to="cargarsesion" className="w-full">
+              <Button className="w-full h-12 bg-slate-600 hover:bg-slate-700 text-white font-semibold shadow-lg shadow-slate-900/50 border-0 transition-all hover:scale-105">
+                Cargar RESULTADOS
               </Button>
             </Link>
           </div>

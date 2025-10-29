@@ -289,6 +289,7 @@ function ListadoEscuderias() {
                 const flagUrl = getCountryFlag(escuderia.nationality);
                 const logoUrl = getEscuderiaLogo(escuderia.name);
                 return (
+                  <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
                   <Card
                     key={escuderia.id}
                     className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
@@ -323,11 +324,12 @@ function ListadoEscuderias() {
                       </div>
                     </div>
                   </Card>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
       </div>
     </div>
   );
