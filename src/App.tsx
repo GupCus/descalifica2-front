@@ -48,6 +48,7 @@ function App() {
         <Route path="menuadmin/nuevacategoria" element={<NuevaCategoria />} />
         <Route path="menuadmin/nuevasesion" element={<NuevaSesion />} />
         <Route path="menuadmin/cargarsesion" element={<CargarDatosSesion />} />
+        <Route path="/escuderia/:id" element={<GetEscuderia />} />
       </Route>
     </Routes>
   );

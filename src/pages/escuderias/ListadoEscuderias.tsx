@@ -10,6 +10,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { getEscuderia } from "@/services/escuderia.service.ts";
 import { Escuderia } from "@/entities/escuderia.entity.ts";
+import { Link } from "react-router-dom";
 
 // Helper function para obtener la bandera del país automáticamente
 const getCountryFlag = (nationality: string): string => {
@@ -164,14 +165,16 @@ function ListadoEscuderias() {
   const f2Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
     return (
-      getCategoryName(e.racing_series.name) === "f2" || e.racing_series.name === "Fórmula 2"
+      getCategoryName(e.racing_series.name) === "f2" ||
+      e.racing_series.name === "Formula 2"
     );
   });
 
   const f1Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
     return (
-      getCategoryName(e.racing_series.name) === "f1" || e.racing_series.name === "Fórmula 1"
+      getCategoryName(e.racing_series.name) === "f1" ||
+      e.racing_series.name === "Formula 1"
     );
   });
 
@@ -214,47 +217,45 @@ function ListadoEscuderias() {
               const logoUrl = getEscuderiaLogo(escuderia.name);
 
               return (
-                <Card
-                  key={escuderia.id}
-                  className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
-                >
-                  {/* Imagen de la escudería (ocupa toda la card) */}
-                  <div className="relative w-full h-64 overflow-hidden">
-                    <img
-                      src={logoUrl}
-                      alt={`Logo de ${escuderia.name}`}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        // reemplazar con placeholder si no existe
-                        target.src = "/src/assets/descalifica2logo.png";
-                        target.className =
-                          "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
-                      }}
-                    />
+                <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
+                  <Card className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0">
+                    <div className="relative w-full h-64 overflow-hidden">
+                      <img
+                        src={logoUrl}
+                        alt={`Logo de ${escuderia.name}`}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          // reemplazar con placeholder si no existe
+                          target.src = "/src/assets/descalifica2logo.png";
+                          target.className =
+                            "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
+                        }}
+                      />
 
-                    {/* Overlay oscuro para mejorar legibilidad */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
+                      {/* Overlay oscuro para mejorar legibilidad */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
 
-                    {/* Bandera en la esquina superior derecha */}
-                    {flagUrl && (
-                      <div className="absolute top-4 right-4 z-10">
-                        <img
-                          src={flagUrl}
-                          alt={`Bandera de ${escuderia.nationality}`}
-                          className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
-                        />
+                      {/* Bandera en la esquina superior derecha */}
+                      {flagUrl && (
+                        <div className="absolute top-4 right-4 z-10">
+                          <img
+                            src={flagUrl}
+                            alt={`Bandera de ${escuderia.nationality}`}
+                            className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
+                          />
+                        </div>
+                      )}
+
+                      {/* Nombre de la escudería en la parte inferior */}
+                      <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+                        <h3 className="text-2xl font-bold text-white tracking-tight">
+                          {escuderia.name}
+                        </h3>
                       </div>
-                    )}
-
-                    {/* Nombre de la escudería en la parte inferior */}
-                    <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                      <h3 className="text-2xl font-bold text-white tracking-tight">
-                        {escuderia.name}
-                      </h3>
                     </div>
-                  </div>
-                </Card>
+                  </Card>
+                </Link>
               );
             })}
           </div>
