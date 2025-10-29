@@ -156,13 +156,13 @@ function ListadoCircuitos() {
                       alt={circuito.name}
                       className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       onError={(e) => {
-                        const t = e.currentTarget as HTMLImageElement;
-                        t.onerror = null;
-                        t.src = new URL("../../assets/descalifica2logo.png", import.meta.url).href;
-                        t.classList.add("absolute", "inset-0", "w-full", "h-full", "object-contain", "bg-slate-900/50", "overflow-hidden");
-                      }}
-                    />
-                    
+                          const target = e.target as HTMLImageElement;
+                          // reemplazar con placeholder si no existe
+                          target.src = "/src/assets/descalifica2logo.png";
+                          target.className =
+                            "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
+                        }}
+                    />                   
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
 
                     {flagUrl && (
