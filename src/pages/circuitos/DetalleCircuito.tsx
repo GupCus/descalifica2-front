@@ -1,6 +1,6 @@
-import { Circuito } from "@/entities/circuito.entity.ts";
-import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Circuito } from '@/entities/circuito.entity.ts';
+import { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
 const getCountryFlag = (nationality: string): string => {
   try {
@@ -9,7 +9,29 @@ const getCountryFlag = (nationality: string): string => {
       import.meta.url
     ).href;
   } catch {
-    return "";
+    return '';
+  }
+};
+
+const getImagenCircuito = (name: string): string => {
+  if (!name) return '';
+
+  // Normalizar el nombre del circuito para que coincida con los archivos
+  const normalizedName = name
+    .toLowerCase() // Convertir a minúsculas
+    .normalize('NFD') // Descompone caracteres con acentos
+    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
+    .replace(/\s+/g, '-') // Reemplaza espacios con guiones
+    .replace(/[^a-z0-9-]/g, ''); // Elimina caracteres especiales
+
+  // Buscar siempre en assets
+  try {
+    return new URL(
+      `../../assets/circuitos/${normalizedName}.png`,
+      import.meta.url
+    ).href;
+  } catch {
+    return '';
   }
 };
 
@@ -19,7 +41,7 @@ function DetalleCircuito() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
   useEffect(() => {
     if (!id) return;
@@ -64,9 +86,18 @@ function DetalleCircuito() {
   }
 
   const flagUrl = getCountryFlag(circuito.country);
+  const circuitoImgUrl = getImagenCircuito(circuito.name);
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen ">
+      <div
+        className="absolute inset-0 w-full h-full blur-sm opacity-70"
+        style={{
+          backgroundImage: `url(${circuitoImgUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      ></div>
       <div className=" w-full max-w-4xl mx-8">
         <Link
           to="/circuitos"
@@ -83,20 +114,39 @@ function DetalleCircuito() {
             {circuito.name}
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <h3 className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-              País
-            </h3>
-            <div className="flex items-center gap-3 overflow-visible">
-              {flagUrl && (
-                <img
-                  src={flagUrl}
-                  alt={circuito.country}
-                  className="w-12 h-8 object-cover rounded shadows-lg overflow-hidden"
-                />
-              )}
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
+              <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+                País
+              </h3>
+              <div className="flex items-center gap-3 overflow-visible">
+                {flagUrl && (
+                  <img
+                    src={flagUrl}
+                    alt={circuito.country}
+                    className="w-12 h-8 object-cover rounded shadows-lg overflow-hidden"
+                  />
+                )}
+                <p className="text-2xl font-bold text-white">
+                  {circuito.country}
+                </p>
+              </div>
+            </div>
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
+              <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+                Longitud
+              </h3>
               <p className="text-2xl font-bold text-white">
-                {circuito.country}
+                {circuito.length} km
               </p>
+            </div>
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
+              <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+                Año de Inaguración
+              </h3>
+              <p className="text-2xl font-bold text-white">{circuito.year}</p>
+            </div>
+            <div>
+              <img src={circuito.track_map_url} alt={circuito.name} />
             </div>
           </div>
         </div>
