@@ -145,7 +145,7 @@ function GetPiloto() {
 
         {/* Columna derecha - Información */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Cabecera con nombre y número */}
+          
           <div className="bg-card rounded-lg p-6 shadow-lg border">
             <div className="flex items-center justify-between">
               <h1 className="text-4xl font-bold">{piloto.name}</h1>
