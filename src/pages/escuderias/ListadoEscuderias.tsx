@@ -166,7 +166,7 @@ function ListadoEscuderias() {
     if (!e.racing_series) return false;
     return (
       getCategoryName(e.racing_series.name) === "f2" ||
-      e.racing_series.name === "Formula 2"
+      e.racing_series.name === "Formula 2" || e.racing_series.name === "Fórmula 1"
     );
   });
 
@@ -174,7 +174,7 @@ function ListadoEscuderias() {
     if (!e.racing_series) return false;
     return (
       getCategoryName(e.racing_series.name) === "f1" ||
-      e.racing_series.name === "Formula 1"
+      e.racing_series.name === "Fórmula 1" || e.racing_series.name === "Formula 1"
     );
   });
 

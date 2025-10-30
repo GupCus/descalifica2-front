@@ -1,5 +1,4 @@
 import { useEffect,useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import AnimatedList from "@/components/ui/animated-list.tsx";
 import { Temporada } from "@/entities/temporada.entity.ts";
@@ -16,6 +15,7 @@ function ListadoTemporadas() {
   useEffect(() => {
     getTemporada()
       .then(data => setTemporadas(data))
+      .then(() => console.log(temporadas))
       .catch(err => {
         console.error("Error fetching temporadas:", err);
         setError("Error fetching temporadas");
@@ -32,8 +32,8 @@ function ListadoTemporadas() {
   }
 
 
-  const f1Temporadas = temporadas.filter(t => t.racing_series?.name === 'F1');
-  const f2Temporadas = temporadas.filter(t => t.racing_series?.name === 'F2');
+  const f1Temporadas = temporadas.filter(t => t.racing_series?.name === 'F1' || t.racing_series?.name === 'Formula 1' || t.racing_series?.name === 'Fórmula 1' );
+  const f2Temporadas = temporadas.filter(t => t.racing_series?.name === 'F2' || t.racing_series?.name === 'Formula 1' || t.racing_series?.name === 'Fórmula 1' );
   console.log('F1 Temporadas:', f1Temporadas.map(t => t.year));
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-12">
