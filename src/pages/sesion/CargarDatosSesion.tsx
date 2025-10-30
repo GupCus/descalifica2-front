@@ -92,15 +92,15 @@ function CargarDatosSesion() {
     }
   }, [sesion, sesiones]);
 
-  const handleTiempoChange = (pilotoName: string, value: string) => {
+  const handleTiempoChange = (pilotoID: string, value: string) => {
     setTiempos((prev) => {
-      const index = prev.findIndex(([id]) => id === pilotoName);
+      const index = prev.findIndex(([id]) => id === pilotoID);
       if (index !== -1) {
         const updated = [...prev];
-        updated[index] = [pilotoName, value];
+        updated[index] = [pilotoID, value];
         return updated;
       } else {
-        return [...prev, [pilotoName, value]];
+        return [...prev, [pilotoID, value]];
       }
     });
   };
@@ -221,9 +221,7 @@ function CargarDatosSesion() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {pilotosFiltrados.map((piloto) => {
                   const tiempoActual =
-                    tiempos.find(
-                      ([name]) => name === String(piloto.name)
-                    )?.[1] || "";
+                    tiempos.find(([id]) => id === String(piloto.id))?.[1] || "";
                   return (
                     <div key={piloto.id} className="flex flex-col gap-1">
                       <Label className="text-white-100">{piloto.name}</Label>
@@ -231,7 +229,7 @@ function CargarDatosSesion() {
                         type="text"
                         value={tiempoActual}
                         onChange={(e) =>
-                          handleTiempoChange(piloto.name, e.target.value)
+                          handleTiempoChange(String(piloto.id), e.target.value)
                         }
                         placeholder="00:00.000"
                         className="bg-background"
