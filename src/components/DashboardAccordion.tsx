@@ -13,11 +13,18 @@ import {
 import { Piloto } from "@/entities/piloto.entity.ts";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, User, Hash, Building2 } from "lucide-react";
+import { getPiloto } from "@/services/piloto.service.ts";
 
 function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
   const [sesionSeleccionada, setSesionSeleccionada] = useState<Sesion | null>(null);
+  const [pilotos, setPilotos] = useState<Piloto[]>([]);
+  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    getPiloto()
+      .then((data) => setPilotos(data))
+      .catch((err) => setError(err))
+    
     if (sesiones && !sesionSeleccionada) {
       setSesionSeleccionada(sesiones[0]);
     }
@@ -35,7 +42,7 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
                 className="min-w-20 font-semibold transition-all"
                 onClick={() => setSesionSeleccionada(s)}
               >
-                {s.tipo_Sesion}
+                {s.type}
               </Button>
             ))}
           </ButtonGroup>
@@ -45,9 +52,9 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
           {sesionSeleccionada && (
             <div className="bg-muted/50 rounded-lg p-4 border">
               <div className="flex items-center gap-2 text-sm">
-                <span className="font-semibold">{sesionSeleccionada.tipo_Sesion}</span>
+                <span className="font-semibold">{sesionSeleccionada.type}</span>
                 <span className="text-muted-foreground">
-                  {new Date(sesionSeleccionada.fecha_Hora_inicio).toLocaleString("es-ES", {
+                  {new Date(sesionSeleccionada.start_time).toLocaleString("es-ES", {
                     weekday: "long",
                     day: "numeric",
                     month: "long",
@@ -92,9 +99,14 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
               </TableHeader>
 
               <TableBody>
-                {sesionSeleccionada?.resultados && sesionSeleccionada.resultados.length > 0 ? (
-                  sesionSeleccionada.resultados.map((p: Piloto, i: number) => (
-                    <TableRow key={p.id}>
+                {sesionSeleccionada?.results && sesionSeleccionada.results.length > 0 ? (
+                  sesionSeleccionada.results.map((resultado, i: number) => {
+
+                    const p = pilotos.find(p => String(p.id) === String(resultado[0]));
+                    if (!p) return null;
+
+                    return (
+                    <TableRow key={i}>
                       <TableCell className="font-bold">
                         <Badge
                           variant={(i === 0) ? "default" : "secondary"}
@@ -108,13 +120,11 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
                       <TableCell>#{p.num}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          {Array.isArray(p.escuderia)
-                            ? p.escuderia[0]?.name
-                            : p.escuderia.name}
+                          {p.team.name}
                         </div>
                       </TableCell>
                     </TableRow>
-                  ))
+                  )})
                 ) : null}
               </TableBody>
             </Table>

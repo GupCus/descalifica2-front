@@ -16,6 +16,7 @@ function Home() {
   useEffect(() => {
     getCarrera()
       .then((data) => setCarreras(data))
+      .then(() => console.log(carreras))
       .catch((err) => console.error(err));
   }, []);
 
@@ -24,11 +25,7 @@ function Home() {
       ? undefined
       : carreras
           .filter((c) => new Date(c.end_date) < new Date())
-          .sort(
-            (a, b) =>
-              new Date(b.start_date).getTime() -
-              new Date(a.start_date).getTime()
-          );
+          .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
 
   return (
     <>
