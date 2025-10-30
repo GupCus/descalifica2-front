@@ -30,13 +30,13 @@ function Calendario() {
   const getSesionFecha = (tipo?: string) => {
     if(!carreraActual){
       return undefined
-    } else if(!carreraActual.sesiones){
+    } else if(!carreraActual.sessions){
       return undefined
     } else if (!tipo) {
-      return new Date(carreraActual.sesiones[0].fecha_Hora_inicio);
+      return new Date(carreraActual.sessions[0].start_time);
     } else {
-      const sesion = carreraActual.sesiones.find((s) => s.tipo_Sesion === tipo);
-      return sesion ? new Date(sesion.fecha_Hora_inicio) : undefined;
+      const sesion = carreraActual.sessions.find((s) => s.type === tipo);
+      return sesion ? new Date(sesion.start_time) : undefined;
     }
   };
   //En caso de haber f1 hoy, lo indica con un mensaje
@@ -111,7 +111,7 @@ function Calendario() {
 
           <CardContent>
             <div className="grid gap-3 max-h-80 overflow-y-auto">
-              {carreraActual ? carreraActual.sesiones?.map((sesion) => { 
+              {carreraActual ? carreraActual.sessions?.map((sesion) => { 
               return (
                 <div
                   key={sesion.id}
@@ -119,13 +119,13 @@ function Calendario() {
                 >
                   <div className="flex items-center gap-3">
                     <Badge
-                      variant={sesion.tipo_Sesion === "GP" ? "destructive" : "default"}
+                      variant={sesion.type === "GP" ? "destructive" : "default"}
                       className="font-bold text-sm px-3 py-1"
                     >
-                      {sesion.tipo_Sesion}
+                      {sesion.type}
                     </Badge>
                     <span className="font-semibold text-foreground">
-                      {new Date(sesion.fecha_Hora_inicio).toLocaleDateString("es-ES", {
+                      {new Date(sesion.start_time).toLocaleDateString("es-ES", {
                         weekday: "long",
                         day: "numeric",
                         month: "short",
@@ -133,7 +133,7 @@ function Calendario() {
                     </span>
                   </div>
                   <span className="text-base font-mono font-bold text-foreground">
-                    {new Date(sesion.fecha_Hora_inicio).toLocaleTimeString("es-ES", {
+                    {new Date(sesion.start_time).toLocaleTimeString("es-ES", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
