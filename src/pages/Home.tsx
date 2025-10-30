@@ -16,8 +16,8 @@ function Home() {
   useEffect(() => {
     getCarrera()
       .then((data) => setCarreras(data))
-      .then(() => console.log(carreras))
       .catch((err) => console.error(err));
+    console.log(carreras)
   }, []);
 
   const carrerasAnteriores =

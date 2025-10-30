@@ -58,9 +58,6 @@ function RootLayout() {
                   <NavigationMenuLink href="/temporadas">
                     Temporadas
                   </NavigationMenuLink>
-                  <NavigationMenuLink href="/categorias">
-                    Categorias
-                  </NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 

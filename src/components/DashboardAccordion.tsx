@@ -12,25 +12,27 @@ import {
 } from "@/components/ui/table"
 import { Piloto } from "@/entities/piloto.entity.ts";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, User, Hash, Building2 } from "lucide-react";
+import { Trophy, User, Hash, Building2, Timer } from "lucide-react";
 import { getPiloto } from "@/services/piloto.service.ts";
 
 function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
   const [sesionSeleccionada, setSesionSeleccionada] = useState<Sesion | null>(null);
+
   const [pilotos, setPilotos] = useState<Piloto[]>([]);
-  const [, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getPiloto()
       .then((data) => setPilotos(data))
       .catch((err) => setError(err))
-    
+  },[])
+  useEffect(() => {
     if (sesiones && !sesionSeleccionada) {
       setSesionSeleccionada(sesiones[0]);
     }
   }, [sesiones, sesionSeleccionada]);
 
-  if (sesiones) {
+  if (sesiones && !error) {
     return (
       <>
         <header className="w-full">
@@ -85,6 +87,12 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
                   </TableHead>
                   <TableHead className="w-[100px] font-bold">
                     <div className="flex items-center gap-2">
+                      <Timer className="h-4 w-4" />
+                      Tiempo
+                    </div>
+                  </TableHead>
+                  <TableHead className="w-[100px] font-bold">
+                    <div className="flex items-center gap-2">
                       <Hash className="h-4 w-4" />
                       Núm
                     </div>
@@ -100,11 +108,12 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
 
               <TableBody>
                 {sesionSeleccionada?.results && sesionSeleccionada.results.length > 0 ? (
-                  sesionSeleccionada.results.map((resultado, i: number) => {
+                  sesionSeleccionada.results.slice()
+                  .sort((a,b) => ( parseFloat(a[1])- parseFloat(b[1]) ))
+                  .map((resultado, i: number) => {
 
-                    const p = pilotos.find(p => String(p.id) === String(resultado[0]));
+                    const p = pilotos.find(p => p.id?.toString() === resultado[0]);
                     if (!p) return null;
-
                     return (
                     <TableRow key={i}>
                       <TableCell className="font-bold">
@@ -117,6 +126,7 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
                       </TableCell>
 
                       <TableCell className="font-semibold">{p.name}</TableCell>
+                      <TableCell>{resultado[1]}</TableCell>
                       <TableCell>#{p.num}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
