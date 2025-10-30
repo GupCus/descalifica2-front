@@ -15,10 +15,10 @@ const getCountryFlag = (country: string): string => {
     'Reino Unido': 'UK',
     'Estados Unidos': 'USA',
     'Países Bajos': 'Paises_Bajos',
-    'Emiratos Árabes Unidos': 'EAU',
-    Baréin: 'bahrain',
-    Barein: 'bahrain',
-    Azerbaiyán: 'Azerbaiyan',
+    'Abu Dhabi': 'EAU',
+    'Baréin': 'bahrain',
+    'Barein': 'bahrain',
+    'Azerbaiyán': 'Azerbaiyan',
   };
 
   // Si hay un caso especial, usarlo
