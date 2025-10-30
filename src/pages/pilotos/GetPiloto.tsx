@@ -1,16 +1,36 @@
 import { Piloto } from "@/entities/piloto.entity.ts";
 import { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
+import { ArrowLeftIcon } from "lucide-react";
 
 const getCountryFlag = (nationality: string): string => {
   if (!nationality) return "";
 
+  const specialCases: Record<string, string> = {
+    "Reino Unido": "UK",
+    "Estados Unidos": "USA",
+    "Países Bajos": "Paises_Bajos",
+    "Emiratos Árabes Unidos": "EAU",
+    Baréin: "bahrain",
+    Bahréin: "bahrain",
+    Azerbaiyán: "Azerbaiyan",
+  };
+
+  if (specialCases[nationality]) {
+    try {
+      return new URL(
+        `../../assets/banderas-paises/${specialCases[nationality]}.png`,
+        import.meta.url
+      ).href;
+    } catch {
+      return "";
+    }
+  }
+
   const normalizedName = nationality
-    .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
+    .replace(/\s+/g, "_")
+    .replace(/[^a-zA-Z0-9_]/g, "");
 
   try {
     return new URL(
@@ -19,6 +39,24 @@ const getCountryFlag = (nationality: string): string => {
     ).href;
   } catch {
     return "";
+  }
+};
+
+const getPilotoPhoto = (name: string): string => {
+  const normalizedName = name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
+
+  try {
+    return new URL(
+      `../../assets/pilotos/${normalizedName}.png`,
+      import.meta.url
+    ).href;
+  } catch {
+    return "https://via.placeholder.com/400x500/1e293b/cbd5e1?text=Piloto";
   }
 };
 
@@ -35,7 +73,6 @@ function GetPiloto() {
 
   useEffect(() => {
     if (location.state?.piloto) return;
-    
     if (!id) return;
 
     fetch(`${api}/pilotos/${id}`)
@@ -44,8 +81,7 @@ function GetPiloto() {
         return res.json();
       })
       .then((data) => {
-        console.log("Datos del piloto:", data); // <-- Agrega esto
-        setPiloto(data);
+        setPiloto(data.data);
         setLoading(false);
       })
       .catch((err) => {
@@ -56,15 +92,15 @@ function GetPiloto() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
-        <div className="text-xl text-white">Cargando piloto...</div>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-xl">Cargando piloto...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
+      <div className="flex justify-center items-center min-h-screen">
         <div className="text-red-500 text-xl">Error: {error}</div>
       </div>
     );
@@ -72,115 +108,122 @@ function GetPiloto() {
 
   if (!piloto) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900">
-        <div className="text-white text-xl">Piloto no encontrado</div>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-xl">Piloto no encontrado</div>
       </div>
     );
   }
 
   const flagUrl = getCountryFlag(piloto.nationality);
+  const photoUrl = getPilotoPhoto(piloto.name);
 
   return (
-    <div className="relative min-h-screen">
-      <div
-        className="absolute inset-0 w-full h-full z-0"
-        style={{
-          backgroundImage: `url(${flagUrl})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "blur(8px) brightness(0.4)",
-        }}
-      />
+    <div className="container mx-auto px-4 py-8">
+      <Link
+        to="/pilotos"
+        className="inline-flex items-center gap-2 mb-6 text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ArrowLeftIcon className="w-4 h-4" />
+        Volver al listado
+      </Link>
 
-      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
-        <div className="w-full max-w-4xl mx-8">
-          <Link
-            to="/pilotos"
-            className="inline-block mb-6 text-gray-300 hover:text-white transition-all bg-gray-900/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700 hover:border-blue-500"
-          >
-            ← Volver al listado
-          </Link>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Columna izquierda - Foto */}
+        <div className="lg:col-span-1">
+          <div className="bg-card rounded-lg overflow-hidden shadow-lg border">
+            <img
+              src={photoUrl}
+              alt={piloto.name}
+              className="w-full h-auto object-cover"
+              onError={(e) => {
+                e.currentTarget.src =
+                  "https://via.placeholder.com/400x500/1e293b/cbd5e1?text=Piloto";
+              }}
+            />
+          </div>
+        </div>
 
-          <div className="bg-gray-950/80 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-blue-700/40">
-            <h1
-              className="text-blue-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase mb-8"
-              style={{ fontFamily: "'Oswald', sans-serif" }}
-            >
-              {piloto.name} 
-            </h1>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-                <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
-                  Nacionalidad
-                </h3>
-                <div className="flex items-center gap-3">
-                  {flagUrl && (
-                    <img
-                      src={flagUrl}
-                      alt={piloto.nationality}
-                      className="w-12 h-8 object-cover rounded shadow-lg"
-                    />
-                  )}
-                  <p className="text-2xl font-bold text-white">
-                    {piloto.nationality}
-                  </p>
-                </div>
+        {/* Columna derecha - Información */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Cabecera con nombre y número */}
+          <div className="bg-card rounded-lg p-6 shadow-lg border">
+            <div className="flex items-center justify-between">
+              <h1 className="text-4xl font-bold">{piloto.name}</h1>
+              <div className="text-5xl font-bold text-primary">
+                #{piloto.num}
               </div>
+            </div>
+          </div>
 
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-                <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
-                  Número
+          {/* Grid de información */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Nacionalidad */}
+            <div className="bg-card rounded-lg p-4 shadow border">
+              <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                NACIONALIDAD
+              </h3>
+              <div className="flex items-center gap-3">
+                {flagUrl && (
+                  <img
+                    src={flagUrl}
+                    alt={`Bandera de ${piloto.nationality}`}
+                    className="w-8 h-6 object-cover rounded shadow"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                )}
+                <p className="text-lg font-semibold">{piloto.nationality}</p>
+              </div>
+            </div>
+
+            {/* Escudería */}
+            {piloto.team && (
+              <div className="bg-card rounded-lg p-4 shadow border">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                  ESCUDERÍA
                 </h3>
-                <p className="text-2xl font-bold text-white">
-                  #{piloto.num}
+                <p className="text-lg font-semibold">{piloto.team.name}</p>
+              </div>
+            )}
+
+            {/* Rol */}
+            {piloto.role && (
+              <div className="bg-card rounded-lg p-4 shadow border">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                  ROL
+                </h3>
+                <p className="text-lg font-semibold">{piloto.role}</p>
+              </div>
+            )}
+
+            {/* Categoría */}
+            {piloto.racing_series && (
+              <div className="bg-card rounded-lg p-4 shadow border">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                  CATEGORÍA
+                </h3>
+                <p className="text-lg font-semibold">
+                  {piloto.racing_series.name}
                 </p>
               </div>
+            )}
 
-              {piloto.team && (
-                <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-                  <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
-                    Escudería
-                  </h3>
-                  <p className="text-2xl font-bold text-white">
-                    {piloto.team.name}
-                  </p>
-                </div>
-              )}
-
-              {piloto.racing_series && (
-                <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-                  <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
-                    Categoría
-                  </h3>
-                  <p className="text-2xl font-bold text-white">
-                    {piloto.racing_series.name}
-                  </p>
-                </div>
-              )}
-
-              {piloto.birth_date && (
-                <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-                  <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
-                    Fecha de Nacimiento
-                  </h3>
-                  <p className="text-2xl font-bold text-white">
-                    {new Date(piloto.birth_date).toLocaleDateString()}
-                  </p>
-                </div>
-              )}
-
-              {piloto.wdcs && piloto.wdcs > 0 && (
-                <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-                  <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
-                    Campeonatos
-                  </h3>
-                  <p className="text-2xl font-bold text-white">
-                    {piloto.wdcs} 🏆
-                  </p>
-                </div>
-              )}
-            </div>
+            {/* Fecha de Nacimiento */}
+            {piloto.birth_date && (
+              <div className="bg-card rounded-lg p-4 shadow border md:col-span-2">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-2">
+                  FECHA DE NACIMIENTO
+                </h3>
+                <p className="text-lg font-semibold">
+                  {new Date(piloto.birth_date).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

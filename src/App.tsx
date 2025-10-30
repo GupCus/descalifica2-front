@@ -15,6 +15,7 @@ import MenuAdmin from "./pages/MenuAdmin.tsx";
 import NuevaEscuderia from "./pages/escuderias/NuevaEscuderia.tsx";
 import NuevoCircuito from "./pages/circuitos/NuevoCircuito.tsx";
 import GetEscuderia from "./pages/escuderias/GetEscuderia.tsx";
+import GetPiloto from "./pages/pilotos/GetPiloto.tsx";
 import NuevaMarca from "./pages/marcas/NuevaMarca.tsx";
 import NuevaCarrera from "./pages/carreras/NuevaCarrera.tsx";
 import NuevaTemporada from "./pages/temporada/NuevaTemporada.tsx";
@@ -49,6 +50,7 @@ function App() {
         <Route path="menuadmin/nuevasesion" element={<NuevaSesion />} />
         <Route path="menuadmin/cargarsesion" element={<CargarDatosSesion />} />
         <Route path="/escuderia/:id" element={<GetEscuderia />} />
+        <Route path="/piloto/:id" element={<GetPiloto />} />
       </Route>
     </Routes>
   );
