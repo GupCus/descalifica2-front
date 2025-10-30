@@ -199,11 +199,13 @@ function ListadoEscuderias() {
     (e) => filtroPaisF1 === "null" || e.nationality === filtroPaisF1
   );
 
+  /*
   console.log(escuderias);
   console.log("PAISES");
   console.log(paises);
   console.log("PAIS FILTRO SELECCIONADO");
   console.log(String(filtroPaisF1));
+ */
 
   return (
     <div className="relative min-h-screen">
