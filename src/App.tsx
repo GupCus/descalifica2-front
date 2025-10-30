@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Routes, Route } from "react-router-dom";
 import RootLayout from "./layouts/RootLayout";
 import Home from "./pages/Home";
@@ -15,6 +16,7 @@ import MenuAdmin from "./pages/MenuAdmin.tsx";
 import NuevaEscuderia from "./pages/escuderias/NuevaEscuderia.tsx";
 import NuevoCircuito from "./pages/circuitos/NuevoCircuito.tsx";
 import GetEscuderia from "./pages/escuderias/GetEscuderia.tsx";
+import GetPiloto from "./pages/pilotos/GetPiloto.tsx";
 import NuevaMarca from "./pages/marcas/NuevaMarca.tsx";
 import NuevaCarrera from "./pages/carreras/NuevaCarrera.tsx";
 import NuevaTemporada from "./pages/temporada/NuevaTemporada.tsx";
@@ -22,6 +24,33 @@ import NuevaCategoria from "./pages/categorias/NuevaCategoria.tsx";
 import ListadoPilotos from "./pages/pilotos/ListadoPilotos.tsx";
 import NuevaSesion from "./pages/sesion/NuevaSesion.tsx";
 import CargarDatosSesion from "./pages/sesion/CargarDatosSesion.tsx";
+=======
+import { Routes, Route } from 'react-router-dom';
+import RootLayout from './layouts/RootLayout';
+import Home from './pages/Home';
+import About from './pages/About';
+import NotFound from './pages/NotFound';
+import ListadoEscuderias from './pages/escuderias/ListadoEscuderias.tsx';
+import ListadoMarcas from './pages/marcas/ListadoMarcas.tsx';
+import ListadoCircuitos from './pages/circuitos/ListadoCircuitos.tsx';
+import Categorias from './pages/categorias/Categorias.tsx';
+import ListadoTemporadas from './pages/temporada/ListadoTemporadas.tsx';
+import DondeVer from './pages/DondeVer.tsx';
+import Calendario from './pages/Calendario.tsx';
+import NuevoPiloto from './pages/pilotos/NuevoPiloto.tsx';
+import MenuAdmin from './pages/MenuAdmin.tsx';
+import NuevaEscuderia from './pages/escuderias/NuevaEscuderia.tsx';
+import NuevoCircuito from './pages/circuitos/NuevoCircuito.tsx';
+import GetEscuderia from './pages/escuderias/GetEscuderia.tsx';
+import NuevaMarca from './pages/marcas/NuevaMarca.tsx';
+import NuevaCarrera from './pages/carreras/NuevaCarrera.tsx';
+import NuevaTemporada from './pages/temporada/NuevaTemporada.tsx';
+import NuevaCategoria from './pages/categorias/NuevaCategoria.tsx';
+import ListadoPilotos from './pages/pilotos/ListadoPilotos.tsx';
+import NuevaSesion from './pages/sesion/NuevaSesion.tsx';
+import CargarDatosSesion from './pages/sesion/CargarDatosSesion.tsx';
+import GetCircuito from './pages/circuitos/getCircuito.tsx';
+>>>>>>> 95ee44a9eecdfc4bee711c4645dd7b30a0173f4f
 
 function App() {
   return (
@@ -49,6 +78,11 @@ function App() {
         <Route path="menuadmin/nuevasesion" element={<NuevaSesion />} />
         <Route path="menuadmin/cargarsesion" element={<CargarDatosSesion />} />
         <Route path="/escuderia/:id" element={<GetEscuderia />} />
+<<<<<<< HEAD
+        <Route path="/piloto/:id" element={<GetPiloto />} />
+=======
+        <Route path="/circuito/:id" element={<GetCircuito />} />
+>>>>>>> 95ee44a9eecdfc4bee711c4645dd7b30a0173f4f
       </Route>
     </Routes>
   );
