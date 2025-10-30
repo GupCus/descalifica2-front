@@ -47,7 +47,7 @@ function CargarDatosSesion() {
       .catch((err) => setError(err));
   }, []);
 
-  /* DEBUGGING COMENTADO POR AHORA
+  /* DEBUGGING COMENTADO POR AHORA 
   console.log(`CATEGORIAS`);
   console.log(categorias);
   console.log(`CARRERAS`);
@@ -58,9 +58,10 @@ function CargarDatosSesion() {
 
   // Filtrar carreras y pilotos según la categoría seleccionada
   const carrerasFiltradas = carreras.filter(
-    (c) => String(c.id) === String(categoria)
+    (c) => String(c.season?.racing_series.id) === String(categoria)
   );
-  //console.log(carrerasFiltradas);
+  // console.log("CARRERAS FILTRADAS");
+  // console.log(carrerasFiltradas);
   const pilotosFiltrados = pilotos.filter(
     (p) => String(p.racing_series.id) === String(categoria)
   );
