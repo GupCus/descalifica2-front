@@ -52,7 +52,7 @@ function NuevaCarrera() {
   const [temporadas, setTemporadas] = useState<Temporada[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
 
-  //Gets necesarios
+  //get para todo lo necesario
   useEffect(() => {
     getCircuito()
       .then((data) => setCircuitos(data))
@@ -107,9 +107,7 @@ function NuevaCarrera() {
           season: "",
         })
       )
-      .catch((err) =>
-        setMessage(`Error: ${err.message || "No se pudo crear la carrera"}`)
-      )
+      .catch((err) => setMessage(`Error creando la carrera: ${err.message}`))
       .finally(() => setSubmitting(false));
   };
 

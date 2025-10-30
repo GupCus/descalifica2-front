@@ -21,10 +21,9 @@ import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import fondoSesion from "../../assets/sesion.webp";
 import { getCarrera } from "@/services/carrera.service.ts";
-import { NewSesion } from "@/entities/sesion.entity.ts";
+import { NewSesion, Sesion } from "@/entities/sesion.entity.ts";
 import { postSesion } from "@/services/sesion.service.ts";
 
-//DEFINICIONES DE CLASES - FALTA INTEGRAR LOS RESULTADOS!!!!! (capaz es mejor ponerlos en otro lado?)
 type FormState = {
   name: string;
   type: string;
@@ -176,7 +175,7 @@ function NuevaSesion() {
                 setForm((s) => ({
                   ...s,
                   name: value,
-                  tipo_Sesion: getTipoSesionAbreviacion(value),
+                  type: getTipoSesionAbreviacion(value),
                 }))
               }
               required
