@@ -19,20 +19,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Temporada } from "@/entities/temporada.entity.ts";
+import { getTemporada } from "@/services/temporada.service.ts";
 
 function CargarDatosSesion() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [carreras, setCarreras] = useState<Carrera[]>([]);
   const [sesiones, setSesiones] = useState<Sesion[]>([]);
   const [pilotos, setPilotos] = useState<Piloto[]>([]);
+  const [temporadas, setTemporadas] = useState<Temporada[]>([]);
   const [categoria, setCategoria] = useState<string>("");
   const [carrera, setCarrera] = useState<string>("");
   const [sesion, setSesion] = useState<string>("");
+  const [temporada, setTemporada] = useState<string>("");
   const [tiempos, setTiempos] = useState<[string, string][]>([]);
   const [, setError] = useState<string | null>();
   const [message, setMessage] = useState<string | null>();
 
   useEffect(() => {
+    getTemporada()
+      .then((data) => setTemporadas(data))
+      .catch((err) => setError(err));
     getCategoria()
       .then((data) => setCategorias(data))
       .catch((err) => setError(err));
@@ -55,13 +62,17 @@ function CargarDatosSesion() {
   console.log(`PILOTOS`);
   console.log(pilotos);
 */
+  console.log("TEMPORADAS");
+  console.log(temporadas);
 
-  // Filtrar carreras y pilotos según la categoría seleccionada
+  //FILTROS PARA LO QUE SELECCIONE EL USUARIO
   const carrerasFiltradas = carreras.filter(
-    (c) => String(c.season?.racing_series.id) === String(categoria)
+    (c) =>
+      String(c.season?.racing_series.id) === String(categoria) &&
+      String(c.season?.id) === temporada
   );
-  // console.log("CARRERAS FILTRADAS");
-  // console.log(carrerasFiltradas);
+  console.log("CARRERAS FILTRADAS");
+  console.log(carrerasFiltradas);
   const pilotosFiltrados = pilotos.filter(
     (p) => String(p.racing_series.id) === String(categoria)
   );
@@ -152,27 +163,47 @@ function CargarDatosSesion() {
           <h2 className="text-white-100 text-3xl font-bold text-center mb-6 uppercase tracking-wider">
             Cargar datos de sesión
           </h2>
-          {/* Selector de Categoría */}
-          <div>
-            <Label className="text-white-100 mb-1">Categoría</Label>
-            <Select
-              value={categoria}
-              onValueChange={(value) => setCategoria(value)}
-              required
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Seleccionar categoría" />
-              </SelectTrigger>
-              <SelectContent>
-                {categorias.map((cat) => (
-                  <SelectItem key={cat.id} value={String(cat.id)}>
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex justify-between">
+            <div className="flex-1 mr-5">
+              <Label className="text-white-100 mb-1">Temporada</Label>
+              <Select
+                value={temporada}
+                onValueChange={(value) => setTemporada(value)}
+                required
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Seleccionar temporada" />
+                </SelectTrigger>
+                <SelectContent>
+                  {temporadas.map((temp) => (
+                    <SelectItem key={temp.id} value={String(temp.id)}>
+                      {temp.year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex-1">
+              <Label className="text-white-100 mb-1">Categoría</Label>
+              <Select
+                value={categoria}
+                onValueChange={(value) => setCategoria(value)}
+                disabled={!temporada}
+                required
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Seleccionar categoría" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categorias.map((cat) => (
+                    <SelectItem key={cat.id} value={String(cat.id)}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-          {/* Selector de Carrera */}
           <div>
             <Label className="text-white-100 mb-1">Carrera</Label>
             <Select

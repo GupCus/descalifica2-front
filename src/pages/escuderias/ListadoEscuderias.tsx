@@ -7,6 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getEscuderia } from '@/services/escuderia.service.ts';
 import { Escuderia } from '@/entities/escuderia.entity.ts';
@@ -80,10 +87,18 @@ function ListadoEscuderias() {
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [paises, setPaises] = useState<string[]>([]);
+  const [filtroPaisF1, setFiltroPaisF1] = useState<string>('null');
 
   useEffect(() => {
     getEscuderia()
-      .then((data) => setEscuderias(data))
+      .then((data) => {
+        setEscuderias(data);
+        const naciones = Array.from(
+          new Set(data.map((e: Escuderia) => e.nationality).filter(Boolean))
+        );
+        setPaises(naciones);
+      })
       .catch((err) => {
         setError(err.message);
         console.error('Error cargando escuderías', err);
@@ -166,8 +181,8 @@ function ListadoEscuderias() {
     if (!e.racing_series) return false;
     return (
       getCategoryName(e.racing_series.name) === 'f2' ||
-      e.racing_series.name === 'Formula 2' ||
-      e.racing_series.name === 'Fórmula 2'
+      e.racing_series.name === 'Fórmula 2' ||
+      e.racing_series.name === 'Formula 2'
     );
   });
 
@@ -179,6 +194,18 @@ function ListadoEscuderias() {
       e.racing_series.name === 'Formula 1'
     );
   });
+
+  const escuderiasF1Filtradas = f1Escuderias.filter(
+    (e) => filtroPaisF1 === 'null' || e.nationality === filtroPaisF1
+  );
+
+  /*
+  console.log(escuderias);
+  console.log("PAISES");
+  console.log(paises);
+  console.log("PAIS FILTRO SELECCIONADO");
+  console.log(String(filtroPaisF1));
+ */
 
   return (
     <div className="relative min-h-screen">
@@ -201,9 +228,25 @@ function ListadoEscuderias() {
             className="mx-auto w-50 h-auto object-contain"
           />
         </div>
+        <div className="mb-6 max-w-md mx-auto">
+          <h4 className="mb-1 ml-3 font-semibold">Filtrar por país</h4>
+          <Select value={filtroPaisF1} onValueChange={setFiltroPaisF1}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Filtrar escuderías por país" />
+            </SelectTrigger>
+            <SelectContent className="border-none">
+              <SelectItem value="null">Todas las escuderías</SelectItem>
+              {paises.map((p) => (
+                <SelectItem key={p} value={p}>
+                  {p}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Grid de Escuderías F1 */}
-        {f1Escuderias.length === 0 ? (
+        {escuderiasF1Filtradas.length === 0 ? (
           <Card className="bg-slate-900/50 border-slate-700">
             <CardHeader>
               <CardTitle className="text-white">No hay escuderías F1</CardTitle>
@@ -214,7 +257,7 @@ function ListadoEscuderias() {
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {f1Escuderias.map((escuderia) => {
+            {escuderiasF1Filtradas.map((escuderia) => {
               const flagUrl = getCountryFlag(escuderia.nationality);
               const logoUrl = getEscuderiaLogo(escuderia.name);
 
@@ -225,7 +268,7 @@ function ListadoEscuderias() {
                       <img
                         src={logoUrl}
                         alt={`Logo de ${escuderia.name}`}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        className="absolute inset-0 w-full h-full object-cover auto transition-transform duration-300 group-hover:scale-105"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           // reemplazar con placeholder si no existe
