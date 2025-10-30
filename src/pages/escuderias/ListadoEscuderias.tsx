@@ -199,14 +199,6 @@ function ListadoEscuderias() {
     (e) => filtroPaisF1 === "null" || e.nationality === filtroPaisF1
   );
 
-  /*
-  console.log(escuderias);
-  console.log("PAISES");
-  console.log(paises);
-  console.log("PAIS FILTRO SELECCIONADO");
-  console.log(String(filtroPaisF1));
- */
-
   return (
     <div className="relative min-h-screen">
       <div
@@ -245,7 +237,6 @@ function ListadoEscuderias() {
           </Select>
         </div>
 
-        {/* Grid de Escuderías F1 */}
         {escuderiasF1Filtradas.length === 0 ? (
           <Card className="bg-slate-900/50 border-slate-700">
             <CardHeader>
@@ -278,10 +269,8 @@ function ListadoEscuderias() {
                         }}
                       />
 
-                      {/* Overlay oscuro para mejorar legibilidad */}
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
 
-                      {/* Bandera en la esquina superior derecha */}
                       {flagUrl && (
                         <div className="absolute top-4 right-4 z-10">
                           <img
@@ -292,7 +281,6 @@ function ListadoEscuderias() {
                         </div>
                       )}
 
-                      {/* Nombre de la escudería en la parte inferior */}
                       <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
                         <h3 className="text-2xl font-bold text-white tracking-tight">
                           {escuderia.name}
@@ -306,7 +294,6 @@ function ListadoEscuderias() {
           </div>
         )}
 
-        {/* LOGO F2 */}
         <div>
           <img
             src={new URL("../../assets/f2-logo.png", import.meta.url).href}
@@ -315,8 +302,6 @@ function ListadoEscuderias() {
           />
         </div>
         <div>
-          {/* Grid de Escuderías F2 */}
-
           {f2Escuderias.length === 0 ? (
             <Card className="bg-slate-900/50 border-slate-700">
               <CardHeader>

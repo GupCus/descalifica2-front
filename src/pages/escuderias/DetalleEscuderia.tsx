@@ -3,12 +3,50 @@ import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button.tsx";
 import { Trash2 } from "lucide-react";
-import { deleteEscuderia, getOneEscuderia } from "@/services/escuderia.service.ts";
+import {
+  deleteEscuderia,
+  getOneEscuderia,
+} from "@/services/escuderia.service.ts";
 
 const getCountryFlag = (nationality: string): string => {
+  if (!nationality) return "";
+
+  const specialCases: Record<string, string> = {
+    "Reino Unido": "UK",
+    "Estados Unidos": "USA",
+    "Países Bajos": "Paises_Bajos",
+    "Emiratos Árabes Unidos": "EAU",
+    Baréin: "bahrain",
+    Bahréin: "bahrain",
+    Azerbaiyán: "Azerbaiyan",
+    "Reino de Bahréin": "bahrain",
+    Inglaterra: "UK",
+    Italia: "Italia",
+    Austria: "Austria",
+    Alemania: "Alemania",
+    Francia: "Francia",
+    Suiza: "Suiza",
+  };
+
+  if (specialCases[nationality]) {
+    try {
+      return new URL(
+        `../../assets/banderas-paises/${specialCases[nationality]}.png`,
+        import.meta.url
+      ).href;
+    } catch {
+      return "";
+    }
+  }
+
+  const normalizedName = nationality
+    .normalize("NFD")
+    .replace(/\s+/g, "_")
+    .replace(/[^a-zA-Z0-9_]/g, "");
+
   try {
     return new URL(
-      `../../assets/banderas-paises/${nationality}.png`,
+      `../../assets/banderas-paises/${normalizedName}.png`,
       import.meta.url
     ).href;
   } catch {
