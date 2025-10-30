@@ -16,7 +16,7 @@ import { Trophy, User, Hash, Building2, Timer } from "lucide-react";
 import { getPiloto } from "@/services/piloto.service.ts";
 
 function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
-  const [sesionSeleccionada, setSesionSeleccionada] = useState<Sesion | null>(null);
+  const [sesionSeleccionada, setSesionSeleccionada] = useState<Sesion | undefined>(undefined);
 
   const [pilotos, setPilotos] = useState<Piloto[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -37,16 +37,59 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
       <>
         <header className="w-full">
           <ButtonGroup className="flex ">
-            {sesiones.map((s) => (
               <Button
-                key={s.id}
-                variant={sesionSeleccionada?.id === s.id ? "default" : "outline"}
-                className="min-w-20 font-semibold transition-all"
-                onClick={() => setSesionSeleccionada(s)}
-              >
-                {s.type}
-              </Button>
-            ))}
+              variant={sesionSeleccionada?.type === "FP1" ? "default" : "outline"}
+              className="min-w-20 font-semibold"
+              onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "FP1"))}
+            >
+              FP1
+            </Button>
+          {sesiones.find(s => s.type === "FP2") ?
+                      (<><Button
+              variant={sesionSeleccionada?.type === "FP2" ? "default" : "outline"}
+              className="min-w-20 font-semibold"
+              onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "FP2"))}
+            >
+              FP2
+            </Button>
+            <Button
+              variant={sesionSeleccionada?.type === "FP3" ? "default" : "outline"}
+              className="min-w-20 font-semibold"
+              onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "FP3"))}
+            >
+              FP3
+            </Button></>) :
+                        (<><Button
+              variant={sesionSeleccionada?.type === "SQ" ? "default" : "outline"}
+              className="min-w-20 font-semibold"
+              onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "SQ"))}
+            >
+              SQ
+            </Button>
+            <Button
+              variant={sesionSeleccionada?.type === "SR" ? "default" : "outline"}
+              className="min-w-20 font-semibold"
+              onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "SR"))}
+            >
+              SPRINT
+            </Button></>)
+            }
+
+
+            <Button
+              variant={sesionSeleccionada?.type === "Q" ? "default" : "outline"}
+              className="min-w-20 font-semibold"
+              onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "Q"))}
+            >
+              Q
+            </Button>
+            <Button
+              variant={sesionSeleccionada?.type === "GP" ? "default" : "outline"}
+              className="min-w-20 font-semibold"
+              onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "GP"))}
+            >
+              GP
+            </Button>              
           </ButtonGroup>
         </header>
 

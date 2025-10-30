@@ -17,7 +17,6 @@ function Home() {
     getCarrera()
       .then((data) => setCarreras(data))
       .catch((err) => console.error(err));
-    console.log(carreras)
   }, []);
 
   const carrerasAnteriores =
