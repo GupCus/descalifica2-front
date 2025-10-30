@@ -35,7 +35,7 @@ const getEscuderiaLogo = (name: string): string => {
   }
 };
 
-function GetEscuderia() {
+function DetalleEscuderia() {
   const { id } = useParams<{ id: string }>();
   const [escuderia, setEscuderia] = useState<Escuderia | null>(null);
   const [loading, setLoading] = useState(true);
@@ -182,4 +182,4 @@ function GetEscuderia() {
   );
 }
 
-export default GetEscuderia;
+export default DetalleEscuderia;

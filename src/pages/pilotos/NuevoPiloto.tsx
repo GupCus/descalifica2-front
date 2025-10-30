@@ -43,7 +43,7 @@ function NuevoPiloto() {
     team: "",
     num: "",
     nationality: "",
-    birth_date: null, // <-- Cambia de "" a null
+    birth_date: null,
     role: "",
     racing_series: "",
   });

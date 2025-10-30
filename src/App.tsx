@@ -13,7 +13,7 @@ import NuevoPiloto from "./pages/pilotos/NuevoPiloto.tsx";
 import MenuAdmin from "./pages/MenuAdmin.tsx";
 import NuevaEscuderia from "./pages/escuderias/NuevaEscuderia.tsx";
 import NuevoCircuito from "./pages/circuitos/NuevoCircuito.tsx";
-import GetEscuderia from "./pages/escuderias/GetEscuderia.tsx";
+import DetalleEscuderia from "./pages/escuderias/DetalleEscuderia.tsx";
 import NuevaMarca from "./pages/marcas/NuevaMarca.tsx";
 import NuevaCarrera from "./pages/carreras/NuevaCarrera.tsx";
 import NuevaTemporada from "./pages/temporada/NuevaTemporada.tsx";
@@ -22,6 +22,7 @@ import ListadoPilotos from "./pages/pilotos/ListadoPilotos.tsx";
 import NuevaSesion from "./pages/sesion/NuevaSesion.tsx";
 import CargarDatosSesion from "./pages/sesion/CargarDatosSesion.tsx";
 import DetalleCircuito from "./pages/circuitos/DetalleCircuito.tsx";
+import DetallePiloto from "./pages/pilotos/DetallePiloto.tsx";
 
 function App() {
   return (
@@ -47,8 +48,9 @@ function App() {
         <Route path="menuadmin/nuevacategoria" element={<NuevaCategoria />} />
         <Route path="menuadmin/nuevasesion" element={<NuevaSesion />} />
         <Route path="menuadmin/cargarsesion" element={<CargarDatosSesion />} />
-        <Route path="/escuderia/:id" element={<GetEscuderia />} />
+        <Route path="/escuderia/:id" element={<DetalleEscuderia />} />
         <Route path="/circuito/:id" element={<DetalleCircuito />} />
+        <Route path="/piloto/:id" element={<DetallePiloto />} />
       </Route>
     </Routes>
   );

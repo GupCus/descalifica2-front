@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Escuderia } from "@/entities/escuderia.entity.ts";
 import { getEscuderia } from "@/services/escuderia.service.ts";
+import { Link } from "react-router-dom";
 
 // Helper para banderas
 const getCountryFlag = (nationality?: string): string => {
@@ -131,9 +132,6 @@ function ListadoPilotos() {
       filtroEscuderiaF2 === "null" ||
       String(p.team?.id ?? p.team) === filtroEscuderiaF2
   );
-  console.log("PILOTOS FILTRADOS");
-  console.log(f1Pilotos);
-  console.log(f1Filtrados);
 
   if (loading) {
     return (
@@ -242,56 +240,56 @@ function ListadoPilotos() {
                 const flagUrl = getCountryFlag(piloto.nationality);
                 const photoUrl = getPilotoPhoto(piloto.name);
                 return (
-                  <Card
-                    key={piloto.id}
-                    className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
-                  >
-                    <div className="relative w-auto h-80 overflow-hidden">
-                      <img
-                        src={photoUrl}
-                        alt={`Foto de ${piloto.name}`}
-                        className="absolute inset-0 w-full h-full object-cover overflow-hidden transition-transform duration-300 group-hover:scale-105"
-                        onError={(e) => {
-                          const t = e.currentTarget as HTMLImageElement;
-                          t.onerror = null;
-                          t.src = new URL(
-                            "../../assets/descalifica2logo.png",
-                            import.meta.url
-                          ).href;
-                          t.classList.add(
-                            "object-contain",
-                            "bg-slate-900/50",
-                            "overflow-hidden"
-                          );
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
-                      {flagUrl && (
-                        <div className="absolute top-4 right-4 z-10">
-                          <img
-                            src={flagUrl}
-                            alt={`Bandera de ${piloto.nationality}`}
-                            className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
-                          />
+                  <Link to={`/piloto/${piloto.id}`} key={piloto.id}>
+                    <Card
+                      key={piloto.id}
+                      className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
+                    >
+                      <div className="relative w-auto h-80 overflow-hidden">
+                        <img
+                          src={photoUrl}
+                          alt={`Foto de ${piloto.name}`}
+                          className="absolute inset-0 w-full h-full object-cover overflow-hidden transition-transform duration-300 group-hover:scale-105"
+                          onError={(e) => {
+                            const t = e.currentTarget as HTMLImageElement;
+                            t.onerror = null;
+                            t.src = new URL(
+                              "../../assets/descalifica2logo.png",
+                              import.meta.url
+                            ).href;
+                            t.classList.add(
+                              "object-contain",
+                              "bg-slate-900/50",
+                              "overflow-hidden"
+                            );
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
+                        {flagUrl && (
+                          <div className="absolute top-4 right-4 z-10">
+                            <img
+                              src={flagUrl}
+                              alt={`Bandera de ${piloto.nationality}`}
+                              className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
+                            />
+                          </div>
+                        )}
+                        <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
+                          <h3 className="text-2xl font-bold text-white tracking-tight">
+                            {piloto.name}
+                          </h3>
                         </div>
-                      )}
-                      <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                        <h3 className="text-2xl font-bold text-white tracking-tight">
-                          {piloto.name}
-                        </h3>
                       </div>
-                    </div>
-                  </Card>
+                    </Card>
+                  </Link>
                 );
               })}
             </div>
           </div>
         )}
 
-        {/* Separador */}
         <div className="mt-12 mb-6" />
 
-        {/* F2 */}
         <div className="mb-6">
           <img
             src={new URL("../../assets/f2-logo.png", import.meta.url).href}
