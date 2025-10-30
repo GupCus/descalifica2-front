@@ -119,7 +119,6 @@ function DetallePiloto() {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950">
-      {/* Foto del piloto difuminada de fondo */}
       <div
         className="absolute inset-0 z-0 opacity-10"
         style={{
@@ -130,7 +129,6 @@ function DetallePiloto() {
         }}
       />
 
-      {/* Efectos de luz */}
       <div className="absolute inset-0 overflow-hidden z-0">
         <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-blue-600/5 rounded-full blur-3xl" />
         <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-red-600/5 rounded-full blur-3xl" />
@@ -208,7 +206,9 @@ function DetallePiloto() {
                   <h3 className="text-sm font-semibold text-slate-400 mb-2">
                     ROL
                   </h3>
-                  <p className="text-lg font-semibold text-white">{piloto.role}</p>
+                  <p className="text-lg font-semibold text-white">
+                    {piloto.role}
+                  </p>
                 </div>
               )}
 

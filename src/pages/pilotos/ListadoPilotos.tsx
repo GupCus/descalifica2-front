@@ -57,7 +57,6 @@ const getCountryFlag = (nationality?: string): string => {
   }
 };
 
-// Helper para foto del piloto (intenta en assets/pilotos, sino placeholder)
 const getPilotoPhoto = (name?: string): string => {
   if (!name) return "";
   const normalizedName = name
@@ -66,7 +65,6 @@ const getPilotoPhoto = (name?: string): string => {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]/g, "");
-  // Try common extensions in order
   const exts = ["png", "webp", "jpg", "jpeg"];
   for (const ext of exts) {
     try {
@@ -74,8 +72,8 @@ const getPilotoPhoto = (name?: string): string => {
         `../../assets/pilotos/${normalizedName}.${ext}`,
         import.meta.url
       ).href;
-    } catch {
-      // continue
+    } catch (err) {
+      console.log(`Error en la función normalizedName: ${err}`);
     }
   }
   return "";

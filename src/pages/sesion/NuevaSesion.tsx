@@ -21,7 +21,7 @@ import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import fondoSesion from "../../assets/sesion.webp";
 import { getCarrera } from "@/services/carrera.service.ts";
-import { NewSesion, Sesion } from "@/entities/sesion.entity.ts";
+import { NewSesion } from "@/entities/sesion.entity.ts";
 import { postSesion } from "@/services/sesion.service.ts";
 
 type FormState = {
@@ -117,9 +117,7 @@ function NuevaSesion() {
           race: "",
         })
       )
-      .catch((err) =>
-        setMessage(`Error: ${err.message || "No se pudo crear la sesión"}`)
-      )
+      .catch((err) => setMessage(`Error al crear la sesión: ${err.message}`))
       .finally(() => setSubmitting(false));
   };
 
