@@ -1,6 +1,6 @@
-import { Circuito } from '@/entities/circuito.entity.ts';
-import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Circuito } from "@/entities/circuito.entity.ts";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 
 const getCountryFlag = (nationality: string): string => {
   try {
@@ -9,17 +9,17 @@ const getCountryFlag = (nationality: string): string => {
       import.meta.url
     ).href;
   } catch {
-    return '';
+    return "";
   }
 };
 
-function GetCircuito() {
+function DetalleCircuito() {
   const { id } = useParams<{ id: string }>();
   const [circuito, setCircuito] = useState<Circuito | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
   useEffect(() => {
     if (!id) return;
@@ -105,4 +105,4 @@ function GetCircuito() {
   );
 }
 
-export default GetCircuito;
+export default DetalleCircuito;
