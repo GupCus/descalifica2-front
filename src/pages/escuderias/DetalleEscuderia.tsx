@@ -1,6 +1,9 @@
 import { Escuderia } from "@/entities/escuderia.entity.ts";
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button.tsx";
+import { Trash2 } from "lucide-react";
+import { deleteEscuderia, getOneEscuderia } from "@/services/escuderia.service.ts";
 
 const getCountryFlag = (nationality: string): string => {
   try {
@@ -16,15 +19,13 @@ const getCountryFlag = (nationality: string): string => {
 const getEscuderiaLogo = (name: string): string => {
   if (!name) return "";
 
-  // Normalizar el nombre de la escudería para que coincida con los archivos
   const normalizedName = name
-    .toLowerCase() // Convertir a minúsculas
-    .normalize("NFD") // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
-    .replace(/\s+/g, "-") // Reemplaza espacios con guiones
-    .replace(/[^a-z0-9-]/g, ""); // Elimina caracteres especiales
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "");
 
-  // Buscar siempre en assets
   try {
     return new URL(
       `../../assets/escuderias/${normalizedName}.png`,
@@ -37,29 +38,39 @@ const getEscuderiaLogo = (name: string): string => {
 
 function DetalleEscuderia() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [escuderia, setEscuderia] = useState<Escuderia | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-
   useEffect(() => {
-    if (!id) return;
-
-    fetch(`${api}/escuderias/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
-      .then((data) => {
-        setEscuderia(data.data ?? data);
-        setLoading(false);
-      })
+    if (!id) {
+      setError("No se proporcionó un ID");
+      setLoading(false);
+      return;
+    }
+    getOneEscuderia(parseInt(id))
+      .then((data) => setEscuderia(data))
       .catch((err) => {
         setError(err.message);
-        setLoading(false);
-      });
-  }, [id, api]);
+        console.error("Error cargando escudería", err);
+      })
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  const handleDelete = async () => {
+    if (!escuderia?.id) return;
+
+    if (confirm(`¿Estás seguro de eliminar "${escuderia.name}"?`)) {
+      try {
+        await deleteEscuderia(escuderia.id);
+        navigate("/escuderias");
+      } catch (err) {
+        console.error("Error eliminando escudería", err);
+        alert("Error al eliminar la escudería");
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -86,7 +97,6 @@ function DetalleEscuderia() {
   }
 
   const logoUrl = getEscuderiaLogo(escuderia.name);
-  console.log("Logo URL:", logoUrl); // <-- Agrega esto
   const flagUrl = getCountryFlag(escuderia.nationality);
 
   return (
@@ -103,12 +113,23 @@ function DetalleEscuderia() {
 
       <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <div className="w-full max-w-4xl mx-8">
-          <Link
-            to="/escuderias"
-            className="inline-block mb-6 text-gray-300 hover:text-white transition-all bg-gray-900/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700 hover:border-red-500"
-          >
-            ← Volver al listado
-          </Link>
+          {/* ✅ Botones en la misma fila, uno a cada extremo */}
+          <div className="flex justify-between items-center mb-6">
+            <Link
+              to="/escuderias"
+              className="inline-block text-gray-300 hover:text-white transition-all bg-gray-900/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700 hover:border-red-500"
+            >
+              ← Volver al listado
+            </Link>
+            <Button
+              onClick={handleDelete}
+              variant="destructive"
+              className="flex items-center gap-2"
+            >
+              <Trash2 className="h-4 w-4" />
+              Eliminar
+            </Button>
+          </div>
 
           <div className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-red-700/40">
             <h1
@@ -151,7 +172,9 @@ function DetalleEscuderia() {
                   Marca
                 </h3>
                 <p className="text-2xl font-bold text-white">
-                  {escuderia.brand?.name || "—"}
+                  {typeof escuderia.brand === "string"
+                    ? escuderia.brand
+                    : escuderia.brand?.name || "—"}
                 </p>
               </div>
 
@@ -160,7 +183,9 @@ function DetalleEscuderia() {
                   Categoría
                 </h3>
                 <p className="text-2xl font-bold text-white">
-                  {escuderia.racing_series?.name || "—"}
+                  {typeof escuderia.racing_series === "string"
+                    ? escuderia.racing_series
+                    : escuderia.racing_series?.name || "—"}
                 </p>
               </div>
 
