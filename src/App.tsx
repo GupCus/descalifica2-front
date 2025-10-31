@@ -24,6 +24,8 @@ import CargarDatosSesion from "./pages/sesion/CargarDatosSesion.tsx";
 import DetalleCircuito from "./pages/circuitos/DetalleCircuito.tsx";
 import DetallePiloto from "./pages/pilotos/DetallePiloto.tsx";
 import DetalleTemporada from "./pages/temporada/DetalleTemporada.tsx";
+import DetalleMarca from "./pages/marcas/DetalleMarca.tsx";
+
 
 function App() {
   return (
@@ -53,6 +55,7 @@ function App() {
         <Route path="/circuito/:id" element={<DetalleCircuito />} />
         <Route path="/piloto/:id" element={<DetallePiloto />} />
         <Route path="/temporada/:id" element={<DetalleTemporada />} />
+        <Route path="/marca/:id" element={<DetalleMarca />} />
       </Route>
     </Routes>
   );
