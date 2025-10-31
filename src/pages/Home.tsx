@@ -87,14 +87,14 @@ function Home() {
 
                   <AccordionContent>
                     <div className="flex h-auto">
-                      <div className="flex-3 w-full h-full">
+                      <div className="flex-3 w-99 h-full">
                         <DashboardAccordion sesiones={gp.sessions} />
                       </div>
                      
                         <img
                           src={gp.track?.track_map_url}
                           alt={gp.track?.name}
-                          className="flex-1 max-w-[40%]"
+                          className="max-w-[40%] max-h-48 w-auto h-auto object-contain"
                         />
                   
                     </div>
