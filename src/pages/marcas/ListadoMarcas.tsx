@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { ChromaGrid } from "@/components/ui/Chroma-grid";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,10 +17,11 @@ const getMarcaLogo = (name?: string) => {
   const exts = ["png", "webp", "jpg", "jpeg"];
   for (const ext of exts) {
     try {
-      return new URL(`../../assets/marcas/${normalized}.${ext}`, import.meta.url).href;
-    } catch {
-      // continue
-    }
+      return new URL(
+        `../../assets/marcas/${normalized}.${ext}`,
+        import.meta.url
+      ).href;
+    } catch {}
   }
   return "";
 };
@@ -31,13 +33,16 @@ const getCountryFlag = (country?: string) => {
     "Estados Unidos": "USA",
     "Países Bajos": "Paises_Bajos",
     "Emiratos Árabes Unidos": "EAU",
-    "Baréin": "bahrain",
-    "Barein": "bahrain",
-    "Azerbaiyán": "Azerbaiyan",
+    Baréin: "bahrain",
+    Barein: "bahrain",
+    Azerbaiyán: "Azerbaiyan",
   };
   if (specialCases[country]) {
     try {
-      return new URL(`../../assets/banderas-paises/${specialCases[country]}.png`, import.meta.url).href;
+      return new URL(
+        `../../assets/banderas-paises/${specialCases[country]}.png`,
+        import.meta.url
+      ).href;
     } catch {
       return "";
     }
@@ -48,7 +53,10 @@ const getCountryFlag = (country?: string) => {
     .replace(/\s+/g, "_")
     .replace(/[^a-zA-Z0-9_]/g, "");
   try {
-    return new URL(`../../assets/banderas-paises/${normalized}.png`, import.meta.url).href;
+    return new URL(
+      `../../assets/banderas-paises/${normalized}.png`,
+      import.meta.url
+    ).href;
   } catch {
     return "";
   }
@@ -61,11 +69,11 @@ function ListadoMarcas() {
 
   useEffect(() => {
     getMarca()
-      .then(data => setMarcas(data))
-      .catch(err => {
-              setMarcas([]);
-              setError("Error cargando marcas " + err);
-            })
+      .then((data) => setMarcas(data))
+      .catch((err) => {
+        setMarcas([]);
+        setError("Error cargando marcas " + err);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -80,7 +88,10 @@ function ListadoMarcas() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card key={i} className="bg-slate-900/50 border-slate-700 overflow-hidden">
+              <Card
+                key={i}
+                className="bg-slate-900/50 border-slate-700 overflow-hidden"
+              >
                 <Skeleton className="h-48 w-full" />
                 <CardHeader>
                   <Skeleton className="h-6 w-3/4" />
@@ -115,12 +126,14 @@ function ListadoMarcas() {
   return (
     <div className="relative min-h-screen">
       <div>
-        <h1 className="text-4xl font-bold text-white text-center pt-8">MARCAS</h1>
+        <h1 className="text-4xl font-bold text-white text-center pt-8">
+          MARCAS
+        </h1>
       </div>
-      <div> 
+      <div>
         <img
           className="absolute inset-0 w-full h-full blur-sm opacity-35"
-          src={new URL('../../assets/fondomarcas.png', import.meta.url).href}
+          src={new URL("../../assets/fondomarcas.png", import.meta.url).href}
           alt="Fondo marcas"
         />
       </div>
@@ -131,34 +144,45 @@ function ListadoMarcas() {
             const logo = getMarcaLogo(marca.name);
             const flagUrl = getCountryFlag(marca.nationality);
             return (
-              <Card key={marca.id} className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0">
-                <div className="relative w-full h-48 overflow-hidden">
-                  <img
-                    src={logo}
-                    alt={marca.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 overflow-hidden"
-                    onError={(e) => {
-                      const t = e.currentTarget as HTMLImageElement;
-                      t.onerror = null;
-                      t.src = new URL('../../assets/descalifica2logo.png', import.meta.url).href;
-                      t.classList.add('object-contain', 'bg-slate-900/50', 'overflow-hidden');
-                    }}
-                  />
-                  {flagUrl && (
-                    <div className="absolute top-4 right-4 z-10">
-                      <img
-                        src={flagUrl}
-                        alt={`Bandera de ${marca.nationality}`}
-                        className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
-                      />
+              <Link to={`/marca/${marca.id}`} key={marca.id}>
+                <Card className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0">
+                  <div className="relative w-full h-48 overflow-hidden">
+                    <img
+                      src={logo}
+                      alt={marca.name}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 overflow-hidden"
+                      onError={(e) => {
+                        const t = e.currentTarget as HTMLImageElement;
+                        t.onerror = null;
+                        t.src = new URL(
+                          "../../assets/descalifica2logo.png",
+                          import.meta.url
+                        ).href;
+                        t.classList.add(
+                          "object-contain",
+                          "bg-slate-900/50",
+                          "overflow-hidden"
+                        );
+                      }}
+                    />
+                    {flagUrl && (
+                      <div className="absolute top-4 right-4 z-10">
+                        <img
+                          src={flagUrl}
+                          alt={`Bandera de ${marca.nationality}`}
+                          className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
+                        />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+                      <h3 className="text-lg font-semibold text-white truncate">
+                        {marca.name}
+                      </h3>
                     </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
-                    <h3 className="text-lg font-semibold text-white truncate">{marca.name}</h3>
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </Link>
             );
           })}
         </div>

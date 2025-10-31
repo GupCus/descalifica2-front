@@ -151,7 +151,6 @@ function DetalleEscuderia() {
 
       <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <div className="w-full max-w-4xl mx-8">
-          {/* ✅ Botones en la misma fila, uno a cada extremo */}
           <div className="flex justify-between items-center mb-6">
             <Link
               to="/escuderias"
