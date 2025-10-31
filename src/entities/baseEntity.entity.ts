@@ -1,5 +1,5 @@
 
 export abstract class baseEntity{
-  id?: number
+  id!: number
   name!: string
 }

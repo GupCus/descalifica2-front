@@ -10,30 +10,31 @@ import { getCarrera } from "@/services/carrera.service.ts";
 //Componente
 function Calendario() {
   const [carreras, setCarreras] = useState<Carrera[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getCarrera()
       .then(data => setCarreras(data))
-      .catch(err => console.error(err));
+      .catch((err) => setError(err))
+      .finally(() => setLoading(false));
   }, []);
 
   //Si todavía no llegaron las carreras, retorna mensaje vacío
   const carreraActual = 
-  carreras.length === 0 ?
+  (loading || error) ?
   undefined
   :
   carreras
   .filter((c) => new Date(c.end_date) >= new Date()) 
   .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0];
 
-  //Consigue la fecha de la sesión en caso de especificar tipo, o de la primera
-  const getSesionFecha = (tipo?: string) => {
+  //Consigue la fecha de la sesión dada
+  const getSesionFecha = (tipo: string) => {
     if(!carreraActual){
       return undefined
     } else if(!carreraActual.sessions){
       return undefined
-    } else if (!tipo) {
-      return new Date(carreraActual.sessions[0].start_time);
     } else {
       const sesion = carreraActual.sessions.find((s) => s.type === tipo);
       return sesion ? new Date(sesion.start_time) : undefined;
@@ -79,7 +80,7 @@ function Calendario() {
           </h1>
           <div className="flex flex-col gap-4">
             <CountdownTimer
-              targetDate={getSesionFecha()}
+              targetDate={getSesionFecha("FP1")}
               title="Tiempo hasta la próxima sesión"
             />
             <CountdownTimer

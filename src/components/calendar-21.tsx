@@ -15,8 +15,8 @@ export default function Calendar21({ carreras }: { carreras?: Carrera[] }) {
   }
 
   const sesion: Sesion[] = carreras
-  .flatMap(c => c.sesiones || [])
-  .filter((s): s is Sesion => s !== undefined && s !== null);
+  .flatMap(c => c.sessions || [])
+  .filter((s:Sesion) => s !== undefined && s !== null);
 
   return (
     <Calendar
@@ -32,9 +32,9 @@ export default function Calendar21({ carreras }: { carreras?: Carrera[] }) {
         DayButton: ({ children, modifiers, day, ...props }) => {
           
           const esSesion = sesion.find(s => {
-            const fechaSesion = typeof s.fecha_Hora_inicio === 'string'
-              ? new Date(s.fecha_Hora_inicio)
-              : s.fecha_Hora_inicio;
+            const fechaSesion = typeof s.start_time === 'string'
+              ? new Date(s.start_time)
+              : s.start_time;
             
             return fechaSesion?.toDateString() === day.date.toDateString();
           });
@@ -52,7 +52,7 @@ export default function Calendar21({ carreras }: { carreras?: Carrera[] }) {
               
               {children}
               {!modifiers.outside && esSesion && (
-                <span className="text-xs font-bold block">{esSesion.tipo_Sesion}</span>
+                <span className="text-xs font-bold block">{esSesion.type}</span>
               )}
             </CalendarDayButton>
           )

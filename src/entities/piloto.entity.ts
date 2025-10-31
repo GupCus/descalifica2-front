@@ -13,7 +13,9 @@ export class Piloto extends baseEntity {
   wdcs!: Temporada[];
 }
 
-export class NewPiloto extends baseEntity {
+export class NewPiloto {
+  id?: number
+  name!: string
   team!: string;
   num!: number | string;
   nationality!: string;

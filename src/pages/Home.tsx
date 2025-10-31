@@ -12,19 +12,25 @@ import { useEffect, useState } from "react";
 
 function Home() {
   const [carreras, setCarreras] = useState<Carrera[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getCarrera()
       .then((data) => setCarreras(data))
-      .catch((err) => console.error(err));
+      .catch((err) => setError(err))
+      .finally(() => setLoading(false));
   }, []);
+
+  if(loading){<div> Cargando carreras... </div>}
+  if(error){<div> Error cargando carreras... </div>}
 
   const carrerasAnteriores =
     carreras.length === 0
       ? undefined
-      : carreras
-          .filter((c) => new Date(c.end_date) < new Date())
-          .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
+      :  carreras
+                  .filter((c) => new Date(c.end_date) < new Date())
+                  .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime());
 
   return (
     <>
@@ -70,10 +76,10 @@ function Home() {
           collapsible
         >
           {carrerasAnteriores
-            ? carrerasAnteriores.map((gp) => (
+            ? carrerasAnteriores.map((gp) => !gp ? null : (
                 <AccordionItem
                   key={gp.id}
-                  value={gp.id ? gp.id.toString() : ""}
+                  value={gp.id.toString()}
                 >
                   <AccordionTrigger className="mx-auto text-2xl font-semibold">
                     {gp.name}
@@ -84,13 +90,13 @@ function Home() {
                       <div className="flex-3 w-full h-full">
                         <DashboardAccordion sesiones={gp.sessions} />
                       </div>
-                      {/* Queda inhabilitada la imagen hasta agregarla al circuito
-                  <img
-                    src={gp.circuito.imagen}
-                    alt={gp.circuito}
-                    className="flex-1 max-w-[40%]"
-                  />
-                  */}
+                     
+                        <img
+                          src={gp.track?.track_map_url}
+                          alt={gp.track?.name}
+                          className="flex-1 max-w-[40%]"
+                        />
+                  
                     </div>
                   </AccordionContent>
                 </AccordionItem>

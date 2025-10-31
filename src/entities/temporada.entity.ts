@@ -4,7 +4,7 @@ import { Piloto } from './piloto.entity.js';
 import { Escuderia } from './escuderia.entity.js';
 
 export class Temporada {
-  id?: number;
+  id!: number;
   year!: number | string;
   races?: Carrera[];
   racing_series!: Categoria;

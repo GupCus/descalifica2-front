@@ -13,7 +13,9 @@ export class Escuderia extends baseEntity {
   racing_series!: Categoria;
   wccs?: Temporada[];
 }
-export class NewEscuderia extends baseEntity {
+export class NewEscuderia {
+  id?: number
+  name!: string
   fundation!: string;
   nationality!: string;
   engine!: string;

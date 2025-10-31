@@ -16,7 +16,6 @@ function ListadoTemporadas() {
   useEffect(() => {
     getTemporada()
       .then(data => setTemporadas(data))
-      .then(() => console.log(temporadas))
       .catch(err => {
         console.error("Error fetching temporadas:", err);
         setError("Error fetching temporadas");

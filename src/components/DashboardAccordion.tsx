@@ -22,24 +22,28 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    //Getea los pilotos para los resultados
     getPiloto()
       .then((data) => setPilotos(data))
       .catch((err) => setError(err))
   },[])
+
   useEffect(() => {
+    //Selecciona fp1 siempre al abrir el dashboard
     if (sesiones && !sesionSeleccionada) {
-      setSesionSeleccionada(sesiones[0]);
+      setSesionSeleccionada(sesiones.find(s => s.type === "FP1"));
     }
   }, [sesiones, sesionSeleccionada]);
 
-  if (sesiones && !error) {
+  if (error) { <div> Hubo un error obteniendo los resultados </div> }
+  else if (sesiones){
     return (
       <>
         <header className="w-full">
           <ButtonGroup className="flex ">
               <Button
               variant={sesionSeleccionada?.type === "FP1" ? "default" : "outline"}
-              className="min-w-20 font-semibold"
+              className="min-w-30 font-semibold"
               onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "FP1"))}
             >
               FP1
@@ -47,45 +51,44 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
           {sesiones.find(s => s.type === "FP2") ?
                       (<><Button
               variant={sesionSeleccionada?.type === "FP2" ? "default" : "outline"}
-              className="min-w-20 font-semibold"
+              className="min-w-30 font-semibold"
               onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "FP2"))}
             >
               FP2
             </Button>
             <Button
               variant={sesionSeleccionada?.type === "FP3" ? "default" : "outline"}
-              className="min-w-20 font-semibold"
+              className="min-w-30 font-semibold"
               onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "FP3"))}
             >
               FP3
             </Button></>) :
                         (<><Button
               variant={sesionSeleccionada?.type === "SQ" ? "default" : "outline"}
-              className="min-w-20 font-semibold"
+              className="min-w-30 font-semibold"
               onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "SQ"))}
             >
               SQ
             </Button>
             <Button
               variant={sesionSeleccionada?.type === "SR" ? "default" : "outline"}
-              className="min-w-20 font-semibold"
+              className="min-w-30 font-semibold"
               onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "SR"))}
             >
               SPRINT
             </Button></>)
             }
 
-
             <Button
               variant={sesionSeleccionada?.type === "Q" ? "default" : "outline"}
-              className="min-w-20 font-semibold"
+              className="min-w-30 font-semibold"
               onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "Q"))}
             >
               Q
             </Button>
             <Button
               variant={sesionSeleccionada?.type === "GP" ? "default" : "outline"}
-              className="min-w-20 font-semibold"
+              className="min-w-30 font-semibold"
               onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "GP"))}
             >
               GP
@@ -97,7 +100,7 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
           {sesionSeleccionada && (
             <div className="bg-muted/50 rounded-lg p-4 border">
               <div className="flex items-center gap-2 text-sm">
-                <span className="font-semibold">{sesionSeleccionada.type}</span>
+                <span className="font-semibold">{sesionSeleccionada.name}</span>
                 <span className="text-muted-foreground">
                   {new Date(sesionSeleccionada.start_time).toLocaleString("es-ES", {
                     weekday: "long",

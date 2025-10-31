@@ -11,7 +11,9 @@ export class Carrera extends baseEntity {
   sessions?: Sesion[];
 }
 
-export class NewCarrera extends baseEntity {
+export class NewCarrera {
+  id?: number
+  name!: string
   start_date!: Date;
   end_date!: Date;
   track?: number | string;

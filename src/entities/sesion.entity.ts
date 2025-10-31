@@ -1,5 +1,4 @@
 import { baseEntity } from "./baseEntity.entity.js";
-import { Piloto } from "./piloto.entity.js";
 import { Carrera } from "./carrera.entity.js";
 
 export class Sesion extends baseEntity {
@@ -10,7 +9,9 @@ export class Sesion extends baseEntity {
   results?: [string, string][];
 }
 
-export class NewSesion extends baseEntity {
+export class NewSesion {
+  id?: number
+  name!: string
   type!: string;
   start_time?: Date;
   end_time?: Date;
