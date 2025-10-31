@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton.tsx";
 import AnimatedList from "@/components/ui/animated-list.tsx";
 import { Temporada } from "@/entities/temporada.entity.ts";
 import { getTemporada } from "@/services/temporada.service.ts";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -10,7 +11,7 @@ function ListadoTemporadas() {
   const [temporadas, setTemporadas] = useState<Temporada[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     getTemporada()
@@ -33,8 +34,15 @@ function ListadoTemporadas() {
 
 
   const f1Temporadas = temporadas.filter(t => t.racing_series?.name === 'F1' || t.racing_series?.name === 'Formula 1' || t.racing_series?.name === 'Fórmula 1' );
-  const f2Temporadas = temporadas.filter(t => t.racing_series?.name === 'F2' || t.racing_series?.name === 'Formula 1' || t.racing_series?.name === 'Fórmula 1' );
+  const f2Temporadas = temporadas.filter(t => t.racing_series?.name === 'F2' || t.racing_series?.name === 'Formula 2' || t.racing_series?.name === 'Fórmula 2' );
   console.log('F1 Temporadas:', f1Temporadas.map(t => t.year));
+  console.log('F2 Temporadas:', f2Temporadas.map(t => t.year));
+
+  const SelectHandler= (list:Temporada[]) => (label:string,index:number) => {
+    const selectedTemporada = list[index];
+    navigate(`/temporada/${selectedTemporada.id}`);
+  };
+
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-12">
       <div
@@ -59,6 +67,7 @@ function ListadoTemporadas() {
               <AnimatedList
                 items={f1Temporadas.map(t => `Temporada ${t.year}`)}
                 showGradients={false}
+                onItemSelect={SelectHandler(f1Temporadas)}
                 displayScrollbar={true}
                 className="max-h-[60vh] overflow-y-auto pr-4 space-y-4"
               />
@@ -78,6 +87,7 @@ function ListadoTemporadas() {
               <AnimatedList
                 items={f2Temporadas.map(t => `Temporada ${t.year}`)}
                 showGradients={false}
+                onItemSelect={SelectHandler(f2Temporadas)}
                 displayScrollbar={true}
                 className="max-h-[60vh] overflow-hidden"
               />

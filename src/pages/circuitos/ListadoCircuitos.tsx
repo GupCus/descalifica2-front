@@ -47,28 +47,6 @@ const getCountryFlag = (country: string): string => {
   }
 };
 
-// Helper function para obtener la imagen del circuito automáticamente desde assets
-const getImagenCircuito = (name: string): string => {
-  if (!name) return '';
-
-  // Normalizar el nombre del circuito para que coincida con los archivos
-  const normalizedName = name
-    .toLowerCase() // Convertir a minúsculas
-    .normalize('NFD') // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
-    .replace(/\s+/g, '-') // Reemplaza espacios con guiones
-    .replace(/[^a-z0-9-]/g, ''); // Elimina caracteres especiales
-
-  // Buscar siempre en assets
-  try {
-    return new URL(
-      `../../assets/circuitos/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return '';
-  }
-};
 
 function ListadoCircuitos() {
   const [circuitos, setCircuitos] = useState<Circuito[]>([]);
@@ -152,7 +130,6 @@ function ListadoCircuitos() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
             {circuitos.map((circuito) => {
               const flagUrl = getCountryFlag(circuito.country);
-              const circuitoImgUrl = getImagenCircuito(circuito.name);
               return (
                 <Link
                   to={`/circuito/${circuito.id}`}
@@ -165,7 +142,7 @@ function ListadoCircuitos() {
                   >
                     <div className="relative w-full h-48 overflow-hidden">
                       <img
-                        src={circuitoImgUrl}
+                        src={circuito.track_map_url}
                         alt={circuito.name}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         onError={(e) => {

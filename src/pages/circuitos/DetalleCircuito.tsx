@@ -43,27 +43,6 @@ const getCountryFlag = (country: string): string => {
   }
 };
 
-const getImagenCircuito = (name: string): string => {
-  if (!name) return '';
-
-  // Normalizar el nombre del circuito para que coincida con los archivos
-  const normalizedName = name
-    .toLowerCase() // Convertir a minúsculas
-    .normalize('NFD') // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
-    .replace(/\s+/g, '-') // Reemplaza espacios con guiones
-    .replace(/[^a-z0-9-]/g, ''); // Elimina caracteres especiales
-
-  // Buscar siempre en assets
-  try {
-    return new URL(
-      `../../assets/circuitos/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return '';
-  }
-};
 
 function DetalleCircuito() {
   const { id } = useParams<{ id: string }>();
@@ -116,67 +95,74 @@ function DetalleCircuito() {
   }
 
   const flagUrl = getCountryFlag(circuito.country);
-  const circuitoImgUrl = getImagenCircuito(circuito.name);
+
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center">
+    <div className="relative min-h-screen flex items-start justify-center px-4 py-8">
       <div
-        className="absolute inset-0 w-full h-full blur-sm opacity-70"
+        className="absolute inset-0 w-full h-full blur-sm opacity-70 -z-10"
         style={{
-          backgroundImage: `url(${circuitoImgUrl})`,
+          backgroundImage: `url(${new URL('../../assets/Spa-fondo.jpg', import.meta.url).href})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
-      ></div>
-      <div className=" w-full max-w-4xl mx-4 ">
-        <div className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-gray-700/40">
+      />
+
+      <div className="w-full max-w-4xl mx-4 z-10">
+        <div className="bg-gray-950/70 backdrop-blur-md rounded-lg p-6 md:p-8 shadow-2xl border border-gray-700/40">
           <Link
             to="/circuitos"
-            className="inline-block mb-6 text-gray-300 hover:text-white transition-all bg-gray-900/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700 hover:border-red-500"
+            className="inline-block mb-4 text-gray-300 hover:text-white transition-all bg-gray-900/50 backdrop-blur-sm px-3 py-2 rounded-lg border border-gray-700 hover:border-red-500"
           >
             ← Volver al listado
           </Link>
+
           <h1
-            className="text-white-100 mt-5 scroll-m-20 text-4xl font-extrabold tracking-wider text-center uppercase mb-8"
+            className="text-white mt-2 text-3xl md:text-4xl font-extrabold tracking-wider text-center uppercase mb-6"
             style={{ fontFamily: "'Oswald',sans-serif" }}
           >
             {circuito.name}
           </h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-              <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
-                Año de Inaguración
+
+          {/* Datos arriba en 3 columnas en desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-gray-700/50">
+              <h3 className="text-gray-400 text-xs font-semibold mb-2 uppercase tracking-wider">
+                Año de Inauguración
               </h3>
               <p className="text-2xl font-bold text-white">{circuito.year}</p>
             </div>
 
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-              <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-gray-700/50">
+              <h3 className="text-gray-400 text-xs font-semibold mb-2 uppercase tracking-wider">
                 Longitud
               </h3>
-              <p className="text-2xl font-bold text-white">
-                {circuito.length} km
-              </p>
+              <p className="text-2xl font-bold text-white">{circuito.length} km</p>
             </div>
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-              <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-gray-700/50">
+              <h3 className="text-gray-400 text-xs font-semibold mb-2 uppercase tracking-wider">
                 País
               </h3>
-              <div className="flex items-center gap-3 overflow-visible">
+              <div className="flex items-center gap-3">
                 {flagUrl && (
                   <img
                     src={flagUrl}
                     alt={circuito.country}
-                    className="w-18 h-12 object-cover rounded shadows-lg overflow-hidden"
+                    className="w-12 h-8 object-cover rounded overflow-hidden"
                   />
                 )}
-                <p className="text-2xl font-bold text-white">
-                  {circuito.country}
-                </p>
+                <p className="text-2xl font-bold text-white">{circuito.country}</p>
               </div>
             </div>
-            <div>
-              <img src={circuito.track_map_url} alt={circuito.name} />
+          </div>
+          <div className="mt-6">
+            <div className="rounded-lg overflow-hidden border border-gray-700/30 shadow-2xl">
+              <img
+                src={circuito.track_map_url}
+                alt={circuito.name}
+                className="w-auto md:h-auto object-cover"
+              />
             </div>
           </div>
         </div>

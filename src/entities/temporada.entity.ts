@@ -1,13 +1,15 @@
-import { Categoria } from "./categoria.entity.js";
-import { Carrera } from "./carrera.entity.js";
+import { Categoria } from './categoria.entity.js';
+import { Carrera } from './carrera.entity.js';
+import { Piloto } from './piloto.entity.js';
+import { Escuderia } from './escuderia.entity.js';
 
 export class Temporada {
   id?: number;
   year!: number | string;
   races?: Carrera[];
   racing_series!: Categoria;
-  winner_driver?: string;
-  winner_team?: string;
+  winner_driver?: Piloto;
+  winner_team?: Escuderia;
 }
 
 export class NewTemporada {
