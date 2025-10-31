@@ -92,6 +92,8 @@ function ListadoPilotos() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
+  const [escuderiasF1, setEscuderiasF1] = useState<string[]>([]);
+  const [escuderiasF2, setEscuderiasF2] = useState<string[]>([]);
   const [filtroEscuderiaF1, setFiltroEscuderiaF1] = useState<string>("null");
   const [filtroEscuderiaF2, setFiltroEscuderiaF2] = useState<string>("null");
 
@@ -108,6 +110,14 @@ function ListadoPilotos() {
         console.error("Error cargando escuderías", err);
       });
   }, []);
+
+  const f1Escuderias = escuderias.filter(
+    (e) => e.racing_series.name === "Fórmula 1" || e.racing_series.name === "f1"
+  );
+
+  const f2Escuderias = escuderias.filter(
+    (e) => e.racing_series.name === "Fórmula 2" || e.racing_series.name === "f2"
+  );
 
   const f2Pilotos = pilotos.filter(
     (p) =>
@@ -213,7 +223,7 @@ function ListadoPilotos() {
             </SelectTrigger>
             <SelectContent className="border-none">
               <SelectItem value="null">Todos los pilotos F1</SelectItem>
-              {escuderias.map((e) => (
+              {f1Escuderias.map((e) => (
                 <SelectItem key={e.id} value={String(e.id)}>
                   {e.name}
                 </SelectItem>
@@ -305,7 +315,7 @@ function ListadoPilotos() {
             </SelectTrigger>
             <SelectContent className="border-none">
               <SelectItem value="null">Todas los pilotos F2</SelectItem>
-              {escuderias.map((e) => (
+              {f2Escuderias.map((e) => (
                 <SelectItem key={e.id} value={String(e.id)}>
                   {e.name}
                 </SelectItem>
