@@ -1,24 +1,41 @@
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { useState } from "react";
-import { NewUsuario } from "@/entities/usuario.entity.ts";
-import { postUsuario } from "@/services/usuario.service.ts";
+import { AuthService } from "@/services/auth.service.ts";
+import { useNavigate } from "react-router-dom";
+import * as React from "react";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+// TODO: falta estilizar esta página!!!!
 
 type FormState = {
   name: string;
   email: string;
   password: string;
-  //username: string;
+  username: string;
+  date_of_birth: Date | null;
 };
 
 function Registrarse() {
   const [message, setMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<"error" | "success" | null>(
+    null
+  );
   const [submitting, setSubmitting] = useState(false);
+  const [openBirthDate, setOpenBirthDate] = React.useState(false);
+  const navigate = useNavigate();
   const [form, setForm] = useState<FormState>({
     name: "",
-    //username: "",
+    username: "",
     email: "",
     password: "",
+    date_of_birth: null,
   });
 
   const handleChange = (
@@ -34,58 +51,92 @@ function Registrarse() {
     e.preventDefault();
     setSubmitting(true);
     setMessage(null);
+    setMessageType(null);
 
-    const nuevoUsuario: NewUsuario = {
-      email: form.email,
-      password: form.password,
-      name: form.name,
-      //username: form.username,
-    };
+    try {
+      // Validaciones básicas
+      if (
+        !form.email ||
+        !form.password ||
+        !form.name ||
+        !form.username ||
+        !form.date_of_birth
+      ) {
+        throw new Error("Todos los campos son obligatorios.");
+      }
 
-    console.log("Datos a enviar:", nuevoUsuario);
+      if (form.password.length < 6) {
+        throw new Error("La contraseña debe tener al menos 6 caracteres.");
+      }
 
-    postUsuario(nuevoUsuario)
-      .then(() => setMessage("Usuario creado con éxito."))
-      /*.then(() =>
-        setForm({
-          email: "",
-          password: "",
-        })
-      ) */
-      .catch((err) => {
-        console.error("Error completo:", err);
-        console.error("Respuesta del servidor:", err.response?.data);
-        setMessage(
-          `Error: ${
-            err.response?.data?.error ||
-            err.message ||
-            "No se pudo crear el usuario"
-          }`
-        );
-      })
-      .finally(() => setSubmitting(false));
+      // Formatear la fecha a string (YYYY-MM-DD)
+      const birthDateString = form.date_of_birth.toISOString().split("T")[0];
+
+      // Usar el nuevo servicio de autenticación
+      const response = await AuthService.RegisterUser({
+        email: form.email,
+        password: form.password,
+        username: form.username,
+        name: form.name,
+        date_of_birth: birthDateString,
+      });
+
+      setMessageType("success");
+      setMessage("¡Usuario creado con éxito! Redirigiendo...");
+
+      // Limpiar formulario
+      setForm({
+        name: "",
+        username: "",
+        email: "",
+        password: "",
+        date_of_birth: null,
+      });
+
+      // Redirigir después de 2 segundos
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    } catch (err: any) {
+      setMessageType("error");
+      console.error("Error completo:", err);
+      console.error("Respuesta del servidor:", err.response?.data);
+
+      setMessage(
+        `Error: ${
+          err.response?.data?.error ||
+          err.response?.data?.message ||
+          err.message ||
+          "No se pudo crear el usuario"
+        }`
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
+
   return (
     <>
       <div>
         <form onSubmit={handleSubmit}>
           <InputGroup className="mb-10">
             <InputGroupInput
-              placeholder="email"
+              placeholder="Email"
               id="email"
+              type="email"
               value={form.email}
               onChange={handleChange}
               required
-            ></InputGroupInput>
+            />
           </InputGroup>
           <InputGroup className="mb-10">
             <InputGroupInput
-              placeholder="password"
-              id="password"
-              value={form.password}
+              placeholder="Usuario"
+              id="username"
+              value={form.username}
               onChange={handleChange}
               required
-            ></InputGroupInput>
+            />
           </InputGroup>
           <InputGroup className="mb-10">
             <InputGroupInput
@@ -94,18 +145,54 @@ function Registrarse() {
               value={form.name}
               onChange={handleChange}
               required
-            ></InputGroupInput>
+            />
           </InputGroup>
-          {/*
           <InputGroup className="mb-10">
             <InputGroupInput
-              placeholder="username"
-              id="username"
-              value={form.username}
+              placeholder="Contraseña"
+              id="password"
+              type="password"
+              value={form.password}
               onChange={handleChange}
               required
-            ></InputGroupInput>
-          </InputGroup> */}
+            />
+          </InputGroup>
+
+          <div className="mb-10">
+            <Popover open={openBirthDate} onOpenChange={setOpenBirthDate}>
+              <PopoverTrigger>
+                {/* dejar sin aschild porque sino no renderiza el calendario */}
+                <Button
+                  variant="outline"
+                  className="w-full justify-between font-normal"
+                  type="button"
+                >
+                  {form.date_of_birth
+                    ? form.date_of_birth.toLocaleDateString()
+                    : "Fecha de nacimiento"}
+                  <CalendarIcon className="h-4 w-4 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-auto overflow-hidden p-0 border-none"
+                align="start"
+              >
+                <Calendar
+                  mode="single"
+                  selected={form.date_of_birth ?? undefined}
+                  captionLayout="dropdown"
+                  onSelect={(date) => {
+                    if (date)
+                      setForm((prev) => ({ ...prev, date_of_birth: date }));
+                    setOpenBirthDate(false);
+                  }}
+                  fromYear={1930}
+                  toYear={new Date().getFullYear()}
+                  defaultMonth={new Date(2000, 0)}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
 
           <div className="flex w-full justify-between pt-4">
             <Button
@@ -125,7 +212,11 @@ function Registrarse() {
           </div>
 
           {message && (
-            <p className="mt-2 text-sm text-center font-semibold text-gray-300">
+            <p
+              className={`mt-2 text-sm text-center font-semibold ${
+                messageType === "success" ? "text-green-400" : "text-red-400"
+              }`}
+            >
               {message}
             </p>
           )}
@@ -134,4 +225,5 @@ function Registrarse() {
     </>
   );
 }
+
 export default Registrarse;

@@ -50,21 +50,24 @@ export const AuthService = {
     email,
     password,
     username,
-    birthDate,
+    date_of_birth,
+    name,
   }: {
     email: string;
     password: string;
     username: string;
-    birthDate: string;
+    date_of_birth: string;
+    name: string;
   }) {
     try {
       const response = await apiClient.post<RegisterResponse>(
         "/auth/register",
         {
-          mail: email,
+          email: email,
           password: password,
           username: username,
-          birthDate: birthDate,
+          date_of_birth: date_of_birth,
+          name: name,
         }
       );
       return response.data;
