@@ -26,6 +26,7 @@ import DetallePiloto from "./pages/pilotos/DetallePiloto.tsx";
 import DetalleTemporada from "./pages/temporada/DetalleTemporada.tsx";
 import DetalleMarca from "./pages/marcas/DetalleMarca.tsx";
 import Registrarse from "./pages/Registrarse.tsx";
+import Login from "./pages/Login.tsx";
 
 function App() {
   return (
@@ -56,7 +57,8 @@ function App() {
         <Route path="/piloto/:id" element={<DetallePiloto />} />
         <Route path="/temporada/:id" element={<DetalleTemporada />} />
         <Route path="/marca/:id" element={<DetalleMarca />} />
-        <Route path="/registrarse" element={<Registrarse />}></Route>
+        <Route path="/registrarse" element={<Registrarse />} />
+        <Route path="/login" element={<Login />} />
       </Route>
     </Routes>
   );

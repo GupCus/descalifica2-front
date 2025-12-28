@@ -1,4 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { LogOut } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -9,8 +11,53 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import logoDescalifica2 from "../assets/descalifica2logo.png";
+import { AuthService } from "@/services/auth.service.ts";
 
 function RootLayout() {
+  const [user, setUser] = useState<{
+    username: string;
+    user_type: string;
+  } | null>(null);
+
+  const loadUser = () => {
+    const userString = localStorage.getItem("user");
+    if (userString) {
+      try {
+        setUser(JSON.parse(userString));
+      } catch (e) {
+        console.error("Error parsing user from localStorage:", e);
+      }
+    } else {
+      setUser(null);
+    }
+  };
+
+  useEffect(() => {
+    // Leer usuario del localStorage al montar el componente
+    loadUser();
+
+    // Listener para evento de login
+    window.addEventListener("userLoggedIn", loadUser);
+
+    // Listener para detectar cambios en el localStorage (logout desde otra pestaña)
+    const handleStorageChange = () => {
+      loadUser();
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("userLoggedIn", loadUser);
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await AuthService.logout();
+    setUser(null);
+    window.dispatchEvent(new Event("userLoggedOut"));
+  };
+
   return (
     <>
       <header className="sticky top-0 z-50">
@@ -80,12 +127,38 @@ function RootLayout() {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
-          <Link to="/menuadmin">
-            <Avatar className="rounded-3xl border cursor-pointer hover:ring-2 hover:ring-accent transition-all mr-6">
-              <AvatarImage src="https://a.espncdn.com/combiner/i?img=/i/headshots/rpm/players/full/5498.png&w=350&h=254" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </Link>
+
+          <div className="flex items-center gap-3 mr-6">
+            {user ? (
+              <>
+                <span className="text-sm font-medium text-gray-200">
+                  {user.username}
+                </span>
+                <Link to="/menuadmin">
+                  <Avatar className="rounded-3xl border cursor-pointer hover:ring-2 hover:ring-accent transition-all">
+                    <AvatarFallback>
+                      {user.username.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-700/50 rounded-lg transition-colors"
+                  title="Cerrar sesión"
+                >
+                  <LogOut size={20} />
+                </button>
+              </>
+            ) : (
+              <Link to="/login">
+                <span className="text-sm font-semibold hover:text-gray-300 transition-colors">
+                  LOGIN
+                </span>
+              </Link>
+            )}
+          </div>
+
+          {/* TODO: implementacion de avatares y su respectivo guardado con MULTER al backend. */}
         </div>
       </header>
 

@@ -72,17 +72,19 @@ function Registrarse() {
       // Formatear la fecha a string (YYYY-MM-DD)
       const birthDateString = form.date_of_birth.toISOString().split("T")[0];
 
-      // Usar el nuevo servicio de autenticación
+      // Enviar datos al backend
       const response = await AuthService.RegisterUser({
         email: form.email,
         password: form.password,
         username: form.username,
-        name: form.name,
         date_of_birth: birthDateString,
+        name: form.name,
       });
 
       setMessageType("success");
-      setMessage("¡Usuario creado con éxito! Redirigiendo...");
+      setMessage(
+        response?.message || "¡Usuario creado con éxito! Redirigiendo..."
+      );
 
       // Limpiar formulario
       setForm({
