@@ -9,7 +9,6 @@ const RutaProtegidaAdmin = ({ children }: PropsWithChildren) => {
     const checkAdmin = async () => {
       const admin = await AuthService.isAdmin();
       setIsAdmin(admin);
-      console.log(admin);
     };
 
     checkAdmin();

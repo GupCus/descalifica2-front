@@ -18,6 +18,7 @@ export interface VerifyTokenResponse {
   message: string;
   user: {
     id: number;
+    email: string;
     username: string;
     user_type: string;
   };
@@ -80,7 +81,7 @@ export const AuthService = {
   async verifyToken(token: string): Promise<VerifyTokenResponse> {
     try {
       const response = await apiClient.get<VerifyTokenResponse>(
-        "/auth/verify",
+        "/auth/check-token",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -96,23 +97,20 @@ export const AuthService = {
 
   saveToken(token: string, rememberme: boolean = false): void {
     if (rememberme) {
-      localStorage.setItem("authToken", token); // persiste en el navegador
+      localStorage.setItem("token", token); // persiste en el navegador
     } else {
-      sessionStorage.setItem("authToken", token); // se borra al cerrar la pestaña
+      sessionStorage.setItem("token", token); // se borra al cerrar la pestaña
     }
   },
 
   logout(): void {
-    localStorage.removeItem("authToken");
-    sessionStorage.removeItem("authToken");
-    localStorage.removeItem("user");
-    sessionStorage.removeItem("user");
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    window.location.href = "/";
   },
 
   getToken(): string | null {
-    return (
-      localStorage.getItem("authToken") || sessionStorage.getItem("authToken")
-    );
+    return localStorage.getItem("token") || sessionStorage.getItem("token");
   },
 
   async isAuthenticated(): Promise<Boolean> {
@@ -139,7 +137,7 @@ export const AuthService = {
     try {
       const response = await this.verifyToken(token);
       return response.user;
-    } catch {
+    } catch (error) {
       this.logout();
       return null;
     }
@@ -147,7 +145,8 @@ export const AuthService = {
 
   async isAdmin(): Promise<Boolean> {
     const user = await this.getCurrentUser();
-    return user?.user_type === "admin";
+    const isAdminUser = user?.user_type === "admin";
+    return isAdminUser;
   },
 
   async isUser(): Promise<Boolean> {

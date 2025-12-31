@@ -18,36 +18,41 @@ function RootLayout() {
     username: string;
     user_type: string;
   } | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const loadUser = () => {
-    const userString = localStorage.getItem("user");
-    if (userString) {
-      try {
-        setUser(JSON.parse(userString));
-      } catch (e) {
-        console.error("Error parsing user from localStorage:", e);
-      }
-    } else {
+  const loadUser = async () => {
+    try {
+      const currentUser = await AuthService.getCurrentUser();
+      setUser(currentUser);
+    } catch (error) {
+      console.error("Error loading user:", error);
       setUser(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    // Leer usuario del localStorage al montar el componente
     loadUser();
 
-    // Listener para evento de login
-    window.addEventListener("userLoggedIn", loadUser);
-
-    // Listener para detectar cambios en el localStorage (logout desde otra pestaña)
-    const handleStorageChange = () => {
+    const handleLoginEvent = () => {
       loadUser();
+    };
+
+    window.addEventListener("userLoggedIn", handleLoginEvent);
+
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "token" && !e.newValue) {
+        setUser(null);
+      } else if (e.key === "token" && e.newValue) {
+        loadUser();
+      }
     };
 
     window.addEventListener("storage", handleStorageChange);
 
     return () => {
-      window.removeEventListener("userLoggedIn", loadUser);
+      window.removeEventListener("userLoggedIn", handleLoginEvent);
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
@@ -55,7 +60,6 @@ function RootLayout() {
   const handleLogout = async () => {
     await AuthService.logout();
     setUser(null);
-    window.dispatchEvent(new Event("userLoggedOut"));
   };
 
   return (
@@ -129,16 +133,16 @@ function RootLayout() {
           </NavigationMenu>
 
           <div className="flex items-center gap-3 mr-6">
-            {user ? (
+            {loading ? (
+              <div className="text-sm text-gray-400">Cargando...</div>
+            ) : user ? (
               <>
                 <span className="text-sm font-medium text-gray-200">
                   {user.username}
                 </span>
                 <Link to="/menuadmin">
                   <Avatar className="rounded-3xl border cursor-pointer hover:ring-2 hover:ring-accent transition-all">
-                    <AvatarFallback>
-                      {user.username.substring(0, 2).toUpperCase()}
-                    </AvatarFallback>
+                    <AvatarFallback>{user.username}</AvatarFallback>
                   </Avatar>
                 </Link>
                 <button
@@ -157,8 +161,6 @@ function RootLayout() {
               </Link>
             )}
           </div>
-
-          {/* TODO: implementacion de avatares y su respectivo guardado con MULTER al backend. */}
         </div>
       </header>
 

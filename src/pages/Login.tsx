@@ -56,15 +56,7 @@ function Login() {
 
       // Guardar token en localStorage
       if (response.token) {
-        localStorage.setItem("token", response.token);
-        localStorage.setItem("user", JSON.stringify(response.user));
-
-        // Guardar preferencia de remember me
-        if (rememberMe) {
-          localStorage.setItem("rememberMe", "true");
-        } else {
-          localStorage.removeItem("rememberMe");
-        }
+        AuthService.saveToken(response.token, rememberMe);
 
         // Disparar evento para que RootLayout se actualice
         window.dispatchEvent(new Event("userLoggedIn"));

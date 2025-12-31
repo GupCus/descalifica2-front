@@ -29,6 +29,7 @@ import Registrarse from "./pages/Registrarse.tsx";
 import Login from "./pages/Login.tsx";
 import RutaProtegida from "./shared/RutaProtegida.tsx";
 import RutaProtegidaAdmin from "./shared/RutaProtegidaAdmin.tsx";
+import AdminUsuarios from "./pages/admin/AdminUsuarios.tsx";
 
 function App() {
   return (
@@ -63,78 +64,16 @@ function App() {
             </RutaProtegidaAdmin>
           }
         >
-          <Route
-            path="nuevopiloto"
-            element={
-              <RutaProtegidaAdmin>
-                <NuevoPiloto />
-              </RutaProtegidaAdmin>
-            }
-          />
-          <Route
-            path="nuevaescuderia"
-            element={
-              <RutaProtegidaAdmin>
-                <NuevaEscuderia />
-              </RutaProtegidaAdmin>
-            }
-          />
-          <Route
-            path="nuevocircuito"
-            element={
-              <RutaProtegidaAdmin>
-                <NuevoCircuito />
-              </RutaProtegidaAdmin>
-            }
-          />
-          <Route
-            path="nuevamarca"
-            element={
-              <RutaProtegidaAdmin>
-                <NuevaMarca />
-              </RutaProtegidaAdmin>
-            }
-          />
-          <Route
-            path="nuevacarrera"
-            element={
-              <RutaProtegidaAdmin>
-                <NuevaCarrera />
-              </RutaProtegidaAdmin>
-            }
-          />
-          <Route
-            path="nuevatemporada"
-            element={
-              <RutaProtegidaAdmin>
-                <NuevaTemporada />
-              </RutaProtegidaAdmin>
-            }
-          />
-          <Route
-            path="nuevacategoria"
-            element={
-              <RutaProtegidaAdmin>
-                <NuevaCategoria />
-              </RutaProtegidaAdmin>
-            }
-          />
-          <Route
-            path="nuevasesion"
-            element={
-              <RutaProtegidaAdmin>
-                <NuevaSesion />
-              </RutaProtegidaAdmin>
-            }
-          />
-          <Route
-            path="cargarsesion"
-            element={
-              <RutaProtegidaAdmin>
-                <CargarDatosSesion />
-              </RutaProtegidaAdmin>
-            }
-          />
+          <Route path="nuevopiloto" element={<NuevoPiloto />} />
+          <Route path="nuevaescuderia" element={<NuevaEscuderia />} />
+          <Route path="nuevocircuito" element={<NuevoCircuito />} />
+          <Route path="nuevamarca" element={<NuevaMarca />} />
+          <Route path="nuevacarrera" element={<NuevaCarrera />} />
+          <Route path="nuevatemporada" element={<NuevaTemporada />} />
+          <Route path="nuevacategoria" element={<NuevaCategoria />} />
+          <Route path="nuevasesion" element={<NuevaSesion />} />
+          <Route path="cargarsesion" element={<CargarDatosSesion />} />
+          <Route path="adminusuarios" element={<AdminUsuarios />} />
         </Route>
 
         {/* 404 - debe ir al final */}
