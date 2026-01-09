@@ -4,13 +4,14 @@ import { useState } from "react";
 import { AuthService } from "@/services/auth.service.ts";
 import { useNavigate } from "react-router-dom";
 import * as React from "react";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Upload, X } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useDropzone } from "react-dropzone";
 
 // TODO: falta estilizar esta página!!!!
 
@@ -20,6 +21,7 @@ type FormState = {
   password: string;
   username: string;
   date_of_birth: Date | null;
+  avatar: File | null;
 };
 
 function Registrarse() {
@@ -29,6 +31,7 @@ function Registrarse() {
   );
   const [submitting, setSubmitting] = useState(false);
   const [openBirthDate, setOpenBirthDate] = React.useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
   const [form, setForm] = useState<FormState>({
     name: "",
@@ -36,7 +39,36 @@ function Registrarse() {
     email: "",
     password: "",
     date_of_birth: null,
+    avatar: null,
   });
+
+  const onDrop = React.useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0];
+      setForm((s) => ({ ...s, avatar: file }));
+
+      // Crear preview
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
+    },
+    maxFiles: 1,
+    maxSize: 5242880, // 5MB
+  });
+
+  const removeAvatar = () => {
+    setForm((s) => ({ ...s, avatar: null }));
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -54,7 +86,6 @@ function Registrarse() {
     setMessageType(null);
 
     try {
-      // Validaciones básicas
       if (
         !form.email ||
         !form.password ||
@@ -69,17 +100,20 @@ function Registrarse() {
         throw new Error("La contraseña debe tener al menos 6 caracteres.");
       }
 
-      // Formatear la fecha a string (YYYY-MM-DD)
       const birthDateString = form.date_of_birth.toISOString().split("T")[0];
 
+      const formData = new FormData();
+      formData.append("email", form.email);
+      formData.append("password", form.password);
+      formData.append("username", form.username);
+      formData.append("date_of_birth", birthDateString);
+      formData.append("name", form.name);
+      if (form.avatar) {
+        formData.append("avatar", form.avatar);
+      }
+
       // Enviar datos al backend
-      const response = await AuthService.RegisterUser({
-        email: form.email,
-        password: form.password,
-        username: form.username,
-        date_of_birth: birthDateString,
-        name: form.name,
-      });
+      const response = await AuthService.RegisterUser(formData);
 
       setMessageType("success");
       setMessage(
@@ -93,7 +127,9 @@ function Registrarse() {
         email: "",
         password: "",
         date_of_birth: null,
+        avatar: null,
       });
+      removeAvatar();
 
       // Redirigir después de 2 segundos
       setTimeout(() => {
@@ -163,7 +199,6 @@ function Registrarse() {
           <div className="mb-10">
             <Popover open={openBirthDate} onOpenChange={setOpenBirthDate}>
               <PopoverTrigger>
-                {/* dejar sin aschild porque sino no renderiza el calendario */}
                 <Button
                   variant="outline"
                   className="w-full justify-between font-normal"
@@ -194,6 +229,58 @@ function Registrarse() {
                 />
               </PopoverContent>
             </Popover>
+          </div>
+          <div className="mb-10">
+            {!form.avatar ? (
+              <div
+                {...getRootProps()}
+                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                  isDragActive
+                    ? "border-blue-500 bg-blue-500/10"
+                    : "border-gray-700 hover:border-gray-600 bg-gray-800/50"
+                }`}
+              >
+                <input {...getInputProps()} />
+                <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+                <p className="text-sm text-gray-400">
+                  {isDragActive
+                    ? "Suelta la imagen aquí..."
+                    : "Arrastra tu avatar o haz clic para seleccionar"}
+                </p>
+                <p className="text-xs text-gray-500 mt-2">
+                  PNG, JPG, GIF hasta 5MB
+                </p>
+              </div>
+            ) : (
+              <div className="relative border-2 border-gray-700 rounded-lg p-4 bg-gray-800/50">
+                <div className="flex items-center gap-4">
+                  {previewUrl && (
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      className="h-20 w-20 rounded-full object-cover"
+                    />
+                  )}
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-300">
+                      {form.avatar.name}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {(form.avatar.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={removeAvatar}
+                    className="hover:bg-red-500/10 hover:text-red-400"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex w-full justify-between pt-4">

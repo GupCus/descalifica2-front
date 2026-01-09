@@ -47,28 +47,15 @@ export const AuthService = {
     }
   },
 
-  async RegisterUser({
-    email,
-    password,
-    username,
-    date_of_birth,
-    name,
-  }: {
-    email: string;
-    password: string;
-    username: string;
-    date_of_birth: string;
-    name: string;
-  }) {
+  async RegisterUser(data: FormData) {
     try {
       const response = await apiClient.post<RegisterResponse>(
         "/auth/register",
+        data,
         {
-          email: email,
-          password: password,
-          username: username,
-          date_of_birth: date_of_birth,
-          name: name,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
       return response.data;
