@@ -51,12 +51,7 @@ export const AuthService = {
     try {
       const response = await apiClient.post<RegisterResponse>(
         "/auth/register",
-        data,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        data
       );
       return response.data;
     } catch (error) {

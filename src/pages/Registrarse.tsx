@@ -80,12 +80,17 @@ function Registrarse() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log("🔵 handleSubmit ejecutado");
     e.preventDefault();
+    console.log("🔵 preventDefault ejecutado");
+
     setSubmitting(true);
     setMessage(null);
     setMessageType(null);
 
     try {
+      console.log("🔵 Form state:", form);
+
       if (
         !form.email ||
         !form.password ||
@@ -100,7 +105,10 @@ function Registrarse() {
         throw new Error("La contraseña debe tener al menos 6 caracteres.");
       }
 
+      console.log("🔵 Validación completada");
+
       const birthDateString = form.date_of_birth.toISOString().split("T")[0];
+      console.log("🔵 Fecha convertida:", birthDateString);
 
       const formData = new FormData();
       formData.append("email", form.email);
@@ -112,8 +120,12 @@ function Registrarse() {
         formData.append("avatar", form.avatar);
       }
 
+      console.log("🔵 FormData creado, enviando...");
+
       // Enviar datos al backend
       const response = await AuthService.RegisterUser(formData);
+
+      console.log("🔵 Respuesta:", response);
 
       setMessageType("success");
       setMessage(
