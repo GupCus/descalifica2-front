@@ -12,6 +12,17 @@ dist
 dist-ssr
 *.local
 
+# Archivos de entorno
+.env
+.env.*
+
+# Lockfiles de otros gestores de paquetes (usamos pnpm)
+package-lock.json
+yarn.lock
+
+# Archivos opcionales de configuración
+.hintrc
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -22,3 +33,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# OS files
+Thumbs.db
