@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
-import fondoSpa from "../../assets/Spa-Fondo.jpg";
+import fondoSpa from "../../assets/Spa-fondo.jpg";
 import { Circuito } from "@/entities/circuito.entity.ts";
 import { postCircuito } from "@/services/circuito.service.ts";
 

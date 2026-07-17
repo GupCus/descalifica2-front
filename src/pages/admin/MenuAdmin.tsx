@@ -1,8 +1,17 @@
 import { Button } from "@/components/ui/button.tsx";
-import { Link } from "react-router-dom";
-import fondoPitwall from "../assets/Pitwall.jpg";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import fondoPitwall from "../../assets/Pitwall.jpg";
 
 function MenuAdmin() {
+  const location = useLocation();
+
+  // Verifica si estamos en una subruta (contiene un / adicional después de menuadmin)
+  const isSubruta = location.pathname !== "/menuadmin";
+
+  if (isSubruta) {
+    return <Outlet />;
+  }
+
   return (
     <div className="relative min-h-screen">
       <div
@@ -74,6 +83,11 @@ function MenuAdmin() {
             <Link to="cargarsesion" className="w-full">
               <Button className="w-full h-12 bg-slate-600 hover:bg-slate-700 text-white font-semibold shadow-lg shadow-slate-900/50 border-0 transition-all hover:scale-105">
                 Cargar RESULTADOS
+              </Button>
+            </Link>
+            <Link to="adminusuarios" className="w-full">
+              <Button className="w-full h-12 bg-slate-600 hover:bg-slate-700 text-white font-semibold shadow-lg shadow-slate-900/50 border-0 transition-all hover:scale-105">
+                Administrar USUARIOS
               </Button>
             </Link>
           </div>

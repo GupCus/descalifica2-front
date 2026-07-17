@@ -9,53 +9,75 @@ import ListadoCircuitos from "./pages/circuitos/ListadoCircuitos.tsx";
 import ListadoTemporadas from "./pages/temporada/ListadoTemporadas.tsx";
 import DondeVer from "./pages/DondeVer.tsx";
 import Calendario from "./pages/Calendario.tsx";
-import NuevoPiloto from "./pages/pilotos/NuevoPiloto.tsx";
-import MenuAdmin from "./pages/MenuAdmin.tsx";
-import NuevaEscuderia from "./pages/escuderias/NuevaEscuderia.tsx";
-import NuevoCircuito from "./pages/circuitos/NuevoCircuito.tsx";
+import NuevoPiloto from "./pages/admin/NuevoPiloto.tsx";
+import MenuAdmin from "./pages/admin/MenuAdmin.tsx";
+import NuevaEscuderia from "./pages/admin/NuevaEscuderia.tsx";
+import NuevoCircuito from "./pages/admin/NuevoCircuito.tsx";
 import DetalleEscuderia from "./pages/escuderias/DetalleEscuderia.tsx";
-import NuevaMarca from "./pages/marcas/NuevaMarca.tsx";
-import NuevaCarrera from "./pages/carreras/NuevaCarrera.tsx";
-import NuevaTemporada from "./pages/temporada/NuevaTemporada.tsx";
-import NuevaCategoria from "./pages/categorias/NuevaCategoria.tsx";
+import NuevaMarca from "./pages/admin/NuevaMarca.tsx";
+import NuevaCarrera from "./pages/admin/NuevaCarrera.tsx";
+import NuevaTemporada from "./pages/admin/NuevaTemporada.tsx";
+import NuevaCategoria from "./pages/admin/NuevaCategoria.tsx";
 import ListadoPilotos from "./pages/pilotos/ListadoPilotos.tsx";
-import NuevaSesion from "./pages/sesion/NuevaSesion.tsx";
-import CargarDatosSesion from "./pages/sesion/CargarDatosSesion.tsx";
+import NuevaSesion from "./pages/admin/NuevaSesion.tsx";
+import CargarDatosSesion from "./pages/admin/CargarDatosSesion.tsx";
 import DetalleCircuito from "./pages/circuitos/DetalleCircuito.tsx";
 import DetallePiloto from "./pages/pilotos/DetallePiloto.tsx";
 import DetalleTemporada from "./pages/temporada/DetalleTemporada.tsx";
 import DetalleMarca from "./pages/marcas/DetalleMarca.tsx";
-
+import Registrarse from "./pages/Registrarse.tsx";
+import Login from "./pages/Login.tsx";
+import RutaProtegida from "./shared/RutaProtegida.tsx";
+import RutaProtegidaAdmin from "./shared/RutaProtegidaAdmin.tsx";
+import AdminUsuarios from "./pages/admin/AdminUsuarios.tsx";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<RootLayout />}>
+        {/* Rutas públicas */}
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="calendario" element={<Calendario />} />
-        <Route path="*" element={<NotFound />} />
         <Route path="pilotos" element={<ListadoPilotos />} />
         <Route path="escuderias" element={<ListadoEscuderias />} />
         <Route path="marcas" element={<ListadoMarcas />} />
         <Route path="circuitos" element={<ListadoCircuitos />} />
         <Route path="temporadas" element={<ListadoTemporadas />} />
         <Route path="dondever" element={<DondeVer />} />
-        <Route path="menuadmin" element={<MenuAdmin />} />
-        <Route path="menuadmin/nuevopiloto" element={<NuevoPiloto />} />
-        <Route path="menuadmin/nuevaescuderia" element={<NuevaEscuderia />} />
-        <Route path="menuadmin/nuevocircuito" element={<NuevoCircuito />} />
-        <Route path="menuadmin/nuevamarca" element={<NuevaMarca />} />
-        <Route path="menuadmin/nuevacarrera" element={<NuevaCarrera />} />
-        <Route path="menuadmin/nuevatemporada" element={<NuevaTemporada />} />
-        <Route path="menuadmin/nuevacategoria" element={<NuevaCategoria />} />
-        <Route path="menuadmin/nuevasesion" element={<NuevaSesion />} />
-        <Route path="menuadmin/cargarsesion" element={<CargarDatosSesion />} />
-        <Route path="/escuderia/:id" element={<DetalleEscuderia />} />
-        <Route path="/circuito/:id" element={<DetalleCircuito />} />
-        <Route path="/piloto/:id" element={<DetallePiloto />} />
-        <Route path="/temporada/:id" element={<DetalleTemporada />} />
-        <Route path="/marca/:id" element={<DetalleMarca />} />
+        <Route path="registrarse" element={<Registrarse />} />
+        <Route path="login" element={<Login />} />
+
+        {/* Rutas de detalle */}
+        <Route path="escuderia/:id" element={<DetalleEscuderia />} />
+        <Route path="circuito/:id" element={<DetalleCircuito />} />
+        <Route path="piloto/:id" element={<DetallePiloto />} />
+        <Route path="temporada/:id" element={<DetalleTemporada />} />
+        <Route path="marca/:id" element={<DetalleMarca />} />
+
+        {/* Rutas de administrador protegidas */}
+        <Route
+          path="menuadmin"
+          element={
+            <RutaProtegidaAdmin>
+              <MenuAdmin />
+            </RutaProtegidaAdmin>
+          }
+        >
+          <Route path="nuevopiloto" element={<NuevoPiloto />} />
+          <Route path="nuevaescuderia" element={<NuevaEscuderia />} />
+          <Route path="nuevocircuito" element={<NuevoCircuito />} />
+          <Route path="nuevamarca" element={<NuevaMarca />} />
+          <Route path="nuevacarrera" element={<NuevaCarrera />} />
+          <Route path="nuevatemporada" element={<NuevaTemporada />} />
+          <Route path="nuevacategoria" element={<NuevaCategoria />} />
+          <Route path="nuevasesion" element={<NuevaSesion />} />
+          <Route path="cargarsesion" element={<CargarDatosSesion />} />
+          <Route path="adminusuarios" element={<AdminUsuarios />} />
+        </Route>
+
+        {/* 404 - debe ir al final */}
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );
