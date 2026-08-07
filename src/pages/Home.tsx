@@ -23,21 +23,21 @@ function Home() {
   }, []);
 
   if (loading) {
-    <div> Cargando carreras... </div>;
+    return <div> Cargando carreras... </div>;
   }
   if (error) {
-    <div> Error cargando carreras... </div>;
+    return <div> Error cargando carreras... </div>;
   }
 
   const carrerasAnteriores =
-    carreras.length === 0
+    !carreras || carreras.length === 0
       ? undefined
       : carreras
           .filter((c) => new Date(c.end_date) < new Date())
           .sort(
             (a, b) =>
               new Date(b.start_date).getTime() -
-              new Date(a.start_date).getTime()
+              new Date(a.start_date).getTime(),
           );
 
   return (
@@ -83,31 +83,35 @@ function Home() {
           type="single"
           collapsible
         >
-          {carrerasAnteriores
-            ? carrerasAnteriores.map((gp) =>
-                !gp ? null : (
-                  <AccordionItem key={gp.id} value={gp.id.toString()}>
-                    <AccordionTrigger className="mx-auto text-2xl font-semibold">
-                      {gp.name}
-                    </AccordionTrigger>
+          {carrerasAnteriores && carrerasAnteriores.length > 0 ? (
+            carrerasAnteriores.map((gp) =>
+              !gp ? null : (
+                <AccordionItem key={gp.id} value={gp.id.toString()}>
+                  <AccordionTrigger className="mx-auto text-2xl font-semibold">
+                    {gp.name}
+                  </AccordionTrigger>
 
-                    <AccordionContent>
-                      <div className="flex h-auto">
-                        <div className="flex-3 w-99 h-full">
-                          <DashboardAccordion sesiones={gp.sessions} />
-                        </div>
-
-                        <img
-                          src={gp.track?.track_map_url}
-                          alt={gp.track?.name}
-                          className="max-w-[40%] max-h-48 w-auto h-auto object-contain"
-                        />
+                  <AccordionContent>
+                    <div className="flex h-auto">
+                      <div className="flex-3 w-99 h-full">
+                        <DashboardAccordion sesiones={gp.sessions} />
                       </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                )
-              )
-            : null}
+
+                      <img
+                        src={gp.track?.track_map_url}
+                        alt={gp.track?.name}
+                        className="max-w-[40%] max-h-48 w-auto h-auto object-contain"
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ),
+            )
+          ) : (
+            <div className="py-8 text-center text-muted-foreground font-medium">
+              No hay grandes premios recientes para mostrar.
+            </div>
+          )}
         </Accordion>
       </div>
     </>
