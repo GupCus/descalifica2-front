@@ -2,6 +2,8 @@ import { Marca } from "@/entities/marca.entity.ts";
 import { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { ArrowLeftIcon } from "lucide-react";
+import { uploadMarcaImage } from "@/services/marca.service.ts";
+import { AuthService } from "@/services/auth.service.ts";
 
 const getCountryFlag = (nationality: string): string => {
   if (!nationality) return "";
@@ -73,6 +75,34 @@ function DetalleMarca() {
   );
   const [loading, setLoading] = useState(!location.state?.marca);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    AuthService.isAdmin().then((res) => setIsAdmin(Boolean(res)));
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedFile || !marca || !marca.id) return;
+    setUploadingImage(true);
+    try {
+      await uploadMarcaImage(marca.id, selectedFile);
+      alert("Imagen actualizada correctamente");
+      window.location.reload();
+    } catch (error) {
+      alert("Error al actualizar la imagen");
+    } finally {
+      setUploadingImage(false);
+      setSelectedFile(null);
+    }
+  };
 
   const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -228,6 +258,34 @@ function DetalleMarca() {
                 </div>
               )}
             </div>
+
+
+            {isAdmin && (
+              <div className="mt-8 bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-lg">
+                <h3 className="text-xl font-bold mb-4 text-white">Actualizar Imagen de la Marca</h3>
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handleFileChange}
+                    className="block w-full sm:w-auto text-sm text-gray-300
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-md file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-red-800 file:text-white
+                      hover:file:bg-red-900"
+                  />
+                  <button 
+                    onClick={handleUploadImage}
+                    disabled={!selectedFile || uploadingImage}
+                    className="px-6 py-2 bg-red-800 hover:bg-red-900 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
+                  >
+                    {uploadingImage ? 'Subiendo...' : 'Subir Imagen'}
+                  </button>
+                </div>
+              </div>
+            )}
+
           </div>
         </div>
       </div>

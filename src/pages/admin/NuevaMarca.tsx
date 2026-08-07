@@ -3,7 +3,7 @@ import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
 import fondoPorsche from "../../assets/Porsche.jpeg";
 import { NewMarca } from "@/entities/marca.entity.ts";
-import { postMarca } from "@/services/marca.service.ts";
+import { postMarcaFormData } from "@/services/marca.service.ts";
 
 type FormState = {
   name: string;
@@ -17,8 +17,15 @@ function NuevaMarca() {
     nationality: "",
     foundation: "",
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -32,24 +39,26 @@ function NuevaMarca() {
     setSubmitting(true);
     setMessage(null);
 
-    const nuevamarca: NewMarca = {
+    const nuevamarca: Omit<NewMarca, 'id'> = {
       name: form.name,
       nationality: form.nationality,
       foundation: Number(form.foundation),
     };
-    postMarca(nuevamarca)
-      .then(() => setMessage("Marca creada con éxito."))
-      .then(() =>
-        setForm({
-          name: "",
-          nationality: "",
-          foundation: "",
-        })
-      )
-      .catch((err) =>
-        setMessage(`Error: ${err.message || "No se pudo crear la marca"}`)
-      )
-      .finally(() => setSubmitting(false));
+    
+    try {
+      await postMarcaFormData(nuevamarca, selectedFile || undefined);
+      setMessage("Marca creada con éxito.");
+      setForm({
+        name: "",
+        nationality: "",
+        foundation: "",
+      });
+      setSelectedFile(null);
+    } catch (err: any) {
+      setMessage(`Error: ${err.message || "No se pudo crear la marca"}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <div className="relative min-h-screen">
@@ -110,6 +119,24 @@ function NuevaMarca() {
               max={new Date().getFullYear()}
             />
           </InputGroup>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-200 mb-1">
+              Imagen de la Marca (Opcional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-300
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-md file:border-0
+                file:text-sm file:font-semibold
+                file:bg-red-800 file:text-white
+                hover:file:bg-red-900
+                bg-gray-900 rounded-md border border-gray-700"
+            />
+          </div>
 
           <div className="flex w-full justify-between pt-4">
             <Button

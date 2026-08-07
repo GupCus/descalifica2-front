@@ -16,7 +16,7 @@ import { Escuderia } from "@/entities/escuderia.entity.ts";
 import { Categoria } from "@/entities/categoria.entity.ts";
 import { getEscuderia } from "@/services/escuderia.service.ts";
 import { getCategoria } from "@/services/categoria.service.ts";
-import { postPiloto } from "@/services/piloto.service.ts";
+import { postPiloto, postPilotoFormData } from "@/services/piloto.service.ts";
 import { NewPiloto } from "@/entities/piloto.entity.ts";
 import {
   Popover,
@@ -47,12 +47,19 @@ function NuevoPiloto() {
     role: "",
     racing_series: "",
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [, setError] = useState<string | null>();
   const [openBirthDate, setOpenBirthDate] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
 
   //obtiene escuderías para el select
   useEffect(() => {
@@ -95,33 +102,24 @@ function NuevoPiloto() {
       racing_series: form.racing_series,
     };
 
-    console.log("Datos a enviar:", nuevoPiloto);
-
-    postPiloto(nuevoPiloto)
-      .then(() => setMessage("Piloto creado con éxito."))
-      .then(() =>
-        setForm({
-          name: "",
-          team: "",
-          num: "",
-          nationality: "",
-          birth_date: null,
-          role: "",
-          racing_series: "",
-        })
-      )
-      .catch((err) => {
-        console.error("Error completo:", err);
-        console.error("Respuesta del servidor:", err.response?.data);
-        setMessage(
-          `Error: ${
-            err.response?.data?.error ||
-            err.message ||
-            "No se pudo crear el piloto"
-          }`
-        );
-      })
-      .finally(() => setSubmitting(false));
+    try {
+      await postPilotoFormData(nuevoPiloto, selectedFile || undefined);
+      setMessage("Piloto creado con éxito.");
+      setForm({
+        name: "",
+        team: "",
+        num: "",
+        nationality: "",
+        birth_date: null,
+        role: "",
+        racing_series: "",
+      });
+      setSelectedFile(null);
+    } catch (err: any) {
+      setMessage(`Error: ${err.message || "No se pudo crear el piloto"}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -287,6 +285,24 @@ function NuevoPiloto() {
                 </SelectContent>
               </Select>
             </InputGroup>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-200 mb-1">
+              Imagen del Piloto (Opcional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-300
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-md file:border-0
+                file:text-sm file:font-semibold
+                file:bg-blue-600 file:text-white
+                hover:file:bg-blue-700
+                bg-gray-900 rounded-md border border-gray-700"
+            />
           </div>
 
           <div className="flex w-full justify-between pt-4">

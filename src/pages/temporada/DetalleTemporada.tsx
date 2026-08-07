@@ -1,13 +1,42 @@
 import { Temporada } from '@/entities/temporada.entity.ts';
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-
+import { uploadTemporadaImage } from '@/services/temporada.service.ts';
+import { AuthService } from '@/services/auth.service.ts';
 
 function DetalleTemporada() {
   const { id } = useParams<{ id: string }>();
   const [temporada, setTemporada] = useState<Temporada | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    AuthService.isAdmin().then((res) => setIsAdmin(Boolean(res)));
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedFile || !temporada || !temporada.id) return;
+    setUploadingImage(true);
+    try {
+      await uploadTemporadaImage(temporada.id, selectedFile);
+      alert("Imagen actualizada correctamente");
+      window.location.reload();
+    } catch (error) {
+      alert("Error al actualizar la imagen");
+    } finally {
+      setUploadingImage(false);
+      setSelectedFile(null);
+    }
+  };
 
   const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -98,6 +127,34 @@ function DetalleTemporada() {
               <p className="text-2xl font-bold text-white">{temporada.races?.length ?? 0}</p>
             </div>
           </div>
+
+
+          {isAdmin && (
+            <div className="mt-8 bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-lg">
+              <h3 className="text-xl font-bold mb-4 text-white">Actualizar Imagen de la Temporada</h3>
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleFileChange}
+                  className="block w-full sm:w-auto text-sm text-gray-300
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-purple-600 file:text-white
+                    hover:file:bg-purple-700"
+                />
+                <button 
+                  onClick={handleUploadImage}
+                  disabled={!selectedFile || uploadingImage}
+                  className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
+                >
+                  {uploadingImage ? 'Subiendo...' : 'Subir Imagen'}
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
     </div>

@@ -1,7 +1,8 @@
 import { Circuito } from '@/entities/circuito.entity.ts';
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-
+import { uploadCircuitoImage } from '@/services/circuito.service.ts';
+import { AuthService } from '@/services/auth.service.ts';
 const getCountryFlag = (country: string): string => {
   if (!country) return '';
 
@@ -49,6 +50,35 @@ function DetalleCircuito() {
   const [circuito, setCircuito] = useState<Circuito | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    AuthService.isAdmin().then((res) => setIsAdmin(Boolean(res)));
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedFile || !circuito || !circuito.id) return;
+    setUploadingImage(true);
+    try {
+      await uploadCircuitoImage(circuito.id, selectedFile);
+      alert("Imagen actualizada correctamente");
+      // Opcional: Recargar el circuito actualizando el componente
+      window.location.reload();
+    } catch (error) {
+      alert("Error al actualizar la imagen");
+    } finally {
+      setUploadingImage(false);
+      setSelectedFile(null);
+    }
+  };
 
   const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -165,6 +195,32 @@ function DetalleCircuito() {
               />
             </div>
           </div>
+
+          {isAdmin && (
+            <div className="mt-10 bg-gray-900/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700">
+              <h3 className="text-xl font-bold mb-4 text-white">Actualizar Imagen del Circuito</h3>
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleFileChange}
+                  className="block w-full sm:w-auto text-sm text-gray-300
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-emerald-900 file:text-white
+                    hover:file:bg-green-800"
+                />
+                <button 
+                  onClick={handleUploadImage}
+                  disabled={!selectedFile || uploadingImage}
+                  className="px-6 py-2 bg-emerald-900 hover:bg-green-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
+                >
+                  {uploadingImage ? 'Subiendo...' : 'Subir Imagen'}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

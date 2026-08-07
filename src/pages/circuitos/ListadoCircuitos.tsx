@@ -1,52 +1,51 @@
-import { useEffect, useState } from 'react';
-import { ChromaGrid } from '@/components/ui/Chroma-grid';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Circuito } from '@/entities/circuito.entity.ts';
-import { getCircuito } from '@/services/circuito.service.ts';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { ChromaGrid } from "@/components/ui/Chroma-grid";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Circuito } from "@/entities/circuito.entity.ts";
+import { getCircuito } from "@/services/circuito.service.ts";
+import { Link } from "react-router-dom";
 
 // Helper function para obtener la bandera del país automáticamente
 const getCountryFlag = (country: string): string => {
-  if (!country) return '';
+  if (!country) return "";
 
   // Mapa de casos especiales (opcional, para nacionalidades con nombres diferentes al archivo)
   const specialCases: Record<string, string> = {
-    'Reino Unido': 'UK',
-    'Estados Unidos': 'USA',
-    'Países Bajos': 'Paises_Bajos',
-    'Abu Dhabi': 'EAU',
-    'Baréin': 'bahrain',
-    'Barein': 'bahrain',
-    'Azerbaiyán': 'Azerbaiyan',
+    "Reino Unido": "UK",
+    "Estados Unidos": "USA",
+    "Países Bajos": "Paises_Bajos",
+    "Abu Dhabi": "EAU",
+    Baréin: "bahrain",
+    Barein: "bahrain",
+    Azerbaiyán: "Azerbaiyan",
   };
 
   // Si hay un caso especial, usarlo
   if (specialCases[country]) {
     return new URL(
       `../../assets/banderas-paises/${specialCases[country]}.png`,
-      import.meta.url
+      import.meta.url,
     ).href;
   }
 
   // Normalizar el nombre del país para que coincida con los archivos
   const normalizedName = country
-    .normalize('NFD') // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
-    .replace(/\s+/g, '_') // Reemplaza espacios con guiones bajos
-    .replace(/[^a-zA-Z0-9_]/g, ''); // Elimina caracteres especiales
+    .normalize("NFD") // Descompone caracteres con acentos
+    .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
+    .replace(/\s+/g, "_") // Reemplaza espacios con guiones bajos
+    .replace(/[^a-zA-Z0-9_]/g, ""); // Elimina caracteres especiales
 
   // Construye la ruta automáticamente
   try {
     return new URL(
       `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url
+      import.meta.url,
     ).href;
   } catch {
-    return '';
+    return "";
   }
 };
-
 
 function ListadoCircuitos() {
   const [circuitos, setCircuitos] = useState<Circuito[]>([]);
@@ -58,7 +57,7 @@ function ListadoCircuitos() {
       .then((data) => setCircuitos(data))
       .catch((err) => {
         setError(err.message);
-        console.error('Error cargando circuitos', err);
+        console.error("Error cargando circuitos", err);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -106,10 +105,10 @@ function ListadoCircuitos() {
         className="absolute inset-0 w-full h-full blur-sm opacity-70"
         style={{
           backgroundImage: `url(${
-            new URL('../../assets/circuitosFondo.jpg', import.meta.url).href
+            new URL("../../assets/circuitosFondo.jpg", import.meta.url).href
           })`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       ></div>
       <ChromaGrid />
@@ -149,11 +148,11 @@ function ListadoCircuitos() {
                           const target = e.target as HTMLImageElement;
                           // reemplazar con placeholder si no existe
                           target.src = new URL(
-                            '../../assets/descalifica2logo.png',
-                            import.meta.url
+                            "../../assets/descalifica2logo.png",
+                            import.meta.url,
                           ).href;
                           target.className =
-                            'absolute inset-0 w-full h-full object-contain bg-slate-900/50';
+                            "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
                         }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-top from-slate-900/90 via-slate-900/30 to-transparent"></div>
