@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Circuito } from "@/entities/circuito.entity.ts";
 import { getCircuito } from "@/services/circuito.service.ts";
 import { Link } from "react-router-dom";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 
 // Helper function para obtener la bandera del país automáticamente
 const getCountryFlag = (country: string): string => {
@@ -141,7 +142,7 @@ function ListadoCircuitos() {
                   >
                     <div className="relative w-full h-48 overflow-hidden">
                       <img
-                        src={circuito.track_map_url}
+                        src={getAssetUrl(circuito.track_map_image)}
                         alt={circuito.name}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         onError={(e) => {

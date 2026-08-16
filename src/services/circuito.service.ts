@@ -1,5 +1,6 @@
 import { Circuito } from "@/entities/circuito.entity.ts";
 import axios from "axios";
+import { API_BASE_URL } from "./httpClient.ts";
 
 const URL_API = import.meta.env.VITE_API_URL;
 
@@ -35,9 +36,12 @@ export async function deleteCircuito(id: number): Promise<Circuito> {
   return response.data.data;
 }
 
-export async function postCircuitoFormData(data: Omit<Circuito, 'id'>, file?: File): Promise<Circuito> {
+export async function postCircuitoFormData(
+  data: Omit<Circuito, "id">,
+  file?: File,
+): Promise<Circuito> {
   const formData = new FormData();
-  
+
   Object.entries(data).forEach(([key, value]) => {
     formData.append(key, value as string);
   });
@@ -54,11 +58,26 @@ export async function postCircuitoFormData(data: Omit<Circuito, 'id'>, file?: Fi
   return response.data.data;
 }
 
-export async function uploadCircuitoImage(id: number, file: File): Promise<any> {
+export async function uploadCircuitoImage(
+  id: number,
+  image: File,
+): Promise<any> {
   const formData = new FormData();
-  formData.append("image", file);
+  formData.append("image", image);
 
-  const response = await client.post(`/${id}/upload-image`, formData, {
+  const response = await client.patch(`/${id}/upload-image`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+}
+
+export async function uploadTrackImage(id: number, image: File): Promise<any> {
+  const formData = new FormData();
+  formData.append("image", image);
+
+  const response = await client.patch(`/${id}/track-map`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
