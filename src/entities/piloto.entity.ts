@@ -11,6 +11,7 @@ export class Piloto extends baseEntity {
   role!: string;
   racing_series!: Categoria;
   wdcs!: Temporada[];
+  profile_image!:string;
 }
 
 export class NewPiloto {

@@ -23,7 +23,7 @@ function DondeVer() {
         pais: "Australia",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Australia.png",
+        imagenPais: "./src/assets/banderas-paises/AUS.png",
       },
       {
         id: 2,
@@ -32,7 +32,7 @@ function DondeVer() {
         pais: "China",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/China.png",
+        imagenPais: "./src/assets/banderas-paises/CHN.png",
       },
       {
         id: 3,
@@ -41,7 +41,7 @@ function DondeVer() {
         pais: "Japón",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Japon.png",
+        imagenPais: "./src/assets/banderas-paises/JPN.png",
       },
       {
         id: 4,
@@ -50,7 +50,7 @@ function DondeVer() {
         pais: "Bahréin",
         disneyPlus: true,
         foxSports: false,
-        imagenPais: "./src/assets/banderas-paises/bahrain.png",
+        imagenPais: "./src/assets/banderas-paises/BHR.png",
       },
       {
         id: 5,
@@ -59,7 +59,7 @@ function DondeVer() {
         pais: "Arabia Saudita",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Arabia_Saudita.png",
+        imagenPais: "./src/assets/banderas-paises/SAU.png",
       },
       {
         id: 6,
@@ -77,7 +77,7 @@ function DondeVer() {
         pais: "Italia",
         disneyPlus: true,
         foxSports: false,
-        imagenPais: "./src/assets/banderas-paises/Italia.png",
+        imagenPais: "./src/assets/banderas-paises/ITA.png",
       },
       {
         id: 8,
@@ -86,7 +86,7 @@ function DondeVer() {
         pais: "Mónaco",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Monaco.png",
+        imagenPais: "./src/assets/banderas-paises/MCO.png",
       },
       {
         id: 9,
@@ -95,7 +95,7 @@ function DondeVer() {
         pais: "España",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Espana.png",
+        imagenPais: "./src/assets/banderas-paises/ESP.png",
       },
       {
         id: 10,
@@ -104,7 +104,7 @@ function DondeVer() {
         pais: "Canadá",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Canada.png",
+        imagenPais: "./src/assets/banderas-paises/CAN.png",
       },
       {
         id: 11,
@@ -113,7 +113,7 @@ function DondeVer() {
         pais: "Austria",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Austria.png",
+        imagenPais: "./src/assets/banderas-paises/AUT.png",
       },
       {
         id: 12,
@@ -122,7 +122,7 @@ function DondeVer() {
         pais: "Reino Unido",
         disneyPlus: true,
         foxSports: false,
-        imagenPais: "./src/assets/banderas-paises/UK.png",
+        imagenPais: "./src/assets/banderas-paises/GBR.png",
       },
       {
         id: 13,
@@ -131,7 +131,7 @@ function DondeVer() {
         pais: "Bélgica",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Belgica.png",
+        imagenPais: "./src/assets/banderas-paises/BEL.png",
       },
       {
         id: 14,
@@ -140,7 +140,7 @@ function DondeVer() {
         pais: "Hungría",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Hungria.png",
+        imagenPais: "./src/assets/banderas-paises/HUN.png",
       },
       {
         id: 15,
@@ -149,7 +149,7 @@ function DondeVer() {
         pais: "Países Bajos",
         disneyPlus: true,
         foxSports: false,
-        imagenPais: "./src/assets/banderas-paises/Paises_Bajos.png",
+        imagenPais: "./src/assets/banderas-paises/NLD.png",
       },
       {
         id: 16,
@@ -158,7 +158,7 @@ function DondeVer() {
         pais: "Italia",
         disneyPlus: true,
         foxSports: false,
-        imagenPais: "./src/assets/banderas-paises/Italia.png",
+        imagenPais: "./src/assets/banderas-paises/ITA.png",
       },
       {
         id: 17,
@@ -167,7 +167,7 @@ function DondeVer() {
         pais: "Azerbaiyán",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Azerbaiyan.png",
+        imagenPais: "./src/assets/banderas-paises/AZE.png",
       },
       {
         id: 18,
@@ -176,7 +176,7 @@ function DondeVer() {
         pais: "Singapur",
         disneyPlus: true,
         foxSports: false,
-        imagenPais: "./src/assets/banderas-paises/Singapur.png",
+        imagenPais: "./src/assets/banderas-paises/SGP.png",
       },
       {
         id: 19,
@@ -194,7 +194,7 @@ function DondeVer() {
         pais: "México",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Mexico.png",
+        imagenPais: "./src/assets/banderas-paises/MEX.png",
       },
       {
         id: 21,
@@ -203,7 +203,7 @@ function DondeVer() {
         pais: "Brasil",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Brasil.png",
+        imagenPais: "./src/assets/banderas-paises/BRA.png",
       },
       {
         id: 22,
@@ -221,7 +221,7 @@ function DondeVer() {
         pais: "Qatar",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/Catar.png",
+        imagenPais: "./src/assets/banderas-paises/QAT.png",
       },
       {
         id: 24,
@@ -230,7 +230,7 @@ function DondeVer() {
         pais: "Abu Dhabi",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/EAU.png",
+        imagenPais: "./src/assets/banderas-paises/ARE.png",
       },
     ];
 

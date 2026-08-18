@@ -3,63 +3,6 @@ import { useState, useEffect } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { ArrowLeftIcon } from "lucide-react";
 
-const getCountryFlag = (nationality: string): string => {
-  if (!nationality) return "";
-
-  const specialCases: Record<string, string> = {
-    "Reino Unido": "UK",
-    "Estados Unidos": "USA",
-    "Países Bajos": "Paises_Bajos",
-    "Emiratos Árabes Unidos": "EAU",
-    Baréin: "bahrain",
-    Bahréin: "bahrain",
-    Azerbaiyán: "Azerbaiyan",
-  };
-
-  if (specialCases[nationality]) {
-    try {
-      return new URL(
-        `../../assets/banderas-paises/${specialCases[nationality]}.png`,
-        import.meta.url
-      ).href;
-    } catch {
-      return "";
-    }
-  }
-
-  const normalizedName = nationality
-    .normalize("NFD")
-    .replace(/\s+/g, "_")
-    .replace(/[^a-zA-Z0-9_]/g, "");
-
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return "";
-  }
-};
-
-const getPilotoPhoto = (name: string): string => {
-  const normalizedName = name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
-
-  try {
-    return new URL(
-      `../../assets/pilotos/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return "https://via.placeholder.com/400x500/1e293b/cbd5e1?text=Piloto";
-  }
-};
-
 function DetallePiloto() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -114,8 +57,8 @@ function DetallePiloto() {
     );
   }
 
-  const flagUrl = getCountryFlag(piloto.nationality);
-  const photoUrl = getPilotoPhoto(piloto.name);
+  const flagUrl = `../../assets/banderas-paises/${piloto.nationality}.png`;
+  const photoUrl = piloto.profile_image
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950">
