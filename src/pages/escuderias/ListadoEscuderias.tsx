@@ -20,47 +20,6 @@ import { Escuderia } from "@/entities/escuderia.entity.ts";
 import { Link } from "react-router-dom";
 import { getAssetUrl } from "@/utils/asset.util.ts";
 
-// Helper function para obtener la bandera del país automáticamente
-const getCountryFlag = (nationality: string): string => {
-  if (!nationality) return "";
-
-  // Mapa de casos especiales (opcional, para nacionalidades con nombres diferentes al archivo)
-  const specialCases: Record<string, string> = {
-    "Reino Unido": "UK",
-    "Estados Unidos": "USA",
-    "Países Bajos": "Paises_Bajos",
-    Abu_Dhabi: "EAU",
-    Baréin: "bahrain",
-    Barein: "bahrain",
-    Azerbaiyán: "Azerbaiyan",
-  };
-
-  // Si hay un caso especial, usarlo
-  if (specialCases[nationality]) {
-    return new URL(
-      `../../assets/banderas-paises/${specialCases[nationality]}.png`,
-      import.meta.url,
-    ).href;
-  }
-
-  // Normalizar el nombre del país para que coincida con los archivos
-  const normalizedName = nationality
-    .normalize("NFD") // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
-    .replace(/\s+/g, "_") // Reemplaza espacios con guiones bajos
-    .replace(/[^a-zA-Z0-9_]/g, ""); // Elimina caracteres especiales
-
-  // Construye la ruta automáticamente
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url,
-    ).href;
-  } catch {
-    return "";
-  }
-};
-
 function ListadoEscuderias() {
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [loading, setLoading] = useState(true);
