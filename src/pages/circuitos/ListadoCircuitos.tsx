@@ -129,7 +129,7 @@ function ListadoCircuitos() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
             {circuitos.map((circuito) => {
-              const flagUrl = getCountryFlag(circuito.country);
+              const flagUrl = getAssetUrl(`/flags/${circuito.country}.svg`);
               return (
                 <Link
                   to={`/circuito/${circuito.id}`}

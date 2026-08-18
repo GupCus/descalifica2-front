@@ -32,9 +32,12 @@ export async function deletePiloto(id: number): Promise<Piloto> {
   return response.data.data;
 }
 
-export async function postPilotoFormData(data: NewPiloto, file?: File): Promise<Piloto> {
+export async function postPilotoFormData(
+  data: NewPiloto,
+  file?: File,
+): Promise<Piloto> {
   const formData = new FormData();
-  
+
   Object.entries(data).forEach(([key, value]) => {
     formData.append(key, value as string);
   });
@@ -51,11 +54,23 @@ export async function postPilotoFormData(data: NewPiloto, file?: File): Promise<
   return response.data.data;
 }
 
+// export async function getPilotoImage(id: number, file: File): Promise<any> {
+//   const formData = new FormData();
+//   formData.append("image", file);
+
+//   const response = await client.get(`/${id}/portrait-image`, formData, {
+//     headers: {
+//       "Content-Type": "multipart/form-data",
+//     },
+//   });
+//   return response.data;
+// }
+
 export async function uploadPilotoImage(id: number, file: File): Promise<any> {
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await client.post(`/${id}/upload-image`, formData, {
+  const response = await client.patch(`/${id}/portrait-image`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
