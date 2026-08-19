@@ -19,69 +19,14 @@ import { getEscuderia } from '@/services/escuderia.service.ts';
 import { Escuderia } from '@/entities/escuderia.entity.ts';
 import { Link } from 'react-router-dom';
 
-// Helper function para obtener la bandera del país automáticamente
-const getCountryFlag = (nationality: string): string => {
-  if (!nationality) return '';
-
-  // Mapa de casos especiales (opcional, para nacionalidades con nombres diferentes al archivo)
-  const specialCases: Record<string, string> = {
-    'Reino Unido': 'UK',
-    'Estados Unidos': 'USA',
-    'Países Bajos': 'Paises_Bajos',
-    Abu_Dhabi: 'EAU',
-    Baréin: 'bahrain',
-    Barein: 'bahrain',
-    Azerbaiyán: 'Azerbaiyan',
-  };
-
-  // Si hay un caso especial, usarlo
-  if (specialCases[nationality]) {
-    return new URL(
-      `../../assets/banderas-paises/${specialCases[nationality]}.png`,
-      import.meta.url
-    ).href;
-  }
-
-  // Normalizar el nombre del país para que coincida con los archivos
-  const normalizedName = nationality
-    .normalize('NFD') // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
-    .replace(/\s+/g, '_') // Reemplaza espacios con guiones bajos
-    .replace(/[^a-zA-Z0-9_]/g, ''); // Elimina caracteres especiales
-
-  // Construye la ruta automáticamente
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return '';
-  }
-};
-
 // Helper function para obtener la imagen de la escudería automáticamente desde assets
 const getEscuderiaLogo = (name: string): string => {
-  if (!name) return '';
-
-  // Normalizar el nombre de la escudería para que coincida con los archivos
-  const normalizedName = name
-    .toLowerCase() // Convertir a minúsculas
-    .normalize('NFD') // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
-    .replace(/\s+/g, '-') // Reemplaza espacios con guiones
-    .replace(/[^a-z0-9-]/g, ''); // Elimina caracteres especiales
-
-  // Buscar siempre en assets
-  try {
-    return new URL(
-      `../../assets/escuderias/${normalizedName}.png`,
+  return new URL(
+      `../../assets/escuderias/${name.split(" ")[0].toLowerCase()}.png`,
       import.meta.url
     ).href;
-  } catch {
-    return '';
-  }
-};
+}
+
 
 function ListadoEscuderias() {
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
@@ -166,33 +111,16 @@ function ListadoEscuderias() {
     );
   }
 
-  //helper para extraer el nombre de categoria
-  const getCategoryName = (cat?: { id?: string; name?: string } | string) => {
-    if (!cat) return '';
-    if (typeof cat === 'string') return cat.trim().toLowerCase();
-    return String(cat.name ?? '')
-      .trim()
-      .toLowerCase();
-  };
-
   //Separamos por categoria
 
   const f2Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
-    return (
-      getCategoryName(e.racing_series.name) === 'f2' ||
-      e.racing_series.name === 'Fórmula 2' ||
-      e.racing_series.name === 'Formula 2'
-    );
+    return (e.racing_series.name === 'F2');
   });
 
   const f1Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
-    return (
-      getCategoryName(e.racing_series.name) === 'f1' ||
-      e.racing_series.name === 'Fórmula 1' ||
-      e.racing_series.name === 'Formula 1'
-    );
+    return (e.racing_series.name === 'F1');
   });
 
   const escuderiasF1Filtradas = f1Escuderias.filter(
@@ -249,12 +177,25 @@ function ListadoEscuderias() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {escuderiasF1Filtradas.map((escuderia) => {
-              const flagUrl = getCountryFlag(escuderia.nationality);
+              const flagUrl = new URL(`../../assets/banderas-paises/${escuderia.nationality}.png`, import.meta.url).href
               const logoUrl = getEscuderiaLogo(escuderia.name);
+              const hexColor = escuderia.color ? (escuderia.color.startsWith('#') ? escuderia.color : `#${escuderia.color}`) : null;
 
               return (
                 <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
-                  <Card className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0">
+                  <Card 
+                    className="relative bg-slate-900/50 border-slate-700 transition-all duration-300 hover:shadow-xl overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
+                    style={{
+                      borderColor: hexColor ? `${hexColor}50` : undefined,
+                      boxShadow: hexColor ? `0 10px 15px -3px ${hexColor}20` : undefined
+                    }}
+                  >
+                    {hexColor && (
+                      <div 
+                        className="absolute inset-0 opacity-20 transition-opacity duration-300 group-hover:opacity-40"
+                        style={{ backgroundColor: hexColor }}
+                      />
+                    )}
                     <div className="relative w-full h-64 overflow-hidden">
                       <img
                         src={logoUrl}
@@ -316,14 +257,25 @@ function ListadoEscuderias() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {f2Escuderias.map((escuderia) => {
-                const flagUrl = getCountryFlag(escuderia.nationality);
+                const flagUrl = new URL(`../../assets/banderas-paises/${escuderia.nationality}.png`, import.meta.url).href
                 const logoUrl = getEscuderiaLogo(escuderia.name);
+                const hexColor = escuderia.color ? (escuderia.color.startsWith('#') ? escuderia.color : `#${escuderia.color}`) : null;
+
                 return (
                   <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
                     <Card
-                      key={escuderia.id}
-                      className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
+                      className="relative bg-slate-900/50 border-slate-700 transition-all duration-300 hover:shadow-xl overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
+                      style={{
+                        borderColor: hexColor ? `${hexColor}50` : undefined,
+                        boxShadow: hexColor ? `0 10px 15px -3px ${hexColor}20` : undefined
+                      }}
                     >
+                      {hexColor && (
+                        <div 
+                          className="absolute inset-0 opacity-20 transition-opacity duration-300 group-hover:opacity-40"
+                          style={{ backgroundColor: hexColor }}
+                        />
+                      )}
                       <div className="relative w-full h-64 overflow-hidden">
                         <img
                           src={logoUrl}

@@ -6,48 +6,6 @@ import { Circuito } from '@/entities/circuito.entity.ts';
 import { getCircuito } from '@/services/circuito.service.ts';
 import { Link } from 'react-router-dom';
 
-// Helper function para obtener la bandera del país automáticamente
-const getCountryFlag = (country: string): string => {
-  if (!country) return '';
-
-  // Mapa de casos especiales (opcional, para nacionalidades con nombres diferentes al archivo)
-  const specialCases: Record<string, string> = {
-    'Reino Unido': 'UK',
-    'Estados Unidos': 'USA',
-    'Países Bajos': 'Paises_Bajos',
-    'Abu Dhabi': 'EAU',
-    'Baréin': 'bahrain',
-    'Barein': 'bahrain',
-    'Azerbaiyán': 'Azerbaiyan',
-  };
-
-  // Si hay un caso especial, usarlo
-  if (specialCases[country]) {
-    return new URL(
-      `../../assets/banderas-paises/${specialCases[country]}.png`,
-      import.meta.url
-    ).href;
-  }
-
-  // Normalizar el nombre del país para que coincida con los archivos
-  const normalizedName = country
-    .normalize('NFD') // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
-    .replace(/\s+/g, '_') // Reemplaza espacios con guiones bajos
-    .replace(/[^a-zA-Z0-9_]/g, ''); // Elimina caracteres especiales
-
-  // Construye la ruta automáticamente
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return '';
-  }
-};
-
-
 function ListadoCircuitos() {
   const [circuitos, setCircuitos] = useState<Circuito[]>([]);
   const [loading, setLoading] = useState(true);
@@ -129,7 +87,7 @@ function ListadoCircuitos() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
             {circuitos.map((circuito) => {
-              const flagUrl = getCountryFlag(circuito.country);
+              const flagUrl = new URL(`../../assets/banderas-paises/${circuito.country}.png`, import.meta.url).href
               return (
                 <Link
                   to={`/circuito/${circuito.id}`}

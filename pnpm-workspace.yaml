@@ -1,3 +1,6 @@
+allowBuilds:
+  '@tailwindcss/oxide': false
+  esbuild: false
 ignoredBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild

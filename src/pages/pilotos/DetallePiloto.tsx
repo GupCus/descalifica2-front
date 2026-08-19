@@ -57,7 +57,7 @@ function DetallePiloto() {
     );
   }
 
-  const flagUrl = `../../assets/banderas-paises/${piloto.nationality}.png`;
+  const flagUrl = new URL(`../../assets/banderas-paises/${piloto.nationality}.png`, import.meta.url).href;
   const photoUrl = piloto.profile_image
 
   return (

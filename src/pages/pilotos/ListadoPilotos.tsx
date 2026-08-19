@@ -175,7 +175,7 @@ function ListadoPilotos() {
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {f1Filtrados.map((piloto) => {
-                const flagUrl = `../../assets/banderas-paises/${piloto.nationality}.png`;
+                const flagUrl = new URL(`../../assets/banderas-paises/${piloto.nationality}.png`, import.meta.url).href;
                 const photoUrl = piloto.profile_image;
                 return (
                   <Link to={`/piloto/${piloto.id}`} key={piloto.id}>
@@ -266,7 +266,7 @@ function ListadoPilotos() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
             {f2Filtrados.map((piloto) => {
-              const flagUrl = `../../assets/banderas-paises/${piloto.nationality}.png`;
+              const flagUrl = new URL(`../../assets/banderas-paises/${piloto.nationality}.png`, import.meta.url).href;
               const photoUrl = piloto.profile_image;
               return (
                 <Link to={`/piloto/${piloto.id}`} key={piloto.id}>

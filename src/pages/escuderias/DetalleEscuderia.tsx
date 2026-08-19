@@ -8,71 +8,13 @@ import {
   getOneEscuderia,
 } from "@/services/escuderia.service.ts";
 
-const getCountryFlag = (nationality: string): string => {
-  if (!nationality) return "";
-
-  const specialCases: Record<string, string> = {
-    "Reino Unido": "UK",
-    "Estados Unidos": "USA",
-    "Países Bajos": "Paises_Bajos",
-    "Emiratos Árabes Unidos": "EAU",
-    Baréin: "bahrain",
-    Bahréin: "bahrain",
-    Azerbaiyán: "Azerbaiyan",
-    "Reino de Bahréin": "bahrain",
-    Inglaterra: "UK",
-    Italia: "Italia",
-    Austria: "Austria",
-    Alemania: "Alemania",
-    Francia: "Francia",
-    Suiza: "Suiza",
-  };
-
-  if (specialCases[nationality]) {
-    try {
-      return new URL(
-        `../../assets/banderas-paises/${specialCases[nationality]}.png`,
-        import.meta.url
-      ).href;
-    } catch {
-      return "";
-    }
-  }
-
-  const normalizedName = nationality
-    .normalize("NFD")
-    .replace(/\s+/g, "_")
-    .replace(/[^a-zA-Z0-9_]/g, "");
-
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return "";
-  }
-};
-
+// Helper function para obtener la imagen de la escudería automáticamente desde assets
 const getEscuderiaLogo = (name: string): string => {
-  if (!name) return "";
-
-  const normalizedName = name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
-
-  try {
-    return new URL(
-      `../../assets/escuderias/${normalizedName}.png`,
+  return new URL(
+      `../../assets/escuderias/${name.split(" ")[0].toLowerCase()}.png`,
       import.meta.url
     ).href;
-  } catch {
-    return "";
-  }
-};
+}
 
 function DetalleEscuderia() {
   const { id } = useParams<{ id: string }>();
@@ -135,7 +77,8 @@ function DetalleEscuderia() {
   }
 
   const logoUrl = getEscuderiaLogo(escuderia.name);
-  const flagUrl = getCountryFlag(escuderia.nationality);
+  const flagUrl = new URL(`../../assets/banderas-paises/${escuderia.nationality}.png`, import.meta.url).href
+  const hexColor = escuderia.color ? (escuderia.color.startsWith('#') ? escuderia.color : `#${escuderia.color}`) : null;
 
   return (
     <div className="relative min-h-screen">
@@ -148,6 +91,12 @@ function DetalleEscuderia() {
           filter: "blur(8px) brightness(0.4)",
         }}
       />
+      {hexColor && (
+        <div 
+          className="absolute inset-0 w-full h-full z-0 opacity-20 pointer-events-none mix-blend-overlay"
+          style={{ backgroundColor: hexColor }}
+        />
+      )}
 
       <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <div className="w-full max-w-4xl mx-8">
@@ -168,7 +117,20 @@ function DetalleEscuderia() {
             </Button>
           </div>
 
-          <div className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-red-700/40">
+          <div 
+            className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border relative overflow-hidden"
+            style={{
+              borderColor: hexColor ? `${hexColor}50` : 'rgba(185, 28, 28, 0.4)',
+              boxShadow: hexColor ? `0 25px 50px -12px ${hexColor}30` : undefined
+            }}
+          >
+            {hexColor && (
+              <div 
+                className="absolute inset-0 z-0 opacity-10 pointer-events-none"
+                style={{ backgroundColor: hexColor }}
+              />
+            )}
+            <div className="relative z-10">
             <h1
               className="text-white-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase mb-8"
               style={{ fontFamily: "'Oswald', sans-serif" }}
@@ -236,6 +198,7 @@ function DetalleEscuderia() {
                   </p>
                 </div>
               )}
+            </div>
             </div>
           </div>
         </div>
