@@ -50,7 +50,7 @@ function DondeVer() {
         pais: "Bahréin",
         disneyPlus: true,
         foxSports: false,
-        imagenPais: "./src/assets/banderas-paises/BHR.png",
+        imagenPais: "./src/assets/banderas-paises/BRN.png",
       },
       {
         id: 5,
@@ -59,7 +59,7 @@ function DondeVer() {
         pais: "Arabia Saudita",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/SAU.png",
+        imagenPais: "./src/assets/banderas-paises/KSA.png",
       },
       {
         id: 6,
@@ -86,7 +86,7 @@ function DondeVer() {
         pais: "Mónaco",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/MCO.png",
+        imagenPais: "./src/assets/banderas-paises/MON.png",
       },
       {
         id: 9,
@@ -149,7 +149,7 @@ function DondeVer() {
         pais: "Países Bajos",
         disneyPlus: true,
         foxSports: false,
-        imagenPais: "./src/assets/banderas-paises/NLD.png",
+        imagenPais: "./src/assets/banderas-paises/NED.png",
       },
       {
         id: 16,
@@ -230,7 +230,7 @@ function DondeVer() {
         pais: "Abu Dhabi",
         disneyPlus: true,
         foxSports: true,
-        imagenPais: "./src/assets/banderas-paises/ARE.png",
+        imagenPais: "./src/assets/banderas-paises/UAE.png",
       },
     ];
 

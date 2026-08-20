@@ -78,7 +78,6 @@ function DetalleEscuderia() {
 
   const logoUrl = getEscuderiaLogo(escuderia.name);
   const flagUrl = new URL(`../../assets/banderas-paises/${escuderia.nationality}.png`, import.meta.url).href
-  const hexColor = escuderia.color ? (escuderia.color.startsWith('#') ? escuderia.color : `#${escuderia.color}`) : null;
 
   return (
     <div className="relative min-h-screen">
@@ -91,12 +90,6 @@ function DetalleEscuderia() {
           filter: "blur(8px) brightness(0.4)",
         }}
       />
-      {hexColor && (
-        <div 
-          className="absolute inset-0 w-full h-full z-0 opacity-20 pointer-events-none mix-blend-overlay"
-          style={{ backgroundColor: hexColor }}
-        />
-      )}
 
       <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <div className="w-full max-w-4xl mx-8">
@@ -119,17 +112,7 @@ function DetalleEscuderia() {
 
           <div 
             className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border relative overflow-hidden"
-            style={{
-              borderColor: hexColor ? `${hexColor}50` : 'rgba(185, 28, 28, 0.4)',
-              boxShadow: hexColor ? `0 25px 50px -12px ${hexColor}30` : undefined
-            }}
           >
-            {hexColor && (
-              <div 
-                className="absolute inset-0 z-0 opacity-10 pointer-events-none"
-                style={{ backgroundColor: hexColor }}
-              />
-            )}
             <div className="relative z-10">
             <h1
               className="text-white-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase mb-8"

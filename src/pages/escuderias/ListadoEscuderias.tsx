@@ -27,7 +27,6 @@ const getEscuderiaLogo = (name: string): string => {
     ).href;
 }
 
-
 function ListadoEscuderias() {
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [loading, setLoading] = useState(true);
@@ -179,23 +178,12 @@ function ListadoEscuderias() {
             {escuderiasF1Filtradas.map((escuderia) => {
               const flagUrl = new URL(`../../assets/banderas-paises/${escuderia.nationality}.png`, import.meta.url).href
               const logoUrl = getEscuderiaLogo(escuderia.name);
-              const hexColor = escuderia.color ? (escuderia.color.startsWith('#') ? escuderia.color : `#${escuderia.color}`) : null;
 
               return (
                 <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
                   <Card 
                     className="relative bg-slate-900/50 border-slate-700 transition-all duration-300 hover:shadow-xl overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
-                    style={{
-                      borderColor: hexColor ? `${hexColor}50` : undefined,
-                      boxShadow: hexColor ? `0 10px 15px -3px ${hexColor}20` : undefined
-                    }}
                   >
-                    {hexColor && (
-                      <div 
-                        className="absolute inset-0 opacity-20 transition-opacity duration-300 group-hover:opacity-40"
-                        style={{ backgroundColor: hexColor }}
-                      />
-                    )}
                     <div className="relative w-full h-64 overflow-hidden">
                       <img
                         src={logoUrl}
@@ -259,23 +247,12 @@ function ListadoEscuderias() {
               {f2Escuderias.map((escuderia) => {
                 const flagUrl = new URL(`../../assets/banderas-paises/${escuderia.nationality}.png`, import.meta.url).href
                 const logoUrl = getEscuderiaLogo(escuderia.name);
-                const hexColor = escuderia.color ? (escuderia.color.startsWith('#') ? escuderia.color : `#${escuderia.color}`) : null;
 
                 return (
                   <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
                     <Card
                       className="relative bg-slate-900/50 border-slate-700 transition-all duration-300 hover:shadow-xl overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
-                      style={{
-                        borderColor: hexColor ? `${hexColor}50` : undefined,
-                        boxShadow: hexColor ? `0 10px 15px -3px ${hexColor}20` : undefined
-                      }}
                     >
-                      {hexColor && (
-                        <div 
-                          className="absolute inset-0 opacity-20 transition-opacity duration-300 group-hover:opacity-40"
-                          style={{ backgroundColor: hexColor }}
-                        />
-                      )}
                       <div className="relative w-full h-64 overflow-hidden">
                         <img
                           src={logoUrl}
