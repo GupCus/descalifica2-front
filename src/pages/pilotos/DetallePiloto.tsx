@@ -6,45 +6,6 @@ import { uploadPilotoImage } from "@/services/piloto.service.ts";
 import { AuthService } from "@/services/auth.service.ts";
 import { getAssetUrl } from "@/utils/asset.util.ts";
 
-const getCountryFlag = (nationality: string): string => {
-  if (!nationality) return "";
-
-  const specialCases: Record<string, string> = {
-    "Reino Unido": "UK",
-    "Estados Unidos": "USA",
-    "Países Bajos": "Paises_Bajos",
-    "Emiratos Árabes Unidos": "EAU",
-    Baréin: "bahrain",
-    Bahréin: "bahrain",
-    Azerbaiyán: "Azerbaiyan",
-  };
-
-  if (specialCases[nationality]) {
-    try {
-      return new URL(
-        `../../assets/banderas-paises/${specialCases[nationality]}.png`,
-        import.meta.url,
-      ).href;
-    } catch {
-      return "";
-    }
-  }
-
-  const normalizedName = nationality
-    .normalize("NFD")
-    .replace(/\s+/g, "_")
-    .replace(/[^a-zA-Z0-9_]/g, "");
-
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url,
-    ).href;
-  } catch {
-    return "";
-  }
-};
-
 function DetallePiloto() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
@@ -127,7 +88,7 @@ function DetallePiloto() {
     );
   }
 
-  const flagUrl = getCountryFlag(piloto.nationality);
+  const flagUrl = getAssetUrl(`/flags/${piloto.nationality}.svg`);
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950">

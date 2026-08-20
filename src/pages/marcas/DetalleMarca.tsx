@@ -4,74 +4,13 @@ import { Link, useParams, useLocation } from "react-router-dom";
 import { ArrowLeftIcon } from "lucide-react";
 import { uploadMarcaImage } from "@/services/marca.service.ts";
 import { AuthService } from "@/services/auth.service.ts";
-
-const getCountryFlag = (nationality: string): string => {
-  if (!nationality) return "";
-
-  const specialCases: Record<string, string> = {
-    "Reino Unido": "UK",
-    "Estados Unidos": "USA",
-    "Países Bajos": "Paises_Bajos",
-    "Emiratos Árabes Unidos": "EAU",
-    Baréin: "bahrain",
-    Bahréin: "bahrain",
-    Azerbaiyán: "Azerbaiyan",
-    "Reino de Bahréin": "bahrain",
-    Inglaterra: "UK",
-    Italia: "Italia",
-    Austria: "Austria",
-    Alemania: "Alemania",
-    Francia: "Francia",
-    Suiza: "Suiza",
-  };
-
-  if (specialCases[nationality]) {
-    try {
-      return new URL(
-        `../../assets/banderas-paises/${specialCases[nationality]}.png`,
-        import.meta.url
-      ).href;
-    } catch {
-      return "";
-    }
-  }
-
-  const normalizedName = nationality
-    .normalize("NFD")
-    .replace(/\s+/g, "_")
-    .replace(/[^a-zA-Z0-9_]/g, "");
-
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return "";
-  }
-};
-
-const getMarcaLogo = (name: string): string => {
-  const normalizedName = name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
-
-  try {
-    return new URL(`../../assets/marcas/${normalizedName}.png`, import.meta.url)
-      .href;
-  } catch {
-    return "";
-  }
-};
+import { getAssetUrl } from "@/utils/asset.util.ts";
 
 function DetalleMarca() {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const [marca, setMarca] = useState<Marca | null>(
-    location.state?.marca || null
+    location.state?.marca || null,
   );
   const [loading, setLoading] = useState(!location.state?.marca);
   const [error, setError] = useState<string | null>(null);
@@ -149,8 +88,8 @@ function DetalleMarca() {
     );
   }
 
-  const flagUrl = getCountryFlag(marca.nationality);
-  const logoUrl = getMarcaLogo(marca.name);
+  const flagUrl = getAssetUrl(`/flags/${marca.nationality}.svg`);
+  const logoUrl = getAssetUrl(marca.logo_image);
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950">
@@ -259,14 +198,15 @@ function DetalleMarca() {
               )}
             </div>
 
-
             {isAdmin && (
               <div className="mt-8 bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-lg">
-                <h3 className="text-xl font-bold mb-4 text-white">Actualizar Imagen de la Marca</h3>
+                <h3 className="text-xl font-bold mb-4 text-white">
+                  Actualizar Imagen de la Marca
+                </h3>
                 <div className="flex flex-col sm:flex-row gap-4 items-center">
-                  <input 
-                    type="file" 
-                    accept="image/*" 
+                  <input
+                    type="file"
+                    accept="image/*"
                     onChange={handleFileChange}
                     className="block w-full sm:w-auto text-sm text-gray-300
                       file:mr-4 file:py-2 file:px-4
@@ -275,17 +215,16 @@ function DetalleMarca() {
                       file:bg-red-800 file:text-white
                       hover:file:bg-red-900"
                   />
-                  <button 
+                  <button
                     onClick={handleUploadImage}
                     disabled={!selectedFile || uploadingImage}
                     className="px-6 py-2 bg-red-800 hover:bg-red-900 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
                   >
-                    {uploadingImage ? 'Subiendo...' : 'Subir Imagen'}
+                    {uploadingImage ? "Subiendo..." : "Subir Imagen"}
                   </button>
                 </div>
               </div>
             )}
-
           </div>
         </div>
       </div>

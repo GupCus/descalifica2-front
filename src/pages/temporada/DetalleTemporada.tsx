@@ -1,8 +1,8 @@
-import { Temporada } from '@/entities/temporada.entity.ts';
-import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { uploadTemporadaImage } from '@/services/temporada.service.ts';
-import { AuthService } from '@/services/auth.service.ts';
+import { Temporada } from "@/entities/temporada.entity.ts";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { uploadTemporadaImage } from "@/services/temporada.service.ts";
+import { AuthService } from "@/services/auth.service.ts";
 
 function DetalleTemporada() {
   const { id } = useParams<{ id: string }>();
@@ -38,7 +38,7 @@ function DetalleTemporada() {
     }
   };
 
-  const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
   useEffect(() => {
     if (!id) return;
@@ -82,14 +82,12 @@ function DetalleTemporada() {
     );
   }
 
-
-
   return (
     <div className="relative min-h-screen flex items-center justify-center">
       <div
         className="absolute inset-0 w-full h-full -z-10 blur-sm opacity-20"
         style={{
-          backgroundImage: `url(${new URL('../../assets/FondoDetalleTemporada.jpg', import.meta.url).href})`,
+          backgroundImage: `url(${new URL("../../assets/FondoDetalleTemporada.jpg", import.meta.url).href})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -113,48 +111,28 @@ function DetalleTemporada() {
               <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
                 Campeón de Pilotos
               </h3>
-              <p className="text-2xl font-bold text-white">{temporada.winner_driver?.name}</p>
+              <p className="text-2xl font-bold text-white">
+                {temporada.winner_driver?.name}
+              </p>
             </div>
 
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
               <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
                 Campeón de Constructores
               </h3>
-              <p className="text-2xl font-bold text-white">{temporada.winner_team?.name}</p>
+              <p className="text-2xl font-bold text-white">
+                {temporada.winner_team?.name}
+              </p>
             </div>
             <div>
-              <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">Número de Carreras</h3>
-              <p className="text-2xl font-bold text-white">{temporada.races?.length ?? 0}</p>
+              <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+                Número de Carreras
+              </h3>
+              <p className="text-2xl font-bold text-white">
+                {temporada.races?.length ?? 0}
+              </p>
             </div>
           </div>
-
-
-          {isAdmin && (
-            <div className="mt-8 bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-lg">
-              <h3 className="text-xl font-bold mb-4 text-white">Actualizar Imagen de la Temporada</h3>
-              <div className="flex flex-col sm:flex-row gap-4 items-center">
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  onChange={handleFileChange}
-                  className="block w-full sm:w-auto text-sm text-gray-300
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-md file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-purple-600 file:text-white
-                    hover:file:bg-purple-700"
-                />
-                <button 
-                  onClick={handleUploadImage}
-                  disabled={!selectedFile || uploadingImage}
-                  className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
-                >
-                  {uploadingImage ? 'Subiendo...' : 'Subir Imagen'}
-                </button>
-              </div>
-            </div>
-          )}
-
         </div>
       </div>
     </div>

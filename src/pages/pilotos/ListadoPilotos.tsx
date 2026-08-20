@@ -35,8 +35,6 @@ function ListadoPilotos() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
-  const [escuderiasF1, setEscuderiasF1] = useState<string[]>([]);
-  const [escuderiasF2, setEscuderiasF2] = useState<string[]>([]);
   const [filtroEscuderiaF1, setFiltroEscuderiaF1] = useState<string>("null");
   const [filtroEscuderiaF2, setFiltroEscuderiaF2] = useState<string>("null");
 

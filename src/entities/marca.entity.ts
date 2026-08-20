@@ -5,9 +5,11 @@ export class Marca extends baseEntity {
   nationality!: string;
   foundation!: number;
   teams?: Escuderia[];
+  logo_image?: string;
 }
 export class NewMarca extends baseEntity {
   nationality!: string;
   foundation!: number;
   teams?: Escuderia[];
+  logo_image?: string;
 }
