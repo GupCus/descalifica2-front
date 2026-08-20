@@ -22,64 +22,6 @@ import { getEscuderia } from "@/services/escuderia.service.ts";
 import { Link } from "react-router-dom";
 import { getAssetUrl } from "@/utils/asset.util.ts";
 
-// Helper para banderas
-const getCountryFlag = (nationality?: string): string => {
-  if (!nationality) return "";
-  const specialCases: Record<string, string> = {
-    "Reino Unido": "UK",
-    "Estados Unidos": "USA",
-    "Países Bajos": "Paises_Bajos",
-    "Emiratos Árabes Unidos": "EAU",
-    Baréin: "bahrain",
-    Bahréin: "bahrain",
-    Azerbaiyán: "Azerbaiyan",
-  };
-  if (specialCases[nationality]) {
-    try {
-      return new URL(
-        `../../assets/banderas-paises/${specialCases[nationality]}.png`,
-        import.meta.url,
-      ).href;
-    } catch {
-      return "";
-    }
-  }
-  const normalizedName = nationality
-    .normalize("NFD")
-    .replace(/\s+/g, "_")
-    .replace(/[^a-zA-Z0-9_]/g, "");
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url,
-    ).href;
-  } catch {
-    return "";
-  }
-};
-
-const getPilotoPhoto = (name?: string): string => {
-  if (!name) return "";
-  const normalizedName = name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
-  const exts = ["png", "webp", "jpg", "jpeg"];
-  for (const ext of exts) {
-    try {
-      return new URL(
-        `../../assets/pilotos/${normalizedName}.${ext}`,
-        import.meta.url,
-      ).href;
-    } catch (err) {
-      console.log(`Error en la función normalizedName: ${err}`);
-    }
-  }
-  return "";
-};
-
 const getRacingSeries = (cat?: { id?: string; name?: string } | string) => {
   if (!cat) return "";
   if (typeof cat === "string") return cat.trim().toLowerCase();
@@ -339,8 +281,8 @@ function ListadoPilotos() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
             {f2Filtrados.map((piloto) => {
-              const flagUrl = getCountryFlag(piloto.nationality);
-              const photoUrl = getPilotoPhoto(piloto.name);
+              const flagUrl = getAssetUrl(`/flags/${piloto.nationality}.svg`);
+              const photoUrl = getAssetUrl(piloto.profile_image);
               return (
                 <Link to={`/piloto/${piloto.id}`} key={piloto.id}>
                   <Card

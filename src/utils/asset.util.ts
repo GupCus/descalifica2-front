@@ -21,5 +21,6 @@ export function getAssetUrl(relativePath: string | undefined | null): string {
 
   // DEBUG
   console.log("RUTA COMPLETA:" + `${baseUrl}/assets/${cleanPath}`);
-  return `${baseUrl}/assets/${cleanPath}`;
+  const rutaCompleta = `${baseUrl}/assets/${cleanPath}`;
+  return rutaCompleta.toLowerCase();
 }
