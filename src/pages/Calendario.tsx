@@ -16,7 +16,7 @@ function Calendario() {
   useEffect(() => {
     getCarrera()
       .then(data => setCarreras(data))
-      .catch((err) => setError(err))
+      .catch((err) => setError(err.message || String(err)))
       .finally(() => setLoading(false));
   }, []);
 

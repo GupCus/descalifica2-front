@@ -1,107 +1,44 @@
-import { useEffect, useState } from 'react';
-import { ChromaGrid } from '@/components/ui/Chroma-grid';
+import { useEffect, useState } from "react";
+import { ChromaGrid } from "@/components/ui/Chroma-grid";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Skeleton } from '@/components/ui/skeleton';
-import { getEscuderia } from '@/services/escuderia.service.ts';
-import { Escuderia } from '@/entities/escuderia.entity.ts';
-import { Link } from 'react-router-dom';
-
-// Helper function para obtener la bandera del país automáticamente
-const getCountryFlag = (nationality: string): string => {
-  if (!nationality) return '';
-
-  // Mapa de casos especiales (opcional, para nacionalidades con nombres diferentes al archivo)
-  const specialCases: Record<string, string> = {
-    'Reino Unido': 'UK',
-    'Estados Unidos': 'USA',
-    'Países Bajos': 'Paises_Bajos',
-    Abu_Dhabi: 'EAU',
-    Baréin: 'bahrain',
-    Barein: 'bahrain',
-    Azerbaiyán: 'Azerbaiyan',
-  };
-
-  // Si hay un caso especial, usarlo
-  if (specialCases[nationality]) {
-    return new URL(
-      `../../assets/banderas-paises/${specialCases[nationality]}.png`,
-      import.meta.url
-    ).href;
-  }
-
-  // Normalizar el nombre del país para que coincida con los archivos
-  const normalizedName = nationality
-    .normalize('NFD') // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
-    .replace(/\s+/g, '_') // Reemplaza espacios con guiones bajos
-    .replace(/[^a-zA-Z0-9_]/g, ''); // Elimina caracteres especiales
-
-  // Construye la ruta automáticamente
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return '';
-  }
-};
-
-// Helper function para obtener la imagen de la escudería automáticamente desde assets
-const getEscuderiaLogo = (name: string): string => {
-  if (!name) return '';
-
-  // Normalizar el nombre de la escudería para que coincida con los archivos
-  const normalizedName = name
-    .toLowerCase() // Convertir a minúsculas
-    .normalize('NFD') // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
-    .replace(/\s+/g, '-') // Reemplaza espacios con guiones
-    .replace(/[^a-z0-9-]/g, ''); // Elimina caracteres especiales
-
-  // Buscar siempre en assets
-  try {
-    return new URL(
-      `../../assets/escuderias/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return '';
-  }
-};
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getEscuderia } from "@/services/escuderia.service.ts";
+import { Escuderia } from "@/entities/escuderia.entity.ts";
+import { Link } from "react-router-dom";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 
 function ListadoEscuderias() {
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [paises, setPaises] = useState<string[]>([]);
-  const [filtroPaisF1, setFiltroPaisF1] = useState<string>('null');
+  const [filtroPaisF1, setFiltroPaisF1] = useState<string>("null");
 
   useEffect(() => {
     getEscuderia()
       .then((data) => {
         setEscuderias(data);
         const naciones = Array.from(
-          new Set(data.map((e: Escuderia) => e.nationality).filter(Boolean))
+          new Set(data.map((e: Escuderia) => e.nationality).filter(Boolean)),
         );
         setPaises(naciones);
       })
       .catch((err) => {
         setError(err.message);
-        console.error('Error cargando escuderías', err);
+        console.error("Error cargando escuderías", err);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -145,10 +82,10 @@ function ListadoEscuderias() {
           className="absolute inset-0 w-full h-full blur-sm opacity-35"
           style={{
             backgroundImage: `url(${
-              new URL('../../assets/vers-lec.jpg', import.meta.url).href
+              new URL("../../assets/vers-lec.jpg", import.meta.url).href
             })`,
-            backgroundSize: 'auto 100%',
-            backgroundPosition: 'center',
+            backgroundSize: "auto 100%",
+            backgroundPosition: "center",
           }}
         />
         <ChromaGrid />
@@ -168,9 +105,9 @@ function ListadoEscuderias() {
 
   //helper para extraer el nombre de categoria
   const getCategoryName = (cat?: { id?: string; name?: string } | string) => {
-    if (!cat) return '';
-    if (typeof cat === 'string') return cat.trim().toLowerCase();
-    return String(cat.name ?? '')
+    if (!cat) return "";
+    if (typeof cat === "string") return cat.trim().toLowerCase();
+    return String(cat.name ?? "")
       .trim()
       .toLowerCase();
   };
@@ -180,23 +117,23 @@ function ListadoEscuderias() {
   const f2Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
     return (
-      getCategoryName(e.racing_series.name) === 'f2' ||
-      e.racing_series.name === 'Fórmula 2' ||
-      e.racing_series.name === 'Formula 2'
+      getCategoryName(e.racing_series.name) === "f2" ||
+      e.racing_series.name === "Fórmula 2" ||
+      e.racing_series.name === "Formula 2"
     );
   });
 
   const f1Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
     return (
-      getCategoryName(e.racing_series.name) === 'f1' ||
-      e.racing_series.name === 'Fórmula 1' ||
-      e.racing_series.name === 'Formula 1'
+      getCategoryName(e.racing_series.name) === "f1" ||
+      e.racing_series.name === "Fórmula 1" ||
+      e.racing_series.name === "Formula 1"
     );
   });
 
   const escuderiasF1Filtradas = f1Escuderias.filter(
-    (e) => filtroPaisF1 === 'null' || e.nationality === filtroPaisF1
+    (e) => filtroPaisF1 === "null" || e.nationality === filtroPaisF1,
   );
 
   return (
@@ -205,17 +142,17 @@ function ListadoEscuderias() {
         className="absolute inset-0 w-full h-full blur-sm opacity-35"
         style={{
           backgroundImage: `url(${
-            new URL('../../assets/vers-lec.jpg', import.meta.url).href
+            new URL("../../assets/vers-lec.jpg", import.meta.url).href
           })`,
-          backgroundSize: 'auto 100%',
-          backgroundPosition: 'center',
+          backgroundSize: "auto 100%",
+          backgroundPosition: "center",
         }}
       />
       <ChromaGrid />
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div>
           <img
-            src={new URL('../../assets/f1-logo.png', import.meta.url).href}
+            src={new URL("../../assets/f1-logo.png", import.meta.url).href}
             alt="Logo de Formula 1"
             className="mx-auto w-50 h-auto object-contain"
           />
@@ -249,8 +186,10 @@ function ListadoEscuderias() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {escuderiasF1Filtradas.map((escuderia) => {
-              const flagUrl = getCountryFlag(escuderia.nationality);
-              const logoUrl = getEscuderiaLogo(escuderia.name);
+              const flagUrl = getAssetUrl(
+                `/flags/${escuderia.nationality}.svg`,
+              );
+              const logoUrl = getAssetUrl(escuderia.logo_image);
 
               return (
                 <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
@@ -263,9 +202,9 @@ function ListadoEscuderias() {
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           // reemplazar con placeholder si no existe
-                          target.src = '/src/assets/descalifica2logo.png';
+                          target.src = "/src/assets/descalifica2logo.png";
                           target.className =
-                            'absolute inset-0 w-full h-full object-contain bg-slate-900/50';
+                            "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
                         }}
                       />
 
@@ -296,7 +235,7 @@ function ListadoEscuderias() {
 
         <div>
           <img
-            src={new URL('../../assets/f2-logo.png', import.meta.url).href}
+            src={new URL("../../assets/f2-logo.png", import.meta.url).href}
             alt="Logo de Formula 2"
             className="mx-auto w-50 h-auto object-contain"
           />
@@ -316,8 +255,10 @@ function ListadoEscuderias() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {f2Escuderias.map((escuderia) => {
-                const flagUrl = getCountryFlag(escuderia.nationality);
-                const logoUrl = getEscuderiaLogo(escuderia.name);
+                const flagUrl = getAssetUrl(
+                  `/flags/${escuderia.nationality}.svg`,
+                );
+                const logoUrl = getAssetUrl(escuderia.logo_image);
                 return (
                   <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
                     <Card
@@ -332,9 +273,9 @@ function ListadoEscuderias() {
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
                             // reemplazar con placeholder si no existe
-                            target.src = '/src/assets/descalifica2logo.png';
+                            target.src = "/src/assets/descalifica2logo.png";
                             target.className =
-                              'absolute inset-0 w-full h-full object-contain bg-slate-900/50';
+                              "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
                           }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>

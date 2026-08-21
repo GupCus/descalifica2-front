@@ -6,73 +6,10 @@ import { Trash2 } from "lucide-react";
 import {
   deleteEscuderia,
   getOneEscuderia,
+  uploadEscuderiaImage,
 } from "@/services/escuderia.service.ts";
-
-const getCountryFlag = (nationality: string): string => {
-  if (!nationality) return "";
-
-  const specialCases: Record<string, string> = {
-    "Reino Unido": "UK",
-    "Estados Unidos": "USA",
-    "Países Bajos": "Paises_Bajos",
-    "Emiratos Árabes Unidos": "EAU",
-    Baréin: "bahrain",
-    Bahréin: "bahrain",
-    Azerbaiyán: "Azerbaiyan",
-    "Reino de Bahréin": "bahrain",
-    Inglaterra: "UK",
-    Italia: "Italia",
-    Austria: "Austria",
-    Alemania: "Alemania",
-    Francia: "Francia",
-    Suiza: "Suiza",
-  };
-
-  if (specialCases[nationality]) {
-    try {
-      return new URL(
-        `../../assets/banderas-paises/${specialCases[nationality]}.png`,
-        import.meta.url
-      ).href;
-    } catch {
-      return "";
-    }
-  }
-
-  const normalizedName = nationality
-    .normalize("NFD")
-    .replace(/\s+/g, "_")
-    .replace(/[^a-zA-Z0-9_]/g, "");
-
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return "";
-  }
-};
-
-const getEscuderiaLogo = (name: string): string => {
-  if (!name) return "";
-
-  const normalizedName = name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
-
-  try {
-    return new URL(
-      `../../assets/escuderias/${normalizedName}.png`,
-      import.meta.url
-    ).href;
-  } catch {
-    return "";
-  }
-};
+import { AuthService } from "@/services/auth.service.ts";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 
 function DetalleEscuderia() {
   const { id } = useParams<{ id: string }>();
@@ -80,6 +17,34 @@ function DetalleEscuderia() {
   const [escuderia, setEscuderia] = useState<Escuderia | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    AuthService.isAdmin().then((res) => setIsAdmin(Boolean(res)));
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedFile || !escuderia || !escuderia.id) return;
+    setUploadingImage(true);
+    try {
+      await uploadEscuderiaImage(escuderia.id, selectedFile);
+      alert("Imagen actualizada correctamente");
+      window.location.reload();
+    } catch (error) {
+      alert("Error al actualizar la imagen");
+    } finally {
+      setUploadingImage(false);
+      setSelectedFile(null);
+    }
+  };
 
   useEffect(() => {
     if (!id) {
@@ -134,15 +99,14 @@ function DetalleEscuderia() {
     );
   }
 
-  const logoUrl = getEscuderiaLogo(escuderia.name);
-  const flagUrl = getCountryFlag(escuderia.nationality);
+  const flagUrl = getAssetUrl(`/flags/${escuderia.nationality}.svg`);
 
   return (
     <div className="relative min-h-screen">
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
-          backgroundImage: `url(${logoUrl})`,
+          backgroundImage: getAssetUrl(escuderia.logo_image),
           backgroundSize: "cover",
           backgroundPosition: "center",
           filter: "blur(8px) brightness(0.4)",
@@ -184,8 +148,8 @@ function DetalleEscuderia() {
                 <div className="flex items-center gap-3">
                   {flagUrl && (
                     <img
-                      src={flagUrl}
-                      alt={escuderia.nationality}
+                      src={getAssetUrl(`/flags/${escuderia.nationality}.svg`)}
+                      alt="AT"
                       className="w-12 h-8 object-cover rounded shadow-lg"
                     />
                   )}
@@ -237,6 +201,34 @@ function DetalleEscuderia() {
                 </div>
               )}
             </div>
+
+            {isAdmin && (
+              <div className="mt-10 bg-gray-900/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50">
+                <h3 className="text-xl font-bold mb-4 text-white">
+                  Actualizar Imagen de la Escudería
+                </h3>
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="block w-full sm:w-auto text-sm text-gray-300
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-md file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-red-700 file:text-white
+                      hover:file:bg-red-800"
+                  />
+                  <button
+                    onClick={handleUploadImage}
+                    disabled={!selectedFile || uploadingImage}
+                    className="px-6 py-2 bg-red-700 hover:bg-red-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
+                  >
+                    {uploadingImage ? "Subiendo..." : "Subir Imagen"}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,56 +1,106 @@
-import { Circuito } from '@/entities/circuito.entity.ts';
-import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Circuito } from "@/entities/circuito.entity.ts";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import {
+  uploadCircuitoImage,
+  uploadTrackImage,
+} from "@/services/circuito.service.ts";
+import { AuthService } from "@/services/auth.service.ts";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 
 const getCountryFlag = (country: string): string => {
-  if (!country) return '';
+  if (!country) return "";
 
   // Mapa de casos especiales (opcional, para nacionalidades con nombres diferentes al archivo)
   const specialCases: Record<string, string> = {
-    'Reino Unido': 'UK',
-    'Estados Unidos': 'USA',
-    'Países Bajos': 'Paises_Bajos',
-    'Abu Dhabi': 'EAU',
-    'Baréin': 'Bahrain',
-    'Barein': 'Bahrain',
-    'Azerbaiyán': 'Azerbaiyan',
-    'España': 'Espana',
+    "Reino Unido": "UK",
+    "Estados Unidos": "USA",
+    "Países Bajos": "Paises_Bajos",
+    "Abu Dhabi": "EAU",
+    Baréin: "Bahrain",
+    Barein: "Bahrain",
+    Azerbaiyán: "Azerbaiyan",
+    España: "Espana",
   };
 
   // Si hay un caso especial, usarlo
   if (specialCases[country]) {
     return new URL(
       `../../assets/banderas-paises/${specialCases[country]}.png`,
-      import.meta.url
+      import.meta.url,
     ).href;
   }
 
   // Normalizar el nombre del país para que coincida con los archivos
   const normalizedName = country
-    .normalize('NFD') // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, '') // Elimina los acentos
-    .replace(/\s+/g, '_') // Reemplaza espacios con guiones bajos
-    .replace(/[^a-zA-Z0-9_]/g, ''); // Elimina caracteres especiales
+    .normalize("NFD") // Descompone caracteres con acentos
+    .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
+    .replace(/\s+/g, "_") // Reemplaza espacios con guiones bajos
+    .replace(/[^a-zA-Z0-9_]/g, ""); // Elimina caracteres especiales
 
   // Construye la ruta automáticamente
   try {
     return new URL(
       `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url
+      import.meta.url,
     ).href;
   } catch {
-    return '';
+    return "";
   }
 };
-
 
 function DetalleCircuito() {
   const { id } = useParams<{ id: string }>();
   const [circuito, setCircuito] = useState<Circuito | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+  useEffect(() => {
+    AuthService.isAdmin().then((res) => setIsAdmin(Boolean(res)));
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedFile || !circuito || !circuito.id) return;
+    setUploadingImage(true);
+    try {
+      await uploadCircuitoImage(circuito.id, selectedFile);
+      alert("Imagen actualizada correctamente");
+      // Opcional: Recargar el circuito actualizando el componente
+      window.location.reload();
+    } catch (error) {
+      alert("Error al actualizar la imagen");
+    } finally {
+      setUploadingImage(false);
+      setSelectedFile(null);
+    }
+  };
+
+  const handleTrackImage = async () => {
+    if (!selectedFile || !circuito || !circuito.id) return;
+    setUploadingImage(true);
+    try {
+      await uploadTrackImage(circuito.id, selectedFile);
+      alert("Imagen actualizada correctamente");
+      // Opcional: Recargar el circuito actualizando el componente
+      window.location.reload();
+    } catch (error) {
+      alert("Error al actualizar la imagen");
+    } finally {
+      setUploadingImage(false);
+      setSelectedFile(null);
+    }
+  };
+
+  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
   useEffect(() => {
     if (!id) return;
@@ -96,15 +146,14 @@ function DetalleCircuito() {
 
   const flagUrl = getCountryFlag(circuito.country);
 
-
   return (
     <div className="relative min-h-screen flex items-start justify-center px-4 py-8">
       <div
         className="absolute inset-0 w-full h-full blur-sm opacity-70 -z-10"
         style={{
-          backgroundImage: `url(${new URL('../../assets/Spa-fondo.jpg', import.meta.url).href})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundImage: `url(${new URL("../../assets/Spa-fondo.jpg", import.meta.url).href})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       />
 
@@ -137,7 +186,7 @@ function DetalleCircuito() {
               <h3 className="text-gray-400 text-xs font-semibold mb-2 uppercase tracking-wider">
                 Longitud
               </h3>
-              <p className="text-2xl font-bold text-white">{circuito.length} km</p>
+              <p className="text-2xl font-bold text-white">{circuito.length}</p>
             </div>
 
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 border border-gray-700/50">
@@ -152,19 +201,76 @@ function DetalleCircuito() {
                     className="w-12 h-8 object-cover rounded overflow-hidden"
                   />
                 )}
-                <p className="text-2xl font-bold text-white">{circuito.country}</p>
+                <p className="text-2xl font-bold text-white">
+                  {circuito.country}
+                </p>
               </div>
             </div>
           </div>
           <div className="mt-6">
             <div className="rounded-lg overflow-hidden border border-gray-700/30 shadow-2xl">
               <img
-                src={circuito.track_map_url}
+                src={getAssetUrl(circuito.track_map_image)}
                 alt={circuito.name}
                 className="w-auto md:h-auto object-cover"
               />
             </div>
           </div>
+
+          {isAdmin && (
+            <div>
+              <div className="mt-10 bg-gray-900/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700">
+                <h3 className="text-xl font-bold mb-4 text-white">
+                  Actualizar Imagen del Circuito
+                </h3>
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="block w-full sm:w-auto text-sm text-gray-300
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-emerald-900 file:text-white
+                    hover:file:bg-green-800"
+                  />
+                  <button
+                    onClick={handleUploadImage}
+                    disabled={!selectedFile || uploadingImage}
+                    className="px-6 py-2 bg-emerald-900 hover:bg-green-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
+                  >
+                    {uploadingImage ? "Subiendo..." : "Subir Imagen"}
+                  </button>
+                </div>
+              </div>
+              <div className="mt-10 bg-gray-900/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700">
+                <h3 className="text-xl font-bold mb-4 text-white">
+                  Actualizar Imagen del trazado del Circuito
+                </h3>
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="block w-full sm:w-auto text-sm text-gray-300
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-md file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-emerald-900 file:text-white
+                    hover:file:bg-green-800"
+                  />
+                  <button
+                    onClick={handleTrackImage}
+                    disabled={!selectedFile || uploadingImage}
+                    className="px-6 py-2 bg-emerald-900 hover:bg-green-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
+                  >
+                    {uploadingImage ? "Subiendo..." : "Subir Imagen"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
