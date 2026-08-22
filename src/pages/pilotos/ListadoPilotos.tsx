@@ -54,10 +54,10 @@ function ListadoPilotos() {
   );
 
   const f2Pilotos = pilotos.filter(
-    (p) => p.racing_series.name === "F2"
+    (p) => p.racing_series.name === "F2" && p.season.year === 2026
   );
   const f1Pilotos = pilotos.filter(
-    (p) => p.racing_series.name === "F1"
+    (p) => p.racing_series.name === "F1" && p.season.year === 2026 && p.profile_image
   );
 
   const f1Filtrados = f1Pilotos.filter(

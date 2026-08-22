@@ -6,11 +6,10 @@ import { ArrowLeftIcon } from "lucide-react";
 // Helper function para obtener la imagen de la escudería automáticamente desde assets
 const getMarcaLogo = (name: string): string => {
   return new URL(
-      `../../assets/marcas/${name.split(" ")[0].toLowerCase()}.png`,
-      import.meta.url
-    ).href;
+    `../../assets/marcas/${name.split(" ")[0].toLowerCase()}.png`,
+    import.meta.url
+  ).href;
 }
-
 
 function DetalleMarca() {
   const { id } = useParams<{ id: string }>();

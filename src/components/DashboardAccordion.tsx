@@ -14,6 +14,19 @@ import { Piloto } from "@/entities/piloto.entity.ts";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, User, Hash, Building2, Timer } from "lucide-react";
 import { getPiloto } from "@/services/piloto.service.ts";
+import { Session_Result } from "@/entities/session_result.entity.ts";
+
+function formatResultTime(resultado: Session_Result): string {
+
+  if (resultado.dsq) return "DSQ";
+  if (resultado.dns) return "DNS";
+  if (resultado.dnf) return "DNF";
+
+  if (resultado.duration && resultado.duration !== "null") return resultado.duration;
+  if (resultado.gap_to_leader && resultado.gap_to_leader !== "null") return resultado.gap_to_leader;
+
+  return "-";
+}
 
 function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
   const [sesionSeleccionada, setSesionSeleccionada] = useState<Sesion | undefined>(undefined);
@@ -29,6 +42,14 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
   },[])
 
   useEffect(() => {
+    console.log("=== DATOS DE SESIONES ===");
+    console.log("Todas las sesiones:", sesiones);
+    if (sesiones) {
+      sesiones.forEach(s => console.log(`Resultados de ${s.name}:`, s.session_result));
+    }
+    console.log("Sesión seleccionada:", sesionSeleccionada);
+    console.log("=========================");
+
     //Selecciona fp1 siempre al abrir el dashboard
     if (sesiones && !sesionSeleccionada) {
       setSesionSeleccionada(sesiones.find(s => s.type === "FP1"));
@@ -71,9 +92,9 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
               SQ
             </Button>
             <Button
-              variant={sesionSeleccionada?.type === "SR" ? "default" : "outline"}
+              variant={sesionSeleccionada?.type === "Sprint" ? "default" : "outline"}
               className="min-w-30 font-semibold"
-              onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "SR"))}
+              onClick={() => setSesionSeleccionada(sesiones.find(s => s.type === "Sprint"))}
             >
               SPRINT
             </Button></>)
@@ -153,13 +174,16 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
               </TableHeader>
 
               <TableBody>
-                {sesionSeleccionada?.results && sesionSeleccionada.results.length > 0 ? (
-                  sesionSeleccionada.results.slice()
-                  .sort((a,b) => ( parseFloat(a[1])- parseFloat(b[1]) ))
+                {sesionSeleccionada?.session_result && sesionSeleccionada.session_result.length > 0 ? (
+                  sesionSeleccionada.session_result.slice()
                   .map((resultado, i: number) => {
 
-                    const p = pilotos.find(p => p.id?.toString() === resultado[0]);
-                    if (!p) return null;
+                    const pId = resultado.piloto?.id ?? resultado.piloto; // por si acaso
+                    const p = pilotos.find(p => p.id === pId);
+                    if (!p) {
+                      console.warn(`No se encontró el piloto con ID ${pId} en el arreglo de pilotos.`, pilotos);
+                      return null;
+                    }
                     return (
                     <TableRow key={i}>
                       <TableCell className="font-bold">
@@ -172,7 +196,7 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
                       </TableCell>
 
                       <TableCell className="font-semibold">{p.name}</TableCell>
-                      <TableCell>{resultado[1]}</TableCell>
+                      <TableCell>{formatResultTime(resultado)}</TableCell>
                       <TableCell>#{p.num}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -181,7 +205,13 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
                       </TableCell>
                     </TableRow>
                   )})
-                ) : null}
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="text-center">
+                      No hay resultados aún 😭
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </div>

@@ -33,7 +33,7 @@ function Home() {
     carreras.length === 0
       ? undefined
       : carreras
-          .filter((c) => new Date(c.end_date) < new Date())
+          .filter((c) => new Date(c.start_date) <= new Date())
           .sort(
             (a, b) =>
               new Date(b.start_date).getTime() -
