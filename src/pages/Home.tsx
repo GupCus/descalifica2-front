@@ -8,6 +8,7 @@ import {
 import TextType from "@/components/ui/TextType.tsx";
 import { Carrera } from "@/entities/carrera.entity.ts";
 import { getCarrera } from "@/services/carrera.service.ts";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 import { useEffect, useState } from "react";
 
 function Home() {
@@ -98,7 +99,7 @@ function Home() {
                       </div>
 
                       <img
-                        src={gp.track?.track_map_url}
+                        src={getAssetUrl(gp.track?.track_map_image)}
                         alt={gp.track?.name}
                         className="max-w-[40%] max-h-48 w-auto h-auto object-contain"
                       />
