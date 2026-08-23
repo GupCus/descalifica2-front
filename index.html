@@ -7,6 +7,18 @@
     <title>descalifica2</title>
   </head>
   <body>
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        const div = document.createElement('div');
+        div.style.color = 'red';
+        div.style.background = 'white';
+        div.style.padding = '20px';
+        div.style.position = 'absolute';
+        div.style.zIndex = '9999';
+        div.textContent = message + ' ' + (error ? error.stack : '');
+        document.body.appendChild(div);
+      };
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -5,14 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Marca } from "@/entities/marca.entity.ts";
 import { getMarca } from "@/services/marca.service.ts";
-
-// Helper function para obtener la imagen de la escudería automáticamente desde assets
-const getMarcaLogo = (name: string): string => {
-  return new URL(
-      `../../assets/marcas/${name.split(" ")[0].toLowerCase()}.png`,
-      import.meta.url
-    ).href;
-}
+import { getAssetUrl } from "@/utils/asset.util.ts";
 
 function ListadoMarcas() {
   const [marcas, setMarcas] = useState<Marca[]>([]);
@@ -93,8 +86,8 @@ function ListadoMarcas() {
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {marcas.map((marca) => {
-            const logo = getMarcaLogo(marca.name);
-            const flagUrl = new URL(`../../assets/banderas-paises/${marca.nationality}.png`, import.meta.url).href
+            const logo = getAssetUrl(marca.logo_image);
+            const flagUrl = getAssetUrl(`/flags/${marca.nationality}.svg`);
             return (
               <Link to={`/marca/${marca.id}`} key={marca.id}>
                 <Card className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0">
@@ -108,12 +101,12 @@ function ListadoMarcas() {
                         t.onerror = null;
                         t.src = new URL(
                           "../../assets/descalifica2logo.png",
-                          import.meta.url
+                          import.meta.url,
                         ).href;
                         t.classList.add(
                           "object-contain",
                           "bg-slate-900/50",
-                          "overflow-hidden"
+                          "overflow-hidden",
                         );
                       }}
                     />

@@ -38,7 +38,7 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
     //Getea los pilotos para los resultados
     getPiloto()
       .then((data) => setPilotos(data))
-      .catch((err) => setError(err))
+      .catch((err) => setError(err.message || String(err)))
   },[])
 
   useEffect(() => {

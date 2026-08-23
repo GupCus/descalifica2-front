@@ -1,15 +1,44 @@
-import { Temporada } from '@/entities/temporada.entity.ts';
-import { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-
+import { Temporada } from "@/entities/temporada.entity.ts";
+import { useState, useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { uploadTemporadaImage } from "@/services/temporada.service.ts";
+import { AuthService } from "@/services/auth.service.ts";
 
 function DetalleTemporada() {
   const { id } = useParams<{ id: string }>();
   const [temporada, setTemporada] = useState<Temporada | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+  useEffect(() => {
+    AuthService.isAdmin().then((res) => setIsAdmin(Boolean(res)));
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadImage = async () => {
+    if (!selectedFile || !temporada || !temporada.id) return;
+    setUploadingImage(true);
+    try {
+      await uploadTemporadaImage(temporada.id, selectedFile);
+      alert("Imagen actualizada correctamente");
+      window.location.reload();
+    } catch (error) {
+      alert("Error al actualizar la imagen");
+    } finally {
+      setUploadingImage(false);
+      setSelectedFile(null);
+    }
+  };
+
+  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
   useEffect(() => {
     if (!id) return;
@@ -53,14 +82,12 @@ function DetalleTemporada() {
     );
   }
 
-
-
   return (
     <div className="relative min-h-screen flex items-center justify-center">
       <div
         className="absolute inset-0 w-full h-full -z-10 blur-sm opacity-20"
         style={{
-          backgroundImage: `url(${new URL('../../assets/FondoDetalleTemporada.jpg', import.meta.url).href})`,
+          backgroundImage: `url(${new URL("../../assets/FondoDetalleTemporada.jpg", import.meta.url).href})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -84,18 +111,26 @@ function DetalleTemporada() {
               <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
                 Campeón de Pilotos
               </h3>
-              <p className="text-2xl font-bold text-white">{temporada.winner_driver?.name}</p>
+              <p className="text-2xl font-bold text-white">
+                {temporada.winner_driver?.name}
+              </p>
             </div>
 
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
               <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
                 Campeón de Constructores
               </h3>
-              <p className="text-2xl font-bold text-white">{temporada.winner_team?.name}</p>
+              <p className="text-2xl font-bold text-white">
+                {temporada.winner_team?.name}
+              </p>
             </div>
             <div>
-              <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">Número de Carreras</h3>
-              <p className="text-2xl font-bold text-white">{temporada.races?.length ?? 0}</p>
+              <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+                Número de Carreras
+              </h3>
+              <p className="text-2xl font-bold text-white">
+                {temporada.races?.length ?? 0}
+              </p>
             </div>
           </div>
         </div>

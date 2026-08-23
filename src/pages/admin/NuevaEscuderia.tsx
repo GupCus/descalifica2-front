@@ -14,7 +14,7 @@ import { Marca } from "@/entities/marca.entity.ts";
 import { getCategoria } from "@/services/categoria.service.ts";
 import { getMarca } from "@/services/marca.service.ts";
 import { NewEscuderia } from "@/entities/escuderia.entity.ts";
-import { postEscuderia } from "@/services/escuderia.service.ts";
+import { postEscuderia, postEscuderiaFormData } from "@/services/escuderia.service.ts";
 
 type FormState = {
   name: string;
@@ -34,10 +34,17 @@ function NuevaEscuderia() {
     brand: "",
     racing_series: "",
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [marcas, setMarcas] = useState<Marca[]>([]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
 
   //Gets
   useEffect(() => {
@@ -78,22 +85,24 @@ function NuevaEscuderia() {
       brand: valorBrand,
       racing_series: form.racing_series,
     };
-    postEscuderia(nuevaescuderia)
-      .then(() => setMessage("Escudería creada con éxito."))
-      .then(() =>
-        setForm({
-          name: "",
-          foundation: "",
-          engine: "",
-          nationality: "",
-          brand: "",
-          racing_series: "",
-        })
-      )
-      .catch((err) =>
-        setMessage(`Error: ${err.message || "No se pudo crear la escudería"}`)
-      )
-      .finally(() => setSubmitting(false));
+    
+    try {
+      await postEscuderiaFormData(nuevaescuderia, selectedFile || undefined);
+      setMessage("Escudería creada con éxito.");
+      setForm({
+        name: "",
+        foundation: "",
+        engine: "",
+        nationality: "",
+        brand: "",
+        racing_series: "",
+      });
+      setSelectedFile(null);
+    } catch (err: any) {
+      setMessage(`Error: ${err.message || "No se pudo crear la escudería"}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -211,6 +220,24 @@ function NuevaEscuderia() {
                 </SelectContent>
               </Select>
             </InputGroup>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-200 mb-1">
+              Imagen de la Escudería (Opcional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-300
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-md file:border-0
+                file:text-sm file:font-semibold
+                file:bg-red-700 file:text-white
+                hover:file:bg-red-800
+                bg-gray-900 rounded-md border border-gray-700"
+            />
           </div>
 
           <div className="flex w-full justify-between pt-4">

@@ -20,7 +20,7 @@ import {
 import { Escuderia } from "@/entities/escuderia.entity.ts";
 import { getEscuderia } from "@/services/escuderia.service.ts";
 import { Link } from "react-router-dom";
-
+import { getAssetUrl } from "@/utils/asset.util.ts";
 
 
 function ListadoPilotos() {
@@ -34,7 +34,7 @@ function ListadoPilotos() {
   useEffect(() => {
     getPiloto()
       .then((data) => setPilotos(data))
-      .catch((err) => setError(err))
+      .catch((err) => setError(err.message || "Error al cargar los pilotos"))
       .finally(() => setLoading(false));
 
     getEscuderia()
@@ -63,12 +63,12 @@ function ListadoPilotos() {
   const f1Filtrados = f1Pilotos.filter(
     (p) =>
       filtroEscuderiaF1 === "null" ||
-      String(p.team?.id ?? p.team) === filtroEscuderiaF1
+      String(p.team?.id ?? p.team) === filtroEscuderiaF1,
   );
   const f2Filtrados = f2Pilotos.filter(
     (p) =>
       filtroEscuderiaF2 === "null" ||
-      String(p.team?.id ?? p.team) === filtroEscuderiaF2
+      String(p.team?.id ?? p.team) === filtroEscuderiaF2,
   );
 
   if (loading) {
@@ -175,8 +175,8 @@ function ListadoPilotos() {
           <div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {f1Filtrados.map((piloto) => {
-                const flagUrl = new URL(`../../assets/banderas-paises/${piloto.nationality}.png`, import.meta.url).href;
-                const photoUrl = piloto.profile_image;
+                const flagUrl = getAssetUrl(`/flags/${piloto.nationality}.svg`);
+                const photoUrl = getAssetUrl(piloto.profile_image);
                 return (
                   <Link to={`/piloto/${piloto.id}`} key={piloto.id}>
                     <Card
@@ -193,12 +193,12 @@ function ListadoPilotos() {
                             t.onerror = null;
                             t.src = new URL(
                               "../../assets/descalifica2logo.png",
-                              import.meta.url
+                              import.meta.url,
                             ).href;
                             t.classList.add(
                               "object-contain",
                               "bg-slate-900/50",
-                              "overflow-hidden"
+                              "overflow-hidden",
                             );
                           }}
                         />
@@ -266,8 +266,8 @@ function ListadoPilotos() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
             {f2Filtrados.map((piloto) => {
-              const flagUrl = new URL(`../../assets/banderas-paises/${piloto.nationality}.png`, import.meta.url).href;
-              const photoUrl = piloto.profile_image;
+              const flagUrl = getAssetUrl(`/flags/${piloto.nationality}.svg`);
+              const photoUrl = getAssetUrl(piloto.profile_image);
               return (
                 <Link to={`/piloto/${piloto.id}`} key={piloto.id}>
                   <Card
@@ -284,12 +284,12 @@ function ListadoPilotos() {
                           t.onerror = null;
                           t.src = new URL(
                             "../../assets/descalifica2logo.png",
-                            import.meta.url
+                            import.meta.url,
                           ).href;
                           t.classList.add(
                             "object-contain",
                             "bg-slate-900/50",
-                            "overflow-hidden"
+                            "overflow-hidden",
                           );
                         }}
                       />

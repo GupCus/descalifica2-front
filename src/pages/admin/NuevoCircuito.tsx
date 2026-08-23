@@ -3,7 +3,7 @@ import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
 import fondoSpa from "../../assets/Spa-fondo.jpg";
 import { Circuito } from "@/entities/circuito.entity.ts";
-import { postCircuito } from "@/services/circuito.service.ts";
+import { postCircuitoFormData } from "@/services/circuito.service.ts";
 
 //DEFINICIONES DE CLASES
 type FormState = {
@@ -22,8 +22,15 @@ function NuevoCircuito() {
     year: "",
     track_map_url: "",
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -37,28 +44,22 @@ function NuevoCircuito() {
     setSubmitting(true);
     setMessage(null);
 
-    const nuevocircuito: Circuito = {
-      name: form.name,
-      country: form.country,
-      length: form.length,
-      year: form.year,
-      track_map_url: form.track_map_url,
-    };
-    postCircuito(nuevocircuito)
-      .then(() => setMessage("Circuito creado con éxito."))
-      .then(() =>
-        setForm({
-          name: "",
-          country: "",
-          length: "",
-          year: "",
-          track_map_url: "",
-        })
-      )
-      .catch((err) =>
-        setMessage(`Error: ${err.message || "No se pudo crear el circuito"}`)
-      )
-      .finally(() => setSubmitting(false));
+    try {
+      await postCircuitoFormData(form as any, selectedFile || undefined);
+      setMessage("Circuito creado con éxito.");
+      setForm({
+        name: "",
+        country: "",
+        length: "",
+        year: "",
+        track_map_url: "",
+      });
+      setSelectedFile(null);
+    } catch (err: any) {
+      setMessage(`Error: ${err.message || "No se pudo crear el circuito"}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <div className="relative min-h-screen">
@@ -141,6 +142,24 @@ function NuevoCircuito() {
                 required
               />
             </InputGroup>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-200 mb-1">
+              Imagen del Circuito (Opcional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-300
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-md file:border-0
+                file:text-sm file:font-semibold
+                file:bg-emerald-900 file:text-white
+                hover:file:bg-green-800
+                bg-gray-900 rounded-md border border-gray-700"
+            />
           </div>
 
           <div className="flex w-full justify-between pt-4">

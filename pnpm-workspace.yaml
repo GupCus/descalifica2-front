@@ -1,6 +1,7 @@
 allowBuilds:
-  '@tailwindcss/oxide': false
-  esbuild: false
+  '@tailwindcss/oxide': true
+  esbuild: true
+  puppeteer: true
 ignoredBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild

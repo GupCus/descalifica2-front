@@ -8,6 +8,7 @@ import {
 import TextType from "@/components/ui/TextType.tsx";
 import { Carrera } from "@/entities/carrera.entity.ts";
 import { getCarrera } from "@/services/carrera.service.ts";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 import { useEffect, useState } from "react";
 
 function Home() {
@@ -18,26 +19,26 @@ function Home() {
   useEffect(() => {
     getCarrera()
       .then((data) => setCarreras(data))
-      .catch((err) => setError(err))
+      .catch((err) => setError(err.message || String(err)))
       .finally(() => setLoading(false));
   }, []);
 
   if (loading) {
-    <div> Cargando carreras... </div>;
+    return <div> Cargando carreras... </div>;
   }
   if (error) {
-    <div> Error cargando carreras... </div>;
+    return <div> Error cargando carreras... </div>;
   }
 
   const carrerasAnteriores =
-    carreras.length === 0
+    !carreras || carreras.length === 0
       ? undefined
       : carreras
           .filter((c) => new Date(c.start_date) <= new Date())
           .sort(
             (a, b) =>
               new Date(b.start_date).getTime() -
-              new Date(a.start_date).getTime()
+              new Date(a.start_date).getTime(),
           );
 
   return (
@@ -105,11 +106,21 @@ function Home() {
                           className="max-w-full md:max-w-[40%] mx-auto max-h-48 w-auto h-auto object-contain"
                         />
                       </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                )
+
+                      <img
+                        src={getAssetUrl(gp.track?.track_map_image)}
+                        alt={gp.track?.name}
+                        className="max-w-[40%] max-h-48 w-auto h-auto object-contain"
+                      />
+                  </AccordionContent>
+                </AccordionItem>
               )
-            : null}
+            )
+          : (
+            <div className="py-8 text-center text-muted-foreground font-medium">
+              No hay grandes premios recientes para mostrar.
+            </div>
+          )}
         </Accordion>
       </div>
     </>

@@ -2,6 +2,9 @@ import { Outlet, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { LogOut, Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useLocation } from "react-router-dom";
+import { Suspense } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,11 +13,12 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import logoDescalifica2 from "../assets/descalifica2logo.png";
 import { AuthService } from "@/services/auth.service.ts";
 
 function RootLayout() {
+  const location = useLocation();
   const [user, setUser] = useState<{
     username: string;
     user_type: string;
@@ -192,8 +196,20 @@ function RootLayout() {
         </div>
       </header>
 
-      <main>
-        <Outlet />
+      <main className="flex-1">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Suspense fallback={<div className="flex h-[calc(100vh-200px)] items-center justify-center text-xl font-semibold">Cargando...</div>}>
+              <Outlet />
+            </Suspense>
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <footer>

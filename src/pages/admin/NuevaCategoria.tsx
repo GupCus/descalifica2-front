@@ -29,11 +29,11 @@ function NuevaCategoria() {
     setSubmitting(true);
     setMessage(null);
 
-    const nuevacategoria:Categoria = {
+    const nuevacategoria = {
       name: form.name,
       description: form.description
     }
-    postCategoria(nuevacategoria)
+    postCategoria(nuevacategoria as Categoria)
     .then(() => setMessage("Categoria creada con éxito."))
     .then(() => setForm({
                   name: "",
