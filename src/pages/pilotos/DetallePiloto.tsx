@@ -17,6 +17,7 @@ function DetallePiloto() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [nationalityName, setNationalityName] = useState<string>("");
 
   useEffect(() => {
     AuthService.isAdmin().then((res) => setIsAdmin(Boolean(res)));
@@ -64,6 +65,22 @@ function DetallePiloto() {
       });
   }, [id, api, location.state]);
 
+  useEffect(() => {
+    if (piloto?.nationality) {
+      fetch(`${api}/nationalities/${piloto.nationality}`)
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then((data) => {
+          if (data.data && data.data.name) {
+            setNationalityName(data.data.name);
+          }
+        })
+        .catch((err) => console.error("Error fetching nationality:", err));
+    }
+  }, [piloto?.nationality, api]);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -89,7 +106,6 @@ function DetallePiloto() {
   }
 
   const flagUrl = getAssetUrl(`/flags/${piloto.nationality}.svg`);
-
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950">
       <div
@@ -158,7 +174,7 @@ function DetallePiloto() {
                     />
                   )}
                   <p className="text-lg font-semibold text-white">
-                    {piloto.nationality}
+                    {nationalityName || piloto.nationality}
                   </p>
                 </div>
               </div>
