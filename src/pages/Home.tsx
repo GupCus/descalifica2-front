@@ -34,7 +34,7 @@ function Home() {
     !carreras || carreras.length === 0
       ? undefined
       : carreras
-          .filter((c) => new Date(c.end_date) < new Date())
+          .filter((c) => new Date(c.start_date) <= new Date())
           .sort(
             (a, b) =>
               new Date(b.start_date).getTime() -
@@ -53,22 +53,24 @@ function Home() {
           }}
         />
 
-        <div className="relative z-10">
-          <TextType
-            className="text-5xl font-extrabold tracking-tight text-primary-foreground"
-            text={[
-              "Bienvenido al mejor foro sobre automovilismo.",
-              "Welcome to the best motorsport forum.",
-              "Willkommen im berühmtesten Motorsportforum.",
-              "Bem-vindo ao mais melhor fórum do automobilismo",
-              "モータースポーツに関する最高のフォーラムへようこそ",
-            ]}
-            typingSpeed={75}
-            pauseDuration={3500}
-            showCursor={true}
-            cursorCharacter="_"
-          />
-          <h3 className="text-primary-foreground mt-5 scroll-m-20 text-xl font-semibold tracking-tight text-center">
+        <div className="relative z-10 px-4 w-full max-w-5xl mx-auto">
+          <div className="min-h-[130px] md:min-h-[160px] flex flex-col justify-center">
+            <TextType
+              className="text-3xl md:text-5xl font-extrabold tracking-tight text-primary-foreground"
+              text={[
+                "Bienvenido al mejor foro sobre automovilismo.",
+                "Welcome to the best motorsport forum.",
+                "Willkommen im berühmtesten Motorsportforum.",
+                "Bem-vindo ao mais mejor fórum do automobilismo",
+                "モータースポーツに関する最高のフォーラムへようこそ",
+              ]}
+              typingSpeed={75}
+              pauseDuration={3500}
+              showCursor={true}
+              cursorCharacter="_"
+            />
+          </div>
+          <h3 className="text-primary-foreground mt-5 scroll-m-20 text-lg md:text-xl font-semibold tracking-tight text-center">
             En descalifica2 vas a encontrar toda la información que necesitás
             para tu deporte motor favorito.
           </h3>
@@ -84,18 +86,25 @@ function Home() {
           type="single"
           collapsible
         >
-          {carrerasAnteriores && carrerasAnteriores.length > 0 ? (
-            carrerasAnteriores.map((gp) =>
-              !gp ? null : (
-                <AccordionItem key={gp.id} value={gp.id.toString()}>
-                  <AccordionTrigger className="mx-auto text-2xl font-semibold">
-                    {gp.name}
-                  </AccordionTrigger>
+          {carrerasAnteriores
+            ? carrerasAnteriores.map((gp) =>
+                !gp ? null : (
+                  <AccordionItem key={gp.id} value={gp.id.toString()}>
+                    <AccordionTrigger className="mx-auto text-xl md:text-2xl font-semibold text-center md:text-left">
+                      {gp.name}
+                    </AccordionTrigger>
 
-                  <AccordionContent>
-                    <div className="flex h-auto">
-                      <div className="flex-3 w-99 h-full">
-                        <DashboardAccordion sesiones={gp.sessions} />
+                    <AccordionContent>
+                      <div className="flex flex-col-reverse md:flex-row h-auto gap-4 md:gap-0 items-center md:items-start">
+                        <div className="w-full min-w-0 md:flex-1 h-full">
+                          <DashboardAccordion sesiones={gp.sessions} />
+                        </div>
+
+                        <img
+                          src={gp.track?.track_map_url}
+                          alt={gp.track?.name}
+                          className="max-w-full md:max-w-[40%] mx-auto max-h-48 w-auto h-auto object-contain"
+                        />
                       </div>
 
                       <img
@@ -103,12 +112,11 @@ function Home() {
                         alt={gp.track?.name}
                         className="max-w-[40%] max-h-48 w-auto h-auto object-contain"
                       />
-                    </div>
                   </AccordionContent>
                 </AccordionItem>
-              ),
+              )
             )
-          ) : (
+          : (
             <div className="py-8 text-center text-muted-foreground font-medium">
               No hay grandes premios recientes para mostrar.
             </div>

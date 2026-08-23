@@ -22,13 +22,6 @@ import { getEscuderia } from "@/services/escuderia.service.ts";
 import { Link } from "react-router-dom";
 import { getAssetUrl } from "@/utils/asset.util.ts";
 
-const getRacingSeries = (cat?: { id?: string; name?: string } | string) => {
-  if (!cat) return "";
-  if (typeof cat === "string") return cat.trim().toLowerCase();
-  return String(cat.name ?? "")
-    .trim()
-    .toLowerCase();
-};
 
 function ListadoPilotos() {
   const [pilotos, setPilotos] = useState<Piloto[]>([]);
@@ -53,24 +46,18 @@ function ListadoPilotos() {
   }, []);
 
   const f1Escuderias = escuderias.filter(
-    (e) =>
-      e.racing_series.name === "Fórmula 1" || e.racing_series.name === "f1",
+    (e) => e.racing_series.name === "F1"
   );
 
   const f2Escuderias = escuderias.filter(
-    (e) =>
-      e.racing_series.name === "Fórmula 2" || e.racing_series.name === "f2",
+    (e) => e.racing_series.name === "F2"
   );
 
   const f2Pilotos = pilotos.filter(
-    (p) =>
-      getRacingSeries(p.racing_series.name) === "f2" ||
-      p.racing_series.name === "Fórmula 2",
+    (p) => p.racing_series.name === "F2" && p.season.year === 2026
   );
   const f1Pilotos = pilotos.filter(
-    (p) =>
-      getRacingSeries(p.racing_series.name) === "f1" ||
-      p.racing_series.name === "Fórmula 1",
+    (p) => p.racing_series.name === "F1" && p.season.year === 2026 && p.profile_image
   );
 
   const f1Filtrados = f1Pilotos.filter(

@@ -103,33 +103,16 @@ function ListadoEscuderias() {
     );
   }
 
-  //helper para extraer el nombre de categoria
-  const getCategoryName = (cat?: { id?: string; name?: string } | string) => {
-    if (!cat) return "";
-    if (typeof cat === "string") return cat.trim().toLowerCase();
-    return String(cat.name ?? "")
-      .trim()
-      .toLowerCase();
-  };
-
   //Separamos por categoria
 
   const f2Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
-    return (
-      getCategoryName(e.racing_series.name) === "f2" ||
-      e.racing_series.name === "Fórmula 2" ||
-      e.racing_series.name === "Formula 2"
-    );
+    return (e.racing_series.name === 'F2');
   });
 
   const f1Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
-    return (
-      getCategoryName(e.racing_series.name) === "f1" ||
-      e.racing_series.name === "Fórmula 1" ||
-      e.racing_series.name === "Formula 1"
-    );
+    return (e.racing_series.name === 'F1');
   });
 
   const escuderiasF1Filtradas = f1Escuderias.filter(
@@ -193,7 +176,9 @@ function ListadoEscuderias() {
 
               return (
                 <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
-                  <Card className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0">
+                  <Card 
+                    className="relative bg-slate-900/50 border-slate-700 transition-all duration-300 hover:shadow-xl overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
+                  >
                     <div className="relative w-full h-64 overflow-hidden">
                       <img
                         src={logoUrl}
@@ -262,8 +247,7 @@ function ListadoEscuderias() {
                 return (
                   <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
                     <Card
-                      key={escuderia.id}
-                      className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
+                      className="relative bg-slate-900/50 border-slate-700 transition-all duration-300 hover:shadow-xl overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
                     >
                       <div className="relative w-full h-64 overflow-hidden">
                         <img

@@ -132,7 +132,10 @@ function DetalleEscuderia() {
             </Button>
           </div>
 
-          <div className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-red-700/40">
+          <div 
+            className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border relative overflow-hidden"
+          >
+            <div className="relative z-10">
             <h1
               className="text-white-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase mb-8"
               style={{ fontFamily: "'Oswald', sans-serif" }}
@@ -233,6 +236,7 @@ function DetalleEscuderia() {
         </div>
       </div>
     </div>
+  </div>
   );
 }
 

@@ -1,7 +1,7 @@
-import { baseEntity } from "./baseEntity.entity.js";
-import { Escuderia } from "./escuderia.entity.js";
-import { Categoria } from "./categoria.entity.js";
-import { Temporada } from "./temporada.entity.js";
+import { baseEntity } from './baseEntity.entity.js';
+import { Escuderia } from './escuderia.entity.js';
+import { Categoria } from './categoria.entity.js';
+import { Temporada } from './temporada.entity.js';
 
 export class Piloto extends baseEntity {
   team!: Escuderia;
@@ -12,6 +12,8 @@ export class Piloto extends baseEntity {
   role!: string;
   racing_series!: Categoria;
   wdcs!: Temporada[];
+  profile_image!: string;
+  season!: Temporada;
 }
 
 export class NewPiloto {

@@ -1,8 +1,8 @@
-import { Piloto } from "./piloto.entity.js";
-import { baseEntity } from "./baseEntity.entity.js";
-import { Marca } from "./marca.entity.js";
-import { Categoria } from "./categoria.entity.js";
-import { Temporada } from "./temporada.entity.js";
+import { Piloto } from './piloto.entity.js';
+import { baseEntity } from './baseEntity.entity.js';
+import { Marca } from './marca.entity.js';
+import { Categoria } from './categoria.entity.js';
+import { Temporada } from './temporada.entity.js';
 
 export class Escuderia extends baseEntity {
   drivers?: Piloto[];
@@ -12,6 +12,7 @@ export class Escuderia extends baseEntity {
   brand!: Marca;
   racing_series!: Categoria;
   wccs?: Temporada[];
+  color?: string;
   logo_image?: string;
 }
 export class NewEscuderia {
@@ -22,5 +23,6 @@ export class NewEscuderia {
   engine!: string;
   brand!: string | number | null;
   racing_series!: string | number;
+  color!: string;
   logo_image?: string;
 }
