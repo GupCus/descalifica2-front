@@ -29,16 +29,10 @@ function Calendario() {
   .filter((c) => new Date(c.end_date) >= new Date()) 
   .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0];
 
-  //Consigue la fecha de la sesión dada
-  const getSesionFecha = (tipo: string) => {
-    if(!carreraActual){
-      return undefined
-    } else if(!carreraActual.sessions){
-      return undefined
-    } else {
-      const sesion = carreraActual.sessions.find((s) => s.type === tipo);
-      return sesion ? new Date(sesion.start_time) : undefined;
-    }
+  const getSesionFecha = (tipo?: string) => {
+    const s = carreraActual?.sessions?.filter(s => tipo ? s.type === tipo : new Date(s.start_time) > new Date())
+      .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())[0];
+    return s ? new Date(s.start_time) : undefined;
   };
   //En caso de haber f1 hoy, lo indica con un mensaje
   const esHoy = (c?:Carrera) =>{
@@ -80,7 +74,7 @@ function Calendario() {
           </h1>
           <div className="flex flex-col gap-4">
             <CountdownTimer
-              targetDate={getSesionFecha("FP1")}
+              targetDate={getSesionFecha()}
               title="Tiempo hasta la próxima sesión"
             />
             <CountdownTimer

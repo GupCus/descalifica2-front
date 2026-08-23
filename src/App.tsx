@@ -27,7 +27,6 @@ import DetalleTemporada from "./pages/temporada/DetalleTemporada.tsx";
 import DetalleMarca from "./pages/marcas/DetalleMarca.tsx";
 import Registrarse from "./pages/Registrarse.tsx";
 import Login from "./pages/Login.tsx";
-import RutaProtegida from "./shared/RutaProtegida.tsx";
 import RutaProtegidaAdmin from "./shared/RutaProtegidaAdmin.tsx";
 import AdminUsuarios from "./pages/admin/AdminUsuarios.tsx";
 

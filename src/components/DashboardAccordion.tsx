@@ -60,8 +60,8 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
   else if (sesiones){
     return (
       <>
-        <header className="w-full">
-          <ButtonGroup className="flex ">
+        <header className="w-full overflow-x-auto pb-2">
+          <ButtonGroup className="flex w-max">
               <Button
               variant={sesionSeleccionada?.type === "FP1" ? "default" : "outline"}
               className="min-w-30 font-semibold"
@@ -117,7 +117,7 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
           </ButtonGroup>
         </header>
 
-        <main className="bg-secondary mr-10 p-1 space-y-2">
+        <main className="bg-secondary md:mr-10 p-1 space-y-2">
           {sesionSeleccionada && (
             <div className="bg-muted/50 rounded-lg p-4 border">
               <div className="flex items-center gap-2 text-sm">
@@ -136,7 +136,7 @@ function DashboardAccordion({ sesiones }: { sesiones?: Sesion[] }) {
             </div>
           )}
 
-          <div className="rounded-lg border bg-card shadow-sm overflow-hidden">
+          <div className="rounded-lg border bg-card shadow-sm overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50 hover:bg-muted/50">
