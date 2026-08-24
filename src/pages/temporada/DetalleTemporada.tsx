@@ -1,42 +1,12 @@
 import { Temporada } from "@/entities/temporada.entity.ts";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { uploadTemporadaImage } from "@/services/temporada.service.ts";
-import { AuthService } from "@/services/auth.service.ts";
 
 function DetalleTemporada() {
   const { id } = useParams<{ id: string }>();
   const [temporada, setTemporada] = useState<Temporada | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    AuthService.isAdmin().then((res) => setIsAdmin(Boolean(res)));
-  }, []);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setSelectedFile(e.target.files[0]);
-    }
-  };
-
-  const handleUploadImage = async () => {
-    if (!selectedFile || !temporada || !temporada.id) return;
-    setUploadingImage(true);
-    try {
-      await uploadTemporadaImage(temporada.id, selectedFile);
-      alert("Imagen actualizada correctamente");
-      window.location.reload();
-    } catch (error) {
-      alert("Error al actualizar la imagen");
-    } finally {
-      setUploadingImage(false);
-      setSelectedFile(null);
-    }
-  };
 
   const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 

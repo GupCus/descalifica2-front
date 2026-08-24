@@ -14,7 +14,7 @@ import { Marca } from "@/entities/marca.entity.ts";
 import { getCategoria } from "@/services/categoria.service.ts";
 import { getMarca } from "@/services/marca.service.ts";
 import { NewEscuderia } from "@/entities/escuderia.entity.ts";
-import { postEscuderia, postEscuderiaFormData } from "@/services/escuderia.service.ts";
+import { postEscuderiaFormData } from "@/services/escuderia.service.ts";
 
 type FormState = {
   name: string;

@@ -37,7 +37,7 @@ function ListadoTemporadas() {
   console.log('F1 Temporadas:', f1Temporadas.map(t => t.year));
   console.log('F2 Temporadas:', f2Temporadas.map(t => t.year));
 
-  const SelectHandler= (list:Temporada[]) => (label:string,index:number) => {
+  const SelectHandler= (list:Temporada[]) => (_label:string,index:number) => {
     const selectedTemporada = list[index];
     navigate(`/temporada/${selectedTemporada.id}`);
   };

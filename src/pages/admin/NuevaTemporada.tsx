@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import fondoHamVers from "../../assets/HamVers-1.jpg";
 import { NewTemporada } from "@/entities/temporada.entity.ts";
-import { postTemporada, postTemporadaFormData } from "@/services/temporada.service.ts";
+import { postTemporadaFormData } from "@/services/temporada.service.ts";
 import { Categoria } from "@/entities/categoria.entity.ts";
 import { getCategoria } from "@/services/categoria.service.ts";
 import { getPiloto } from "@/services/piloto.service.ts";

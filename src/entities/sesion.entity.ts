@@ -8,6 +8,7 @@ export class Sesion extends baseEntity {
   end_time!: Date;
   race?: Carrera;
   session_result?: Session_Result[];
+  results?: [string, string][];
 }
 
 export class NewSesion {

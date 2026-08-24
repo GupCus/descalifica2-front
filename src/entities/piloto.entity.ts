@@ -12,7 +12,6 @@ export class Piloto extends baseEntity {
   role!: string;
   racing_series!: Categoria;
   wdcs!: Temporada[];
-  profile_image!: string;
   season!: Temporada;
 }
 
@@ -21,7 +20,7 @@ export class NewPiloto {
   name!: string;
   team!: string;
   num!: number | string;
-  profile_image!: string;
+  profile_image?: string;
   nationality!: string;
   birth_date!: string;
   role!: string;

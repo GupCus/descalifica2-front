@@ -16,6 +16,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import logoDescalifica2 from "../assets/descalifica2logo.png";
 import { AuthService } from "@/services/auth.service.ts";
+import HeaderSearch from "@/components/HeaderSearch";
 
 function RootLayout() {
   const location = useLocation();
@@ -162,6 +163,8 @@ function RootLayout() {
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
+
+          <HeaderSearch />
 
           {/* Login / Usuario (Visible en ambos) */}
           <div className="flex items-center gap-3 md:mr-6">
