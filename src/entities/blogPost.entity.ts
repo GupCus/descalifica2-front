@@ -1,3 +1,18 @@
-export class blogPost {}
+import { baseEntity } from './baseEntity.entity';
 
-export default blogPost;
+export class BlogPost extends baseEntity {
+  title!: string;
+  content!: string;
+  cover_image?: string;
+  cover_image_url?: string;
+  author!: number;
+}
+
+export class NewBlogPost {
+  id?: number;
+  title!: string;
+  content!: string;
+  cover_image?: string;
+  author!: number;
+}
+export default BlogPost;

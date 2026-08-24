@@ -1,35 +1,38 @@
-import { Routes, Route } from "react-router-dom";
-import RootLayout from "./layouts/RootLayout";
-import Home from "./pages/Home";
-import About from "./pages/About";
-import NotFound from "./pages/NotFound";
-import ListadoEscuderias from "./pages/escuderias/ListadoEscuderias.tsx";
-import ListadoMarcas from "./pages/marcas/ListadoMarcas.tsx";
-import ListadoCircuitos from "./pages/circuitos/ListadoCircuitos.tsx";
-import ListadoTemporadas from "./pages/temporada/ListadoTemporadas.tsx";
-import DondeVer from "./pages/DondeVer.tsx";
-import Calendario from "./pages/Calendario.tsx";
-import NuevoPiloto from "./pages/admin/NuevoPiloto.tsx";
-import MenuAdmin from "./pages/admin/MenuAdmin.tsx";
-import NuevaEscuderia from "./pages/admin/NuevaEscuderia.tsx";
-import NuevoCircuito from "./pages/admin/NuevoCircuito.tsx";
-import DetalleEscuderia from "./pages/escuderias/DetalleEscuderia.tsx";
-import NuevaMarca from "./pages/admin/NuevaMarca.tsx";
-import NuevaCarrera from "./pages/admin/NuevaCarrera.tsx";
-import NuevaTemporada from "./pages/admin/NuevaTemporada.tsx";
-import NuevaCategoria from "./pages/admin/NuevaCategoria.tsx";
-import ListadoPilotos from "./pages/pilotos/ListadoPilotos.tsx";
-import NuevaSesion from "./pages/admin/NuevaSesion.tsx";
-import CargarDatosSesion from "./pages/admin/CargarDatosSesion.tsx";
-import DetalleCircuito from "./pages/circuitos/DetalleCircuito.tsx";
-import DetallePiloto from "./pages/pilotos/DetallePiloto.tsx";
-import DetalleTemporada from "./pages/temporada/DetalleTemporada.tsx";
-import DetalleMarca from "./pages/marcas/DetalleMarca.tsx";
-import Registrarse from "./pages/Registrarse.tsx";
-import Login from "./pages/Login.tsx";
-import RutaProtegida from "./shared/RutaProtegida.tsx";
-import RutaProtegidaAdmin from "./shared/RutaProtegidaAdmin.tsx";
-import AdminUsuarios from "./pages/admin/AdminUsuarios.tsx";
+import { Routes, Route } from 'react-router-dom';
+import RootLayout from './layouts/RootLayout';
+import Home from './pages/Home';
+import About from './pages/About';
+import NotFound from './pages/NotFound';
+import ListadoEscuderias from './pages/escuderias/ListadoEscuderias.tsx';
+import ListadoMarcas from './pages/marcas/ListadoMarcas.tsx';
+import ListadoCircuitos from './pages/circuitos/ListadoCircuitos.tsx';
+import ListadoTemporadas from './pages/temporada/ListadoTemporadas.tsx';
+import DondeVer from './pages/DondeVer.tsx';
+import Calendario from './pages/Calendario.tsx';
+import NuevoPiloto from './pages/admin/NuevoPiloto.tsx';
+import MenuAdmin from './pages/admin/MenuAdmin.tsx';
+import NuevaEscuderia from './pages/admin/NuevaEscuderia.tsx';
+import NuevoCircuito from './pages/admin/NuevoCircuito.tsx';
+import DetalleEscuderia from './pages/escuderias/DetalleEscuderia.tsx';
+import NuevaMarca from './pages/admin/NuevaMarca.tsx';
+import NuevaCarrera from './pages/admin/NuevaCarrera.tsx';
+import NuevaTemporada from './pages/admin/NuevaTemporada.tsx';
+import NuevaCategoria from './pages/admin/NuevaCategoria.tsx';
+import ListadoPilotos from './pages/pilotos/ListadoPilotos.tsx';
+import NuevaSesion from './pages/admin/NuevaSesion.tsx';
+import CargarDatosSesion from './pages/admin/CargarDatosSesion.tsx';
+import DetalleCircuito from './pages/circuitos/DetalleCircuito.tsx';
+import DetallePiloto from './pages/pilotos/DetallePiloto.tsx';
+import DetalleTemporada from './pages/temporada/DetalleTemporada.tsx';
+import DetalleMarca from './pages/marcas/DetalleMarca.tsx';
+import Registrarse from './pages/Registrarse.tsx';
+import Login from './pages/Login.tsx';
+import RutaProtegida from './shared/RutaProtegida.tsx';
+import RutaProtegidaAdmin from './shared/RutaProtegidaAdmin.tsx';
+import AdminUsuarios from './pages/admin/AdminUsuarios.tsx';
+import Foro from './pages/Foro.tsx';
+import DetallePost from './pages/DetallePost.tsx';
+import NuevoBlogPost from './pages/blogpost/NuevoBlogPost.tsx';
 
 function App() {
   return (
@@ -45,8 +48,17 @@ function App() {
         <Route path="circuitos" element={<ListadoCircuitos />} />
         <Route path="temporadas" element={<ListadoTemporadas />} />
         <Route path="dondever" element={<DondeVer />} />
+        <Route path="foro" element={<Foro />} />
         <Route path="registrarse" element={<Registrarse />} />
         <Route path="login" element={<Login />} />
+        <Route
+          path="blogpost/nuevo"
+          element={
+            <RutaProtegida>
+              <NuevoBlogPost />
+            </RutaProtegida>
+          }
+        />
 
         {/* Rutas de detalle */}
         <Route path="escuderia/:id" element={<DetalleEscuderia />} />
@@ -54,6 +66,7 @@ function App() {
         <Route path="piloto/:id" element={<DetallePiloto />} />
         <Route path="temporada/:id" element={<DetalleTemporada />} />
         <Route path="marca/:id" element={<DetalleMarca />} />
+        <Route path="foro/:id" element={<DetallePost />} />
 
         {/* Rutas de administrador protegidas */}
         <Route
@@ -64,6 +77,17 @@ function App() {
             </RutaProtegidaAdmin>
           }
         >
+          {/* Rutas para Usuarios y/o Admins*/}
+
+          <Route
+            path="nuevapublicacion"
+            element={
+              <RutaProtegida>
+                <NuevoBlogPost />
+              </RutaProtegida>
+            }
+          />
+
           <Route path="nuevopiloto" element={<NuevoPiloto />} />
           <Route path="nuevaescuderia" element={<NuevaEscuderia />} />
           <Route path="nuevocircuito" element={<NuevoCircuito />} />
