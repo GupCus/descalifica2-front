@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { BlogPost } from '@/entities/blogPost.entity';
 import { getBlogPost } from '@/services/blogpost.service';
 import { getAssetUrl } from '@/utils/asset.util';
+import fondoMonza from '../assets/Monza.jpg';
 
 function Foro() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -75,6 +76,17 @@ function Foro() {
 
   return (
     <div className="relative min-h-screen">
+      {/* Fondo Monza blurreado */}
+      <div
+        className="absolute inset-0 w-full h-full z-0"
+        style={{
+          backgroundImage: `url(${fondoMonza})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(6px) brightness(0.5)',
+        }}
+      />
+      
       <ChromaGrid />
       <div className="relative z-10 container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-white text-center mb-2">FORO</h1>
