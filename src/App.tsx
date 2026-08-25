@@ -31,7 +31,7 @@ import RutaProtegida from './shared/RutaProtegida.tsx';
 import RutaProtegidaAdmin from './shared/RutaProtegidaAdmin.tsx';
 import AdminUsuarios from './pages/admin/AdminUsuarios.tsx';
 import Foro from './pages/Foro.tsx';
-import DetallePost from './pages/DetallePost.tsx';
+import DetallePost from './pages/blogpost/DetallePost.tsx';
 import NuevoBlogPost from './pages/blogpost/NuevoBlogPost.tsx';
 
 function App() {

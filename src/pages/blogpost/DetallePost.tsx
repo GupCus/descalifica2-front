@@ -1,19 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import SeccionComentarios from '@/components/SeccionComentarios';
 import { BlogPost } from '@/entities/blogPost.entity';
-import { getOneBlogPost } from '@/services/blogpost.service';
+import { getOneBlogPost, deleteBlogPost } from '@/services/blogpost.service';
 import { getAssetUrl } from '@/utils/asset.util';
+import { AuthService, VerifyTokenResponse } from '@/services/auth.service';
 
 function DetallePost() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<VerifyTokenResponse['user'] | null>(null);
 
   useEffect(() => {
     if (!id) return;
@@ -24,7 +27,27 @@ function DetallePost() {
         console.error(err);
       })
       .finally(() => setLoading(false));
+
+    AuthService.getCurrentUser().then(setUser);
   }, [id]);
+
+  const puedeEliminarPost = (): boolean => {
+    if (!user || !post) return false;
+    return user.user_type === 'admin' || user.id === post.author;
+  };
+
+  const handleEliminarPost = async () => {
+    if (!post) return;
+    if (!window.confirm(`¿Estás seguro de que querés eliminar "${post.title}"?`))
+      return;
+    try {
+      await deleteBlogPost(post.id);
+      navigate('/foro');
+    } catch (err) {
+      setError('Error al eliminar la publicación');
+      console.error(err);
+    }
+  };
 
   if (loading) {
     return (
@@ -65,11 +88,23 @@ function DetallePost() {
   return (
     <div className="relative min-h-screen">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <Button asChild variant="ghost" className="mb-6 text-gray-300 hover:text-white">
-          <Link to="/foro">
-            <ArrowLeft className="h-4 w-4 mr-2" /> Volver al Foro
-          </Link>
-        </Button>
+        <div className="flex items-center justify-between mb-6">
+          <Button asChild variant="ghost" className="text-gray-300 hover:text-white">
+            <Link to="/foro">
+              <ArrowLeft className="h-4 w-4 mr-2" /> Volver al Foro
+            </Link>
+          </Button>
+          {puedeEliminarPost() && (
+            <Button
+              variant="ghost"
+              onClick={handleEliminarPost}
+              className="text-red-400 hover:text-red-300 hover:bg-red-900/30"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              Eliminar publicación
+            </Button>
+          )}
+        </div>
 
         <article>
           <h1 className="text-4xl font-bold text-white mb-4">{post.title}</h1>
