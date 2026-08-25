@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import RootLayout from "./layouts/RootLayout";
+import RutaProtegida from "./shared/RutaProtegida.tsx";
 import RutaProtegidaAdmin from "./shared/RutaProtegidaAdmin.tsx";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -31,6 +32,7 @@ const DetalleMarca = lazy(() => import("./pages/marcas/DetalleMarca.tsx"));
 const Registrarse = lazy(() => import("./pages/Registrarse.tsx"));
 const Login = lazy(() => import("./pages/Login.tsx"));
 const AdminUsuarios = lazy(() => import("./pages/admin/AdminUsuarios.tsx"));
+const Perfil = lazy(() => import("./pages/Perfil.tsx"));
 
 function App() {
   return (
@@ -57,6 +59,16 @@ function App() {
         <Route path="marca/:id" element={<DetalleMarca />} />
 
         {/* Rutas de administrador protegidas */}
+
+        <Route
+          path="perfil"
+          element={
+            <RutaProtegida>
+              <Perfil />
+            </RutaProtegida>
+          }
+        />
+
         <Route
           path="menuadmin"
           element={

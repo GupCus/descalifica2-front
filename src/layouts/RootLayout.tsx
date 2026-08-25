@@ -172,9 +172,9 @@ function RootLayout() {
               <div className="text-sm text-gray-400">Cargando...</div>
             ) : user ? (
               <>
-                <span className="text-sm font-medium text-gray-200">
+                <Link to="/perfil" className="text-sm font-medium text-gray-200 hover:text-white transition-colors">
                   {user.username}
-                </span>
+                </Link>
                 <Link to="/menuadmin">
                   <Avatar className="rounded-3xl border cursor-pointer hover:ring-2 hover:ring-accent transition-all">
                     <AvatarFallback>{user.username}</AvatarFallback>

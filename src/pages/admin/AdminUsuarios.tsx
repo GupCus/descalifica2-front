@@ -10,6 +10,14 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { apiClient } from "@/services/httpClient";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Usuario {
   id: number;
@@ -17,12 +25,16 @@ interface Usuario {
   email: string;
   user_type: string;
   name: string;
+  telegram_username?: string;
 }
 
 function AdminUsuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [editingUser, setEditingUser] = useState<Usuario | null>(null);
+  const [tgValue, setTgValue] = useState("");
+  const [savingTg, setSavingTg] = useState(false);
 
   useEffect(() => {
     fetchUsuarios();
@@ -59,6 +71,22 @@ function AdminUsuarios() {
     }
   };
 
+  const guardarTelegram = async () => {
+    if (!editingUser) return;
+    setSavingTg(true);
+    try {
+      const payload = { telegram_username: tgValue.trim() || null };
+      await apiClient.patch(`/usuarios/${editingUser.id}`, payload);
+      await fetchUsuarios();
+      setEditingUser(null);
+    } catch (err: any) {
+      console.error("Error guardando telegram:", err);
+      alert("Error al guardar el usuario de Telegram");
+    } finally {
+      setSavingTg(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -90,6 +118,7 @@ function AdminUsuarios() {
                 <TableHead className="text-gray-300">Nombre</TableHead>
                 <TableHead className="text-gray-300">Username</TableHead>
                 <TableHead className="text-gray-300">Email</TableHead>
+                <TableHead className="text-gray-300">Telegram</TableHead>
                 <TableHead className="text-gray-300">Rol</TableHead>
                 <TableHead className="text-gray-300">Acciones</TableHead>
               </TableRow>
@@ -106,6 +135,22 @@ function AdminUsuarios() {
                   </TableCell>
                   <TableCell className="text-gray-300">
                     {usuario.email}
+                  </TableCell>
+                  <TableCell className="text-gray-300">
+                    <span className="flex items-center gap-2">
+                      {usuario.telegram_username
+                        ? `@${usuario.telegram_username}`
+                        : "—"}
+                      <button
+                        onClick={() => {
+                          setEditingUser(usuario);
+                          setTgValue(usuario.telegram_username ?? "");
+                        }}
+                        className="text-xs text-blue-400 hover:text-blue-300 underline"
+                      >
+                        Editar
+                      </button>
+                    </span>
                   </TableCell>
                   <TableCell>
                     <Badge
@@ -149,6 +194,41 @@ function AdminUsuarios() {
           </Table>
         </div>
       </div>
+
+      <Dialog
+        open={editingUser !== null}
+        onOpenChange={(open) => {
+          if (!open) setEditingUser(null);
+        }}
+      >
+        <DialogContent className="bg-gray-800 border-gray-700 text-white">
+          <DialogHeader>
+            <DialogTitle>Editar Telegram</DialogTitle>
+          </DialogHeader>
+          <Input
+            value={tgValue}
+            onChange={(e) => setTgValue(e.target.value)}
+            placeholder="usuario de Telegram"
+            className="bg-gray-900 border-gray-600 text-white"
+          />
+          <DialogFooter>
+            <Button
+              variant="outline"
+              className="border-gray-600 text-gray-300"
+              onClick={() => setEditingUser(null)}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={guardarTelegram}
+              disabled={savingTg}
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+            >
+              {savingTg ? "Guardando..." : "Guardar"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

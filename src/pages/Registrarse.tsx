@@ -20,6 +20,7 @@ type FormState = {
   email: string;
   password: string;
   username: string;
+  telegram_username: string;
   date_of_birth: Date | null;
   avatar: File | null;
 };
@@ -38,6 +39,7 @@ function Registrarse() {
     username: "",
     email: "",
     password: "",
+    telegram_username: "",
     date_of_birth: null,
     avatar: null,
   });
@@ -116,6 +118,10 @@ function Registrarse() {
       formData.append("username", form.username);
       formData.append("date_of_birth", birthDateString);
       formData.append("name", form.name);
+      const trimmedTelegram = form.telegram_username.trim();
+      if (trimmedTelegram.length > 0) {
+        formData.append("telegram_username", trimmedTelegram);
+      }
       if (form.avatar) {
         formData.append("avatar", form.avatar);
       }
@@ -138,6 +144,7 @@ function Registrarse() {
         username: "",
         email: "",
         password: "",
+        telegram_username: "",
         date_of_birth: null,
         avatar: null,
       });
@@ -195,6 +202,14 @@ function Registrarse() {
               value={form.name}
               onChange={handleChange}
               required
+            />
+          </InputGroup>
+          <InputGroup className="mb-10">
+            <InputGroupInput
+              placeholder="Usuario de Telegram (opcional)"
+              id="telegram_username"
+              value={form.telegram_username}
+              onChange={handleChange}
             />
           </InputGroup>
           <InputGroup className="mb-10">
