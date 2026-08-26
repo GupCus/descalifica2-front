@@ -93,7 +93,7 @@ function NuevoBlogPost() {
             className="text-gray-200 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase"
             style={{ fontFamily: "'Oswald', sans-serif" }}
           >
-            Alta Posteos
+            Nuevo Posteo
           </h1>
 
           <InputGroup className="mt-5 mb-5 w-full">
@@ -106,8 +106,7 @@ function NuevoBlogPost() {
             />
           </InputGroup>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <InputGroup>
+          <InputGroup className="w-full">
               <Textarea
                 placeholder="¿Que estas pensando?"
                 id="content"
@@ -115,10 +114,9 @@ function NuevoBlogPost() {
                 value={form.content}
                 onChange={handleChange}
                 required
-                className="bg-gray-900 border-gray-700 text-gray-200 resize-none"
+                className="bg-gray-900 border-gray-700 text-gray-200 resize-none shadow-none w-full"
               />
             </InputGroup>
-          </div>
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-200 mb-1">
               Imagen del Posteo (Opcional)

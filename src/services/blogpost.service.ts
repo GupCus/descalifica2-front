@@ -48,8 +48,6 @@ export async function postBlogPostFormData(
   if (file) {
     formData.append('image', file);
   }
-  const response = await client.post('/', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  const response = await client.post('/', formData);
   return response.data.data;
 }

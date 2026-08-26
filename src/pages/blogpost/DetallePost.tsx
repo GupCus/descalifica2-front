@@ -9,6 +9,7 @@ import { BlogPost } from '@/entities/blogPost.entity';
 import { getOneBlogPost, deleteBlogPost } from '@/services/blogpost.service';
 import { getAssetUrl } from '@/utils/asset.util';
 import { AuthService, VerifyTokenResponse } from '@/services/auth.service';
+import fondoMonza from '../../assets/Monza.jpg';
 
 function DetallePost() {
   const { id } = useParams<{ id: string }>();
@@ -33,7 +34,11 @@ function DetallePost() {
 
   const puedeEliminarPost = (): boolean => {
     if (!user || !post) return false;
-    return user.user_type === 'admin' || user.id === post.author;
+    const authorId =
+      typeof post.author === 'object' && post.author !== null
+        ? (post.author as unknown as { id: number }).id
+        : post.author;
+    return user.user_type === 'admin' || Number(user.id) === Number(authorId);
   };
 
   const handleEliminarPost = async () => {
@@ -87,7 +92,18 @@ function DetallePost() {
 
   return (
     <div className="relative min-h-screen">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {/* Fondo Monza blurreado */}
+      <div
+        className="absolute inset-0 w-full h-full z-0"
+        style={{
+          backgroundImage: `url(${fondoMonza})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(6px) brightness(0.5)',
+        }}
+      />
+
+      <div className="relative z-10 container mx-auto px-4 py-8 max-w-4xl">
         <div className="flex items-center justify-between mb-6">
           <Button asChild variant="ghost" className="text-gray-300 hover:text-white">
             <Link to="/foro">
