@@ -33,6 +33,7 @@ const Registrarse = lazy(() => import("./pages/Registrarse.tsx"));
 const Login = lazy(() => import("./pages/Login.tsx"));
 const AdminUsuarios = lazy(() => import("./pages/admin/AdminUsuarios.tsx"));
 const Perfil = lazy(() => import("./pages/Perfil.tsx"));
+const EditarPerfil = lazy(() => import("./pages/EditarPerfil.tsx"));
 
 function App() {
   return (
@@ -65,6 +66,14 @@ function App() {
           element={
             <RutaProtegida>
               <Perfil />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="perfil/editar"
+          element={
+            <RutaProtegida>
+              <EditarPerfil />
             </RutaProtegida>
           }
         />

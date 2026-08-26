@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Upload, X } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import {
+  User,
+  AtSign,
+  Mail,
+  Send,
+  ShieldCheck,
+  Pencil,
+  ArrowLeft,
+  Shield,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
+import { Badge } from "@/components/ui/badge";
 import { AuthService } from "@/services/auth.service.ts";
 import { apiClient } from "@/services/httpClient";
+import fondoPerfil from "../assets/garageRB.jpg";
 
 interface ProfileData {
   id: number;
@@ -13,180 +23,117 @@ interface ProfileData {
   email: string;
   telegram_username: string | null;
   avatar_url: string | null;
+  user_type?: string;
 }
 
 function Perfil() {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState<number | null>(null);
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [telegram, setTelegram] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
-  const [serverAvatar, setServerAvatar] = useState<string | null>(null);
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [userRole, setUserRole] = useState<string>("user");
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-  const [messageType, setMessageType] = useState<"success" | "error" | null>(
-    null
-  );
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const load = async () => {
+    const loadProfile = async () => {
       try {
         const me = await AuthService.getCurrentUser();
         if (!me) {
           navigate("/login");
           return;
         }
-        setUserId(me.id);
+        setUserRole(me.user_type || "user");
+
         const response = await apiClient.get<{ data: ProfileData }>(
-          `/usuarios/${me.id}`
+          `/usuarios/${me.id}`,
         );
-        const data = response.data.data;
-        setName(data.name ?? "");
-        setUsername(data.username ?? "");
-        setEmail(data.email ?? "");
-        setTelegram(data.telegram_username ?? "");
-        setServerAvatar(data.avatar_url ?? null);
-      } catch {
-        setMessageType("error");
-        setMessage("Error al cargar los datos del perfil.");
+        setProfile(response.data.data);
+      } catch (err: any) {
+        console.error("Error al cargar perfil:", err);
+        setError("Error al cargar los datos del perfil.");
       } finally {
         setLoading(false);
       }
     };
-    load();
+
+    loadProfile();
   }, [navigate]);
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setAvatarFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
-  };
-
-  const removeAvatarPreview = () => {
-    if (avatarPreview) URL.revokeObjectURL(avatarPreview);
-    setAvatarFile(null);
-    setAvatarPreview(null);
-  };
-
-  const handleDeleteAvatar = async () => {
-    if (!userId) return;
-    try {
-      await apiClient.delete(`/usuarios/${userId}/avatar`);
-      setServerAvatar(null);
-      removeAvatarPreview();
-      setMessageType("success");
-      setMessage("Avatar eliminado.");
-    } catch {
-      setMessageType("error");
-      setMessage("Error al eliminar el avatar.");
-    }
-  };
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userId) return;
-
-    setMessage(null);
-    setMessageType(null);
-
-    if (!name.trim() || !username.trim() || !email.trim()) {
-      setMessageType("error");
-      setMessage("Nombre, usuario y email son obligatorios.");
-      return;
-    }
-
-    if (newPassword && newPassword !== confirmPassword) {
-      setMessageType("error");
-      setMessage("Las contraseñas no coinciden.");
-      return;
-    }
-
-    if (newPassword && newPassword.length < 6) {
-      setMessageType("error");
-      setMessage("La contraseña debe tener al menos 6 caracteres.");
-      return;
-    }
-
-    setSaving(true);
-    try {
-      const formData = new FormData();
-      formData.append("name", name.trim());
-      formData.append("username", username.trim());
-      formData.append("email", email.trim());
-      const trimmedTg = telegram.trim();
-      if (trimmedTg.length > 0) {
-        formData.append("telegram_username", trimmedTg);
-      } else {
-        formData.append("telegram_username", "");
-      }
-      if (newPassword) {
-        formData.append("password", newPassword);
-      }
-      if (avatarFile) {
-        formData.append("avatar", avatarFile);
-      }
-
-      await apiClient.patch(`/usuarios/${userId}`, formData);
-
-      setMessageType("success");
-      setMessage("Perfil actualizado correctamente.");
-      setNewPassword("");
-      setConfirmPassword("");
-      setAvatarFile(null);
-      if (avatarPreview) {
-        URL.revokeObjectURL(avatarPreview);
-        setAvatarPreview(null);
-      }
-
-      const updated = await apiClient.get<{ data: ProfileData }>(
-        `/usuarios/${userId}`
-      );
-      setServerAvatar(updated.data.data.avatar_url ?? null);
-
-      window.dispatchEvent(new Event("userLoggedIn"));
-    } catch (err: any) {
-      setMessageType("error");
-      setMessage(
-        err.response?.data?.message || "Error al guardar los cambios."
-      );
-    } finally {
-      setSaving(false);
-    }
-  };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-400">Cargando perfil...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <p className="text-gray-400 text-lg">Cargando perfil...</p>
       </div>
     );
   }
 
-  const resolvedAvatar = avatarPreview || serverAvatar || null;
+  if (error || !profile) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 gap-4">
+        <p className="text-red-400 text-lg">
+          {error || "No se pudo encontrar el usuario."}
+        </p>
+        <Link
+          to="/"
+          className="text-gray-300 hover:text-white bg-gray-800 px-4 py-2 rounded-lg border border-gray-700"
+        >
+          Volver al inicio
+        </Link>
+      </div>
+    );
+  }
+
+  const resolvedAvatar = profile.avatar_url ?? null;
+  const isAdmin = userRole === "admin" || profile.user_type === "admin";
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <div className="max-w-2xl mx-auto px-4 py-10">
-        <h1
-          className="text-gray-200 mb-8 text-4xl font-bold tracking-wider text-center uppercase"
-          style={{
-            fontFamily: "'Orbitron', 'Rajdhani', sans-serif",
-            letterSpacing: "0.1em",
-          }}
-        >
-          Mi Perfil
-        </h1>
+    <div className="relative min-h-screen py-10 flex flex-col justify-start">
+      {/* Fondo de pantalla */}
+      <div
+        className="absolute inset-0 w-full h-full z-0"
+        style={{
+          backgroundImage: `url(${fondoPerfil})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(6px) brightness(0.35)",
+        }}
+      />
 
-        <form onSubmit={handleSave} className="space-y-5">
-          <div className="flex flex-col items-center mb-6">
-            <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 bg-gray-800 flex items-center justify-center">
+      <div className="relative z-10 max-w-2xl w-full mx-auto px-4">
+        {/* Barra superior de navegación */}
+        <div className="flex items-center justify-between mb-8">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition-all bg-gray-900/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700/60 hover:border-gray-500"
+          >
+            <ArrowLeft size={16} />
+            Volver al inicio
+          </Link>
+          {isAdmin && (
+            <Link
+              to="/menuadmin"
+              className="inline-flex items-center gap-2 text-red-400 hover:text-red-300 transition-all bg-red-950/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-red-800/60 hover:border-red-600 text-sm"
+            >
+              <Shield size={16} />
+              Panel de Admin
+            </Link>
+          )}
+        </div>
+
+        {/* Tarjeta de detalle de usuario */}
+        <div className="bg-gray-950/75 backdrop-blur-md rounded-2xl p-8 border border-gray-700/60 shadow-2xl">
+          <h1
+            className="text-gray-200 mb-8 text-3xl md:text-4xl font-bold tracking-wider text-center uppercase"
+            style={{
+              fontFamily: "'Orbitron', 'Rajdhani', sans-serif",
+              letterSpacing: "0.1em",
+            }}
+          >
+            Mi Perfil
+          </h1>
+
+          {/* Encabezado con Avatar y Nombre */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-gray-700 bg-gray-900 flex items-center justify-center shadow-xl">
               {resolvedAvatar ? (
                 <img
                   src={resolvedAvatar}
@@ -194,132 +141,133 @@ function Perfil() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-3xl text-gray-500">
-                  {(name || username || "U").charAt(0).toUpperCase()}
+                <span className="text-4xl text-gray-400 font-bold">
+                  {(profile.name || profile.username || "U")
+                    .charAt(0)
+                    .toUpperCase()}
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-3 mt-3">
-              <label className="text-xs text-blue-400 hover:text-blue-300 cursor-pointer flex items-center gap-1">
-                <Upload size={14} />
-                Cambiar foto
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarChange}
-                  className="hidden"
-                />
-              </label>
-              {(resolvedAvatar || avatarFile) && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (avatarFile) {
-                      removeAvatarPreview();
-                    } else {
-                      handleDeleteAvatar();
-                    }
-                  }}
-                  className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
-                >
-                  <X size={14} />
-                  Quitar foto
-                </button>
-              )}
-            </div>
-            {avatarFile && (
-              <p className="text-xs text-gray-500 mt-1">
-                Nueva foto seleccionada (se guarda al guardar cambios)
-              </p>
-            )}
-          </div>
 
-          <InputGroup>
-            <InputGroupInput
-              placeholder="Nombre"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </InputGroup>
-
-          <InputGroup>
-            <InputGroupInput
-              placeholder="Usuario"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </InputGroup>
-
-          <InputGroup>
-            <InputGroupInput
-              placeholder="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </InputGroup>
-
-          <InputGroup>
-            <InputGroupInput
-              placeholder="Usuario de Telegram (opcional)"
-              value={telegram}
-              onChange={(e) => setTelegram(e.target.value)}
-            />
-          </InputGroup>
-
-          <div className="border-t border-gray-800 pt-5 mt-5">
-            <h3 className="text-sm font-semibold text-gray-400 uppercase mb-4">
-              Cambiar contraseña
-            </h3>
-            <InputGroup className="mb-4">
-              <InputGroupInput
-                placeholder="Nueva contraseña (dejar vacío sin cambios)"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                minLength={newPassword ? 6 : undefined}
-              />
-            </InputGroup>
-            <InputGroup>
-              <InputGroupInput
-                placeholder="Repetir nueva contraseña"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </InputGroup>
-          </div>
-
-          <div className="flex w-full justify-between pt-4">
-            <Button
-              type="button"
-              className="bg-gray-700 hover:bg-gray-800 text-white border border-gray-600"
-              onClick={() => window.history.back()}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              disabled={saving}
-              className="bg-blue-600 hover:bg-blue-700 text-white border-0"
-            >
-              {saving ? "Guardando..." : "Guardar cambios"}
-            </Button>
-          </div>
-
-          {message && (
-            <p
-              className={`text-sm text-center font-semibold ${
-                messageType === "success" ? "text-green-400" : "text-red-400"
-              }`}
-            >
-              {message}
+            <h2 className="text-2xl font-bold text-white mt-4 text-center">
+              {profile.name}
+            </h2>
+            <p className="text-gray-400 text-sm font-medium mt-0.5">
+              @{profile.username}
             </p>
-          )}
-        </form>
+
+            <div className="mt-3">
+              <Badge
+                variant={isAdmin ? "destructive" : "default"}
+                className={`px-3 py-1 text-xs font-semibold uppercase tracking-wider ${
+                  isAdmin ? "bg-red-600 text-white" : "bg-blue-600 text-white"
+                }`}
+              >
+                {isAdmin ? "Administrador" : "Usuario"}
+              </Badge>
+            </div>
+          </div>
+
+          {/* Lista de Detalles */}
+          <div className="space-y-4 border-t border-b border-gray-700/60 py-6 mb-8">
+            <div className="flex items-center justify-between p-3.5 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gray-800 rounded-lg text-gray-400">
+                  <User size={18} />
+                </div>
+                <div>
+                  <span className="text-xs text-gray-400 uppercase font-semibold tracking-wider block">
+                    Nombre Completo
+                  </span>
+                  <span className="text-base text-gray-200 font-medium">
+                    {profile.name || "—"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gray-800 rounded-lg text-gray-400">
+                  <AtSign size={18} />
+                </div>
+                <div>
+                  <span className="text-xs text-gray-400 uppercase font-semibold tracking-wider block">
+                    Nombre de Usuario
+                  </span>
+                  <span className="text-base text-gray-200 font-medium">
+                    {profile.username}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gray-800 rounded-lg text-gray-400">
+                  <Mail size={18} />
+                </div>
+                <div>
+                  <span className="text-xs text-gray-400 uppercase font-semibold tracking-wider block">
+                    Correo Electrónico
+                  </span>
+                  <span className="text-base text-gray-200 font-medium">
+                    {profile.email}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gray-800 rounded-lg text-gray-400">
+                  <Send size={18} />
+                </div>
+                <div>
+                  <span className="text-xs text-gray-400 uppercase font-semibold tracking-wider block">
+                    Usuario de Telegram
+                  </span>
+                  <span className="text-base text-gray-200 font-medium">
+                    {profile.telegram_username ? (
+                      `@${profile.telegram_username}`
+                    ) : (
+                      <span className="text-gray-500 italic">
+                        No configurado
+                      </span>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-3.5 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-gray-800 rounded-lg text-gray-400">
+                  <ShieldCheck size={18} />
+                </div>
+                <div>
+                  <span className="text-xs text-gray-400 uppercase font-semibold tracking-wider block">
+                    Tipo de Cuenta
+                  </span>
+                  <span className="text-base text-gray-200 font-medium">
+                    {isAdmin ? "Administrador" : "Usuario"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Botones de acción */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Button
+              onClick={() => navigate("/perfil/editar")}
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg font-medium cursor-pointer shadow-lg shadow-blue-900/20"
+            >
+              <Pencil size={18} />
+              Editar Perfil
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
