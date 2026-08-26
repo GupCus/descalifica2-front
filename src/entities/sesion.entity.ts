@@ -2,6 +2,7 @@ import { baseEntity } from "./baseEntity.entity.js";
 import { Carrera } from "./carrera.entity.js";
 
 export class Sesion extends baseEntity {
+  name!: string;
   type!: string;
   start_time!: Date;
   end_time!: Date;

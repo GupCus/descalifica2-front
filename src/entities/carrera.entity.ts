@@ -4,6 +4,7 @@ import { Sesion } from "./sesion.entity.js";
 import { Temporada } from "./temporada.entity.js";
 
 export class Carrera extends baseEntity {
+  name!: string;
   start_date!: Date;
   end_date!: Date;
   track?: Circuito;
