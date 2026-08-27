@@ -9,7 +9,7 @@ const client = axios.create({
 
 export async function getBlogPost(): Promise<BlogPost[]> {
   const response = await client.get('/');
-  return response.data.data;
+  return response.data.data ?? [];
 }
 
 export async function getOneBlogPost(id: number): Promise<BlogPost> {

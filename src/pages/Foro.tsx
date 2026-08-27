@@ -21,7 +21,7 @@ function Foro() {
   useEffect(() => {
     getBlogPost()
       .then(async (data) => {
-        setPosts(data);
+        setPosts(data ?? []);
         // Cargar conteo de comentarios por post
         const counts: Record<number, number> = {};
         await Promise.all(
@@ -150,7 +150,7 @@ function Foro() {
       )}
 
       {posts.length === 0 ? (
-        <Card className="bg-slate-900/50 border-slate-700 max-w-md mx-auto">
+        <Card className="relative z-10 bg-slate-900/50 border-slate-700 max-w-md mx-auto">
           <CardHeader>
             <CardTitle className="text-white text-center">
               Todavía no hay publicaciones
