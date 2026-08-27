@@ -12,6 +12,7 @@ type FormState = {
   name: string;
   email: string;
   password: string;
+  confirmPassword: string;
   username: string;
   telegram_username: string;
   date_of_birth: Date | null;
@@ -50,6 +51,7 @@ function Registrarse() {
     username: "",
     email: "",
     password: "",
+    confirmPassword: "",
     telegram_username: "",
     date_of_birth: null,
     avatar: null,
@@ -156,6 +158,7 @@ function Registrarse() {
       if (
         !form.email ||
         !form.password ||
+        !form.confirmPassword ||
         !form.name ||
         !form.username ||
         !form.date_of_birth
@@ -165,6 +168,10 @@ function Registrarse() {
 
       if (form.password.length < 6) {
         throw new Error("La contraseña debe tener al menos 6 caracteres.");
+      }
+
+      if (form.password !== form.confirmPassword) {
+        throw new Error("Las contraseñas no coinciden.");
       }
 
       const birthDateString = `${form.date_of_birth.getFullYear()}-${String(
@@ -202,6 +209,7 @@ function Registrarse() {
         username: "",
         email: "",
         password: "",
+        confirmPassword: "",
         telegram_username: "",
         date_of_birth: null,
         avatar: null,
@@ -319,28 +327,29 @@ function Registrarse() {
             </div>
           </div>
 
-          {/* Fila 2: Correo y Contraseña */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
-              >
-                Correo Electrónico *
-              </label>
-              <InputGroup>
-                <InputGroupInput
-                  placeholder="correo@ejemplo.com"
-                  id="email"
-                  type="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  className="placeholder:text-gray-500/50"
-                  required
-                />
-              </InputGroup>
-            </div>
+          {/* Fila 2: Correo Electrónico */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+            >
+              Correo Electrónico *
+            </label>
+            <InputGroup>
+              <InputGroupInput
+                placeholder="correo@ejemplo.com"
+                id="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                className="placeholder:text-gray-500/50"
+                required
+              />
+            </InputGroup>
+          </div>
 
+          {/* Fila 3: Contraseña y Confirmar Contraseña */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor="password"
@@ -361,9 +370,30 @@ function Registrarse() {
                 />
               </InputGroup>
             </div>
+
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+              >
+                Confirmar Contraseña *
+              </label>
+              <InputGroup>
+                <InputGroupInput
+                  placeholder="Repite tu contraseña"
+                  id="confirmPassword"
+                  type="password"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  className="placeholder:text-gray-500/50"
+                  required
+                  minLength={6}
+                />
+              </InputGroup>
+            </div>
           </div>
 
-          {/* Fila 3: Fecha de Nacimiento y Telegram */}
+          {/* Fila 4: Fecha de Nacimiento y Telegram */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="relative w-full" ref={datePickerRef}>
               <label
