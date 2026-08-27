@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2 } from 'lucide-react';
+import { ArrowLeft, Trash2, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import SeccionComentarios from '@/components/SeccionComentarios';
 import { BlogPost } from '@/entities/blogPost.entity';
+import { Usuario } from '@/entities/usuario.entity';
 import { getOneBlogPost, deleteBlogPost } from '@/services/blogpost.service';
+import { getUsuarios } from '@/services/usuario.service';
 import { getAssetUrl } from '@/utils/asset.util';
 import { AuthService, VerifyTokenResponse } from '@/services/auth.service';
 import fondoMonza from '../../assets/Monza.jpg';
@@ -18,6 +20,7 @@ function DetallePost() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<VerifyTokenResponse['user'] | null>(null);
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -30,7 +33,20 @@ function DetallePost() {
       .finally(() => setLoading(false));
 
     AuthService.getCurrentUser().then(setUser);
+    getUsuarios().then(setUsuarios).catch(console.error);
   }, [id]);
+
+  const getAuthorId = (p: BlogPost): number => {
+    if (typeof p.author === 'object' && p.author !== null) {
+      return (p.author as unknown as { id: number }).id;
+    }
+    return p.author;
+  };
+
+  const usernameDe = (authorId: number): string => {
+    const usuario = usuarios.find((u) => u.id === authorId);
+    return usuario?.username ?? usuario?.name ?? 'Usuario eliminado';
+  };
 
   const puedeEliminarPost = (): boolean => {
     if (!user || !post) return false;
@@ -123,7 +139,12 @@ function DetallePost() {
         </div>
 
         <article>
-          <h1 className="text-4xl font-bold text-white mb-4">{post.title}</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">{post.title}</h1>
+
+          <div className="flex items-center gap-2 mb-4 text-gray-400">
+            <User className="h-4 w-4" />
+            <span className="text-sm">Publicado por <span className="font-medium text-gray-300">{usernameDe(getAuthorId(post))}</span></span>
+          </div>
 
           {post.cover_image && (
             <img

@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { Plus, User } from 'lucide-react';
 import { ChromaGrid } from '@/components/ui/Chroma-grid';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AuthService, VerifyTokenResponse } from '@/services/auth.service';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BlogPost } from '@/entities/blogPost.entity';
+import { Usuario } from '@/entities/usuario.entity';
 import { getBlogPost, deleteBlogPost } from '@/services/blogpost.service';
 import { getComentarioByBlogPost } from '@/services/comentario.service';
+import { getUsuarios } from '@/services/usuario.service';
 import { getAssetUrl } from '@/utils/asset.util';
 import fondoMonza from '../assets/Monza.jpg';
 
@@ -17,6 +19,7 @@ function Foro() {
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<VerifyTokenResponse['user'] | null>(null);
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
+  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
   useEffect(() => {
     getBlogPost()
@@ -42,14 +45,24 @@ function Foro() {
       .finally(() => setLoading(false));
 
     AuthService.getCurrentUser().then(setUser);
+    getUsuarios().then(setUsuarios).catch(console.error);
   }, []);
+
+  const getAuthorId = (post: BlogPost): number => {
+    if (typeof post.author === 'object' && post.author !== null) {
+      return (post.author as unknown as { id: number }).id;
+    }
+    return post.author;
+  };
+
+  const usernameDe = (authorId: number): string => {
+    const usuario = usuarios.find((u) => u.id === authorId);
+    return usuario?.username ?? usuario?.name ?? 'Usuario eliminado';
+  };
 
   const puedeEliminarPost = (post: BlogPost): boolean => {
     if (!user) return false;
-    const authorId =
-      typeof post.author === 'object' && post.author !== null
-        ? (post.author as unknown as { id: number }).id
-        : post.author;
+    const authorId = getAuthorId(post);
     return user.user_type === 'admin' || Number(user.id) === Number(authorId);
   };
 
@@ -191,6 +204,10 @@ function Foro() {
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
                       </button>
                     )}
+                  </div>
+                  <div className="flex items-center gap-1.5 mt-2 text-sm text-gray-400">
+                    <User className="h-3.5 w-3.5" />
+                    <span>{usernameDe(getAuthorId(post))}</span>
                   </div>
                 </CardHeader>
                 <CardContent className="px-6 pb-5">
