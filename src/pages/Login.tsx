@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AuthService } from "@/services/auth.service.ts";
 import { useNavigate, Link } from "react-router-dom";
 import * as React from "react";
+import { ArrowLeft } from "lucide-react";
 import fondoLogin from "../assets/grilla-cola-2021.jpg";
 
 function Login() {
@@ -105,7 +106,17 @@ function Login() {
       />
 
       {/* Tarjeta de login */}
-      <div className="relative z-10 w-full max-w-md p-8 bg-gray-950/75 backdrop-blur-md rounded-2xl border border-gray-700/60 shadow-2xl">
+      <div className="relative z-10 w-full max-w-md p-8 md:p-10 bg-gray-950/80 backdrop-blur-md rounded-2xl border border-gray-700/60 shadow-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft size={14} />
+            Volver al inicio
+          </Link>
+        </div>
+
         <h1
           className="text-gray-200 mb-6 text-3xl font-bold tracking-wider text-center uppercase"
           style={{
@@ -177,9 +188,9 @@ function Login() {
             <Button
               type="button"
               className="flex-1 bg-gray-800/80 hover:bg-gray-700 text-gray-300 border border-gray-700 hover:text-white cursor-pointer"
-              onClick={() => navigate("/registrarse")}
+              onClick={() => navigate("/")}
             >
-              Registrarse
+              Cancelar
             </Button>
             <Button
               type="submit"
@@ -202,12 +213,15 @@ function Login() {
         </form>
 
         <div className="mt-6 text-center border-t border-gray-800/80 pt-4">
-          <Link
-            to="/"
-            className="text-xs text-gray-400 hover:text-gray-200 transition-colors"
-          >
-            ← Volver al inicio
-          </Link>
+          <p className="text-xs text-gray-400">
+            ¿No tienes una cuenta?{" "}
+            <Link
+              to="/registrarse"
+              className="text-blue-400 hover:text-blue-300 font-semibold underline ml-1"
+            >
+              Registrarse
+            </Link>
+          </p>
         </div>
       </div>
     </div>

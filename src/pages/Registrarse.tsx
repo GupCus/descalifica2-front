@@ -4,18 +4,37 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { AuthService } from "@/services/auth.service.ts";
 import { useNavigate, Link } from "react-router-dom";
 import * as React from "react";
-import { CalendarIcon, Upload, X, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  CalendarIcon,
+  Upload,
+  X,
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Trophy,
+  Flag,
+  MapPin,
+  FileText,
+} from "lucide-react";
 import { useDropzone } from "react-dropzone";
+import { getPiloto } from "@/services/piloto.service";
+import { getEscuderia } from "@/services/escuderia.service";
+import { getCircuito } from "@/services/circuito.service";
 import fondoRegistro from "../assets/Monaco-Fondo.webp";
 
 type FormState = {
   name: string;
+  surname: string;
   email: string;
   password: string;
   confirmPassword: string;
   username: string;
   telegram_username: string;
   date_of_birth: Date | null;
+  fav_driver: string;
+  fav_team: string;
+  fav_circuit: string;
+  bio: string;
   avatar: File | null;
 };
 
@@ -36,6 +55,20 @@ const MONTH_NAMES = [
 
 const WEEKDAY_NAMES = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"];
 
+function getUniqueNames(items: { name?: string }[]): string[] {
+  const map = new Map<string, string>();
+  items.forEach((item) => {
+    const trimmed = item.name?.trim();
+    if (trimmed) {
+      const normalized = trimmed.toLowerCase();
+      if (!map.has(normalized)) {
+        map.set(normalized, trimmed);
+      }
+    }
+  });
+  return Array.from(map.values()).sort((a, b) => a.localeCompare(b));
+}
+
 function Registrarse() {
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<"error" | "success" | null>(
@@ -46,14 +79,24 @@ function Registrarse() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Datalists para sugerencias
+  const [pilotosList, setPilotosList] = useState<string[]>([]);
+  const [escuderiasList, setEscuderiasList] = useState<string[]>([]);
+  const [circuitosList, setCircuitosList] = useState<string[]>([]);
+
   const [form, setForm] = useState<FormState>({
     name: "",
+    surname: "",
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
     telegram_username: "",
     date_of_birth: null,
+    fav_driver: "",
+    fav_team: "",
+    fav_circuit: "",
+    bio: "",
     avatar: null,
   });
 
@@ -63,6 +106,18 @@ function Registrarse() {
   const [viewMonth, setViewMonth] = useState<number>(0);
 
   const datePickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    getPiloto()
+      .then((res) => setPilotosList(getUniqueNames(res)))
+      .catch(() => {});
+    getEscuderia()
+      .then((res) => setEscuderiasList(getUniqueNames(res)))
+      .catch(() => {});
+    getCircuito()
+      .then((res) => setCircuitosList(getUniqueNames(res)))
+      .catch(() => {});
+  }, []);
 
   // Cerrar picker al hacer clic afuera
   useEffect(() => {
@@ -120,7 +175,7 @@ function Registrarse() {
   };
 
   const handleSelectDay = (day: number) => {
-    const selectedDate = new Date(viewYear, viewMonth, day);
+    const selectedDate = new Date(Date.UTC(viewYear, viewMonth, day));
     setForm((prev) => ({ ...prev, date_of_birth: selectedDate }));
     setOpenBirthDate(false);
   };
@@ -174,9 +229,9 @@ function Registrarse() {
         throw new Error("Las contraseñas no coinciden.");
       }
 
-      const birthDateString = `${form.date_of_birth.getFullYear()}-${String(
-        form.date_of_birth.getMonth() + 1
-      ).padStart(2, "0")}-${String(form.date_of_birth.getDate()).padStart(
+      const birthDateString = `${form.date_of_birth.getUTCFullYear()}-${String(
+        form.date_of_birth.getUTCMonth() + 1
+      ).padStart(2, "0")}-${String(form.date_of_birth.getUTCDate()).padStart(
         2,
         "0"
       )}`;
@@ -187,9 +242,27 @@ function Registrarse() {
       formData.append("username", form.username.trim());
       formData.append("date_of_birth", birthDateString);
       formData.append("name", form.name.trim());
-      const trimmedTelegram = form.telegram_username.trim();
+      if (form.surname.trim()) {
+        formData.append("surname", form.surname.trim());
+      }
+      const trimmedTelegram = form.telegram_username.trim().replace(/^@/, "");
       if (trimmedTelegram.length > 0) {
+        if (/\s/.test(trimmedTelegram)) {
+          throw new Error("El usuario de Telegram no debe contener espacios.");
+        }
         formData.append("telegram_username", trimmedTelegram);
+      }
+      if (form.fav_driver.trim()) {
+        formData.append("fav_driver", form.fav_driver.trim());
+      }
+      if (form.fav_team.trim()) {
+        formData.append("fav_team", form.fav_team.trim());
+      }
+      if (form.fav_circuit.trim()) {
+        formData.append("fav_circuit", form.fav_circuit.trim());
+      }
+      if (form.bio.trim()) {
+        formData.append("bio", form.bio.trim());
       }
       if (form.avatar) {
         formData.append("avatar", form.avatar);
@@ -206,12 +279,17 @@ function Registrarse() {
       // Limpiar formulario
       setForm({
         name: "",
+        surname: "",
         username: "",
         email: "",
         password: "",
         confirmPassword: "",
         telegram_username: "",
         date_of_birth: null,
+        fav_driver: "",
+        fav_team: "",
+        fav_circuit: "",
+        bio: "",
         avatar: null,
       });
       removeAvatar();
@@ -249,6 +327,23 @@ function Registrarse() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center py-12 px-4">
+      {/* Datalists para sugerencias */}
+      <datalist id="pilotos-reg-list">
+        {pilotosList.map((p) => (
+          <option key={p} value={p} />
+        ))}
+      </datalist>
+      <datalist id="escuderias-reg-list">
+        {escuderiasList.map((e) => (
+          <option key={e} value={e} />
+        ))}
+      </datalist>
+      <datalist id="circuitos-reg-list">
+        {circuitosList.map((c) => (
+          <option key={c} value={c} />
+        ))}
+      </datalist>
+
       {/* Imagen de fondo con blur y oscurecimiento */}
       <div
         className="absolute inset-0 w-full h-full z-0"
@@ -286,18 +381,18 @@ function Registrarse() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Fila 1: Nombre Completo y Usuario */}
+          {/* Fila 1: Nombre y Apellido */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor="name"
                 className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
               >
-                Nombre Completo *
+                Nombre *
               </label>
               <InputGroup>
                 <InputGroupInput
-                  placeholder="Nombre y apellido"
+                  placeholder="Nombre"
                   id="name"
                   value={form.name}
                   onChange={handleChange}
@@ -307,6 +402,27 @@ function Registrarse() {
               </InputGroup>
             </div>
 
+            <div>
+              <label
+                htmlFor="surname"
+                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+              >
+                Apellido
+              </label>
+              <InputGroup>
+                <InputGroupInput
+                  placeholder="Apellido"
+                  id="surname"
+                  value={form.surname}
+                  onChange={handleChange}
+                  className="placeholder:text-gray-500/50"
+                />
+              </InputGroup>
+            </div>
+          </div>
+
+          {/* Fila 2: Nombre de Usuario y Correo Electrónico */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor="username"
@@ -325,27 +441,26 @@ function Registrarse() {
                 />
               </InputGroup>
             </div>
-          </div>
 
-          {/* Fila 2: Correo Electrónico */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
-            >
-              Correo Electrónico *
-            </label>
-            <InputGroup>
-              <InputGroupInput
-                placeholder="correo@ejemplo.com"
-                id="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                className="placeholder:text-gray-500/50"
-                required
-              />
-            </InputGroup>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+              >
+                Correo Electrónico *
+              </label>
+              <InputGroup>
+                <InputGroupInput
+                  placeholder="correo@ejemplo.com"
+                  id="email"
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  className="placeholder:text-gray-500/50"
+                  required
+                />
+              </InputGroup>
+            </div>
           </div>
 
           {/* Fila 3: Contraseña y Confirmar Contraseña */}
@@ -408,8 +523,8 @@ function Registrarse() {
                 tabIndex={0}
                 onClick={() => {
                   if (!openBirthDate && form.date_of_birth) {
-                    setViewYear(form.date_of_birth.getFullYear());
-                    setViewMonth(form.date_of_birth.getMonth());
+                    setViewYear(form.date_of_birth.getUTCFullYear());
+                    setViewMonth(form.date_of_birth.getUTCMonth());
                   }
                   setOpenBirthDate((prev) => !prev);
                 }}
@@ -417,8 +532,8 @@ function Registrarse() {
                   if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     if (!openBirthDate && form.date_of_birth) {
-                      setViewYear(form.date_of_birth.getFullYear());
-                      setViewMonth(form.date_of_birth.getMonth());
+                      setViewYear(form.date_of_birth.getUTCFullYear());
+                      setViewMonth(form.date_of_birth.getUTCMonth());
                     }
                     setOpenBirthDate((prev) => !prev);
                   }
@@ -437,6 +552,7 @@ function Registrarse() {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
+                        timeZone: "UTC",
                       })
                     : "Fecha de nacimiento"}
                 </span>
@@ -516,28 +632,20 @@ function Registrarse() {
 
                     {Array.from({ length: daysInMonth }).map((_, i) => {
                       const dayNumber = i + 1;
-                      const dayDate = new Date(viewYear, viewMonth, dayNumber);
-                      const isToday =
-                        dayDate.toDateString() === new Date().toDateString();
                       const isSelected =
                         form.date_of_birth &&
-                        dayDate.toDateString() ===
-                          form.date_of_birth.toDateString();
-                      const isFuture = dayDate > new Date();
+                        form.date_of_birth.getUTCFullYear() === viewYear &&
+                        form.date_of_birth.getUTCMonth() === viewMonth &&
+                        form.date_of_birth.getUTCDate() === dayNumber;
 
                       return (
                         <button
                           key={dayNumber}
                           type="button"
-                          disabled={isFuture}
                           onClick={() => handleSelectDay(dayNumber)}
                           className={`h-7 w-7 text-xs rounded-md flex items-center justify-center transition-all cursor-pointer select-none ${
                             isSelected
                               ? "bg-blue-600 text-white font-bold shadow-md"
-                              : isToday
-                              ? "border border-blue-500 text-blue-400 font-semibold"
-                              : isFuture
-                              ? "text-gray-600 cursor-not-allowed opacity-30"
                               : "text-gray-300 hover:bg-gray-800 hover:text-white"
                           }`}
                         >
@@ -569,7 +677,95 @@ function Registrarse() {
             </div>
           </div>
 
-          {/* Fila 4: Foto de perfil (Dropzone) */}
+          {/* Preferencias de Automovilismo */}
+          <div className="border-t border-gray-800/80 pt-4">
+            <h3 className="text-xs font-semibold text-gray-400 uppercase mb-3 tracking-wider flex items-center gap-1.5">
+              <Trophy size={14} className="text-amber-400" />
+              Preferencias y Favoritos (opcional)
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div>
+                <label
+                  htmlFor="fav_driver"
+                  className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"
+                >
+                  <Trophy size={12} className="text-amber-400" />
+                  Piloto Favorito
+                </label>
+                <InputGroup>
+                  <InputGroupInput
+                    list="pilotos-reg-list"
+                    placeholder="ej. Franco Colapinto"
+                    id="fav_driver"
+                    value={form.fav_driver}
+                    onChange={handleChange}
+                    className="placeholder:text-gray-500/50 text-xs"
+                  />
+                </InputGroup>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="fav_team"
+                  className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"
+                >
+                  <Flag size={12} className="text-red-400" />
+                  Escudería Favorita
+                </label>
+                <InputGroup>
+                  <InputGroupInput
+                    list="escuderias-reg-list"
+                    placeholder="ej. Williams Racing"
+                    id="fav_team"
+                    value={form.fav_team}
+                    onChange={handleChange}
+                    className="placeholder:text-gray-500/50 text-xs"
+                  />
+                </InputGroup>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="fav_circuit"
+                  className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"
+                >
+                  <MapPin size={12} className="text-emerald-400" />
+                  Circuito Favorito
+                </label>
+                <InputGroup>
+                  <InputGroupInput
+                    list="circuitos-reg-list"
+                    placeholder="ej. Monza"
+                    id="fav_circuit"
+                    value={form.fav_circuit}
+                    onChange={handleChange}
+                    className="placeholder:text-gray-500/50 text-xs"
+                  />
+                </InputGroup>
+              </div>
+            </div>
+          </div>
+
+          {/* Biografía */}
+          <div className="border-t border-gray-800/80 pt-4">
+            <label
+              htmlFor="bio"
+              className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+            >
+              <FileText size={14} className="text-blue-400" />
+              Biografía / Sobre Mí (opcional)
+            </label>
+            <textarea
+              id="bio"
+              placeholder="Cuéntanos un poco sobre ti..."
+              value={form.bio}
+              onChange={handleChange}
+              rows={2}
+              className="w-full bg-gray-900/60 border border-gray-700/80 rounded-xl p-3 text-sm text-gray-200 placeholder:text-gray-500/50 focus:outline-none focus:border-blue-500 transition-colors resize-none"
+            />
+          </div>
+
+          {/* Foto de perfil (Dropzone) */}
           <div>
             <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
               Foto de Perfil (opcional)
