@@ -1,7 +1,10 @@
 import { Circuito } from "@/entities/circuito.entity.ts";
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button.tsx";
+import { Trash2 } from "lucide-react";
 import {
+  deleteCircuito,
   uploadCircuitoImage,
   uploadTrackImage,
 } from "@/services/circuito.service.ts";
@@ -11,6 +14,7 @@ import { getAssetUrl } from "@/utils/asset.util.ts";
 
 function DetalleCircuito() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [circuito, setCircuito] = useState<Circuito | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -80,6 +84,20 @@ function DetalleCircuito() {
       });
   }, [id, api]);
 
+  const handleDelete = async () => {
+    if (!circuito?.id || !isAdmin) return;
+
+    if (confirm(`¿Estás seguro de eliminar "${circuito.name}"?`)) {
+      try {
+        await deleteCircuito(circuito.id);
+        navigate("/circuitos");
+      } catch (err) {
+        console.error("Error eliminando circuito", err);
+        alert("Error al eliminar el circuito");
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-900">
@@ -119,12 +137,24 @@ function DetalleCircuito() {
 
       <div className="w-full max-w-4xl mx-4 z-10">
         <div className="bg-gray-950/70 backdrop-blur-md rounded-lg p-6 md:p-8 shadow-2xl border border-gray-700/40">
-          <Link
-            to="/circuitos"
-            className="inline-block mb-4 text-gray-300 hover:text-white transition-all bg-gray-900/50 backdrop-blur-sm px-3 py-2 rounded-lg border border-gray-700 hover:border-red-500"
-          >
-            ← Volver al listado
-          </Link>
+          <div className="flex justify-between items-center mb-4">
+            <Link
+              to="/circuitos"
+              className="inline-block text-gray-300 hover:text-white transition-all bg-gray-900/50 backdrop-blur-sm px-3 py-2 rounded-lg border border-gray-700 hover:border-red-500"
+            >
+              ← Volver al listado
+            </Link>
+            {isAdmin && (
+              <Button
+                onClick={handleDelete}
+                variant="destructive"
+                className="flex items-center gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                Eliminar
+              </Button>
+            )}
+          </div>
 
           <h1
             className="text-white mt-2 text-3xl md:text-4xl font-extrabold tracking-wider text-center uppercase mb-6"

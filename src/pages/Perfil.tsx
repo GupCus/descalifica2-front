@@ -9,7 +9,6 @@ import {
   MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { AuthService } from "@/services/auth.service.ts";
 import { apiClient } from "@/services/httpClient";
 import fondoPerfil from "../assets/garageRB.jpg";
@@ -173,17 +172,6 @@ function Perfil() {
             <p className="text-blue-400 text-sm font-medium mt-0.5">
               @{profile.username}
             </p>
-
-            <div className="mt-3">
-              <Badge
-                variant={isAdmin ? "destructive" : "default"}
-                className={`px-3 py-1 text-xs font-semibold uppercase tracking-wider ${
-                  isAdmin ? "bg-red-600 text-white" : "bg-blue-600 text-white"
-                }`}
-              >
-                {isAdmin ? "Administrador" : "Usuario"}
-              </Badge>
-            </div>
           </div>
 
           {/* Secciones de Detalles */}

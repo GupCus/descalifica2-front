@@ -62,7 +62,7 @@ function DetalleEscuderia() {
   }, [id]);
 
   const handleDelete = async () => {
-    if (!escuderia?.id) return;
+    if (!escuderia?.id || !isAdmin) return;
 
     if (confirm(`¿Estás seguro de eliminar "${escuderia.name}"?`)) {
       try {
@@ -122,14 +122,16 @@ function DetalleEscuderia() {
             >
               ← Volver al listado
             </Link>
-            <Button
-              onClick={handleDelete}
-              variant="destructive"
-              className="flex items-center gap-2"
-            >
-              <Trash2 className="h-4 w-4" />
-              Eliminar
-            </Button>
+            {isAdmin && (
+              <Button
+                onClick={handleDelete}
+                variant="destructive"
+                className="flex items-center gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                Eliminar
+              </Button>
+            )}
           </div>
 
           <div 

@@ -1,13 +1,15 @@
 import { Marca } from "@/entities/marca.entity.ts";
 import { useState, useEffect } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
-import { ArrowLeftIcon } from "lucide-react";
-import { uploadMarcaImage } from "@/services/marca.service.ts";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
+import { ArrowLeftIcon, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button.tsx";
+import { deleteMarca, uploadMarcaImage } from "@/services/marca.service.ts";
 import { AuthService } from "@/services/auth.service.ts";
 import { getAssetUrl } from "@/utils/asset.util.ts";
 
 function DetalleMarca() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const location = useLocation();
   const [marca, setMarca] = useState<Marca | null>(
     location.state?.marca || null,
@@ -64,6 +66,20 @@ function DetalleMarca() {
       });
   }, [id, api, location.state]);
 
+  const handleDelete = async () => {
+    if (!marca?.id || !isAdmin) return;
+
+    if (confirm(`¿Estás seguro de eliminar "${marca.name}"?`)) {
+      try {
+        await deleteMarca(marca.id);
+        navigate("/marcas");
+      } catch (err) {
+        console.error("Error eliminando marca", err);
+        alert("Error al eliminar la marca");
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -112,13 +128,25 @@ function DetalleMarca() {
       </div>
 
       <div className="relative z-10 container mx-auto px-4 py-8">
-        <Link
-          to="/marcas"
-          className="inline-flex items-center gap-2 mb-6 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeftIcon className="w-4 h-4" />
-          Volver al listado
-        </Link>
+        <div className="flex justify-between items-center mb-6">
+          <Link
+            to="/marcas"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeftIcon className="w-4 h-4" />
+            Volver al listado
+          </Link>
+          {isAdmin && (
+            <Button
+              onClick={handleDelete}
+              variant="destructive"
+              className="flex items-center gap-2"
+            >
+              <Trash2 className="h-4 w-4" />
+              Eliminar
+            </Button>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-1">
