@@ -50,23 +50,29 @@ function HeaderSearch() {
 
     Promise.allSettled(loaders.map(([, , promise]) => promise)).then(
       (results) => {
-        const mapped: SearchItem[] = [];
+        const uniqueItems = new Map<string, SearchItem>();
         results.forEach((result, index) => {
           if (result.status !== "fulfilled") return;
           const [type, path] = loaders[index];
           result.value.forEach((entity) => {
             if (entity.id == null) return;
-            const label = entity.name ?? String(entity.year ?? "");
+            const label = (entity.name ?? String(entity.year ?? "")).trim();
             if (label.length === 0) return;
-            mapped.push({
-              id: entity.id,
-              name: label,
-              type,
-              path,
-            });
+
+            const key = `${type}:${normalize(label)}`;
+            const existing = uniqueItems.get(key);
+
+            if (!existing || entity.id > existing.id) {
+              uniqueItems.set(key, {
+                id: entity.id,
+                name: label,
+                type,
+                path,
+              });
+            }
           });
         });
-        setItems(mapped);
+        setItems(Array.from(uniqueItems.values()));
       }
     );
   }, []);
