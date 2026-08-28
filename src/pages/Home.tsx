@@ -1,4 +1,5 @@
 import DashboardAccordion from "@/components/DashboardAccordion.tsx";
+import PostsRecomendados from "@/components/PostsRecomendados.tsx";
 import {
   Accordion,
   AccordionContent,
@@ -114,6 +115,9 @@ function Home() {
           )}
         </Accordion>
       </div>
+
+      {/* Sección provisoria para probar el componente de posts recomendados */}
+      <PostsRecomendados />
     </>
   );
 }
