@@ -25,7 +25,6 @@ function Foro() {
     getBlogPost()
       .then(async (data) => {
         setPosts(data ?? []);
-        // Cargar conteo de comentarios por post
         const counts: Record<number, number> = {};
         await Promise.all(
           data.map(async (post) => {
@@ -93,7 +92,7 @@ function Foro() {
             {[1, 2, 3].map((i) => (
               <Card
                 key={i}
-                className="bg-slate-900/50 border-slate-700 overflow-hidden w-full"
+                className="bg-slate-900/55 border-slate-700 overflow-hidden w-full"
               >
                 <Skeleton className="h-64 w-full" />
                 <CardHeader>
@@ -176,7 +175,7 @@ function Foro() {
             {posts.map((post) => (
               <Card
                 key={post.id}
-                className="bg-slate-900/50 border-slate-700 overflow-hidden group w-full py-0 border-t-0 border-b-0"
+                className="bg-slate-900/55 border-slate-700 overflow-hidden group w-full py-0 border-t-0 border-b-0"
               >
                 {/* Imagen solo si tiene */}
                 {post.cover_image && (
@@ -211,7 +210,7 @@ function Foro() {
                   </div>
                 </CardHeader>
                 <CardContent className="px-6 pb-5">
-                  <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">
+                  <p className="text-gray-200 whitespace-pre-wrap leading-relaxed">
                     {post.content}
                   </p>
                   <Link
