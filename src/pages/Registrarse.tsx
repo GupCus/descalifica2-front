@@ -271,8 +271,7 @@ function Registrarse() {
 
       setMessageType("success");
       setMessage(
-        response?.message ||
-          "¡Usuario creado con éxito! Redirigiendo al login...",
+        response?.message || "¡Usuario creado con éxito! Redirigiendo...",
       );
 
       setForm({

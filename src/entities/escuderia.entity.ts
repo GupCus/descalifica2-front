@@ -14,6 +14,7 @@ export class Escuderia extends baseEntity {
   wccs?: Temporada[];
   color?: string;
   logo_image?: string;
+  car_image?: string;
 }
 export class NewEscuderia {
   id?: number;
@@ -25,4 +26,5 @@ export class NewEscuderia {
   racing_series!: string | number;
   color?: string;
   logo_image?: string;
+  car_image?: string;
 }
