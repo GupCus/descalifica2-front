@@ -14,7 +14,6 @@ import {
   Trophy,
   Flag,
   MapPin,
-  FileText,
 } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { getPiloto } from "@/services/piloto.service";
@@ -72,7 +71,7 @@ function getUniqueNames(items: { name?: string }[]): string[] {
 function Registrarse() {
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<"error" | "success" | null>(
-    null
+    null,
   );
   const [submitting, setSubmitting] = useState(false);
   const [openBirthDate, setOpenBirthDate] = useState(false);
@@ -168,7 +167,7 @@ function Registrarse() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
@@ -230,10 +229,10 @@ function Registrarse() {
       }
 
       const birthDateString = `${form.date_of_birth.getUTCFullYear()}-${String(
-        form.date_of_birth.getUTCMonth() + 1
+        form.date_of_birth.getUTCMonth() + 1,
       ).padStart(2, "0")}-${String(form.date_of_birth.getUTCDate()).padStart(
         2,
-        "0"
+        "0",
       )}`;
 
       const formData = new FormData();
@@ -268,15 +267,14 @@ function Registrarse() {
         formData.append("avatar", form.avatar);
       }
 
-      // Enviar datos al backend
       const response = await AuthService.RegisterUser(formData);
 
       setMessageType("success");
       setMessage(
-        response?.message || "¡Usuario creado con éxito! Redirigiendo al login..."
+        response?.message ||
+          "¡Usuario creado con éxito! Redirigiendo al login...",
       );
 
-      // Limpiar formulario
       setForm({
         name: "",
         surname: "",
@@ -294,7 +292,6 @@ function Registrarse() {
       });
       removeAvatar();
 
-      // Redirigir después de 2 segundos al login
       setTimeout(() => {
         navigate("/login");
       }, 2000);
@@ -309,25 +306,23 @@ function Registrarse() {
           err.response?.data?.message ||
           err.message ||
           "No se pudo crear el usuario"
-        }`
+        }`,
       );
     } finally {
       setSubmitting(false);
     }
   };
 
-  // Cálculo de días del mes para el calendario
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
   const firstDayIndex = (new Date(viewYear, viewMonth, 1).getDay() + 6) % 7; // Lunes = 0
 
   const yearsOptions = Array.from(
     { length: currentYear - 1920 + 1 },
-    (_, i) => currentYear - i
+    (_, i) => currentYear - i,
   );
 
   return (
     <div className="relative min-h-screen flex items-center justify-center py-12 px-4">
-      {/* Datalists para sugerencias */}
       <datalist id="pilotos-reg-list">
         {pilotosList.map((p) => (
           <option key={p} value={p} />
@@ -344,7 +339,6 @@ function Registrarse() {
         ))}
       </datalist>
 
-      {/* Imagen de fondo con blur y oscurecimiento */}
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
@@ -355,7 +349,6 @@ function Registrarse() {
         }}
       />
 
-      {/* Tarjeta de Registro */}
       <div className="relative z-10 w-full max-w-xl p-8 md:p-10 bg-gray-950/80 backdrop-blur-md rounded-2xl border border-gray-700/60 shadow-2xl my-6">
         <div className="flex items-center justify-between mb-4">
           <Link
@@ -381,7 +374,6 @@ function Registrarse() {
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Fila 1: Nombre y Apellido */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
@@ -421,7 +413,6 @@ function Registrarse() {
             </div>
           </div>
 
-          {/* Fila 2: Nombre de Usuario y Correo Electrónico */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
@@ -463,7 +454,6 @@ function Registrarse() {
             </div>
           </div>
 
-          {/* Fila 3: Contraseña y Confirmar Contraseña */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label
@@ -508,7 +498,6 @@ function Registrarse() {
             </div>
           </div>
 
-          {/* Fila 4: Fecha de Nacimiento y Telegram */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="relative w-full" ref={datePickerRef}>
               <label
@@ -559,10 +548,8 @@ function Registrarse() {
                 <CalendarIcon className="h-4 w-4 text-muted-foreground opacity-50" />
               </InputGroup>
 
-              {/* Panel de selección de fecha */}
               {openBirthDate && (
                 <div className="absolute top-full left-0 mt-2 z-50 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl w-72 max-w-[calc(100vw-2rem)]">
-                  {/* Encabezado: Selects de Mes y Año con Flechas */}
                   <div className="flex items-center justify-between gap-1 mb-3">
                     <button
                       type="button"
@@ -574,27 +561,33 @@ function Registrarse() {
                     </button>
 
                     <div className="flex items-center gap-1.5 flex-1 justify-center">
-                      {/* Select de Mes */}
                       <select
                         value={viewMonth}
                         onChange={(e) => setViewMonth(Number(e.target.value))}
                         className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-2 py-1 outline-none focus:border-blue-500 cursor-pointer"
                       >
                         {MONTH_NAMES.map((month, idx) => (
-                          <option key={month} value={idx} className="bg-gray-900">
+                          <option
+                            key={month}
+                            value={idx}
+                            className="bg-gray-900"
+                          >
                             {month}
                           </option>
                         ))}
                       </select>
 
-                      {/* Select de Año */}
                       <select
                         value={viewYear}
                         onChange={(e) => setViewYear(Number(e.target.value))}
                         className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-2 py-1 outline-none focus:border-blue-500 cursor-pointer"
                       >
                         {yearsOptions.map((year) => (
-                          <option key={year} value={year} className="bg-gray-900">
+                          <option
+                            key={year}
+                            value={year}
+                            className="bg-gray-900"
+                          >
                             {year}
                           </option>
                         ))}
@@ -604,7 +597,10 @@ function Registrarse() {
                     <button
                       type="button"
                       onClick={handleNextMonth}
-                      disabled={viewYear >= currentYear && viewMonth >= new Date().getMonth()}
+                      disabled={
+                        viewYear >= currentYear &&
+                        viewMonth >= new Date().getMonth()
+                      }
                       className="p-1 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       title="Mes siguiente"
                     >
@@ -612,7 +608,6 @@ function Registrarse() {
                     </button>
                   </div>
 
-                  {/* Nombres de días de la semana */}
                   <div className="grid grid-cols-7 gap-1 text-center mb-1">
                     {WEEKDAY_NAMES.map((d) => (
                       <span
@@ -624,7 +619,6 @@ function Registrarse() {
                     ))}
                   </div>
 
-                  {/* Grilla de días */}
                   <div className="grid grid-cols-7 gap-1">
                     {Array.from({ length: firstDayIndex }).map((_, i) => (
                       <div key={`empty-${i}`} className="h-7 w-7" />
@@ -677,10 +671,8 @@ function Registrarse() {
             </div>
           </div>
 
-          {/* Preferencias de Automovilismo */}
           <div className="border-t border-gray-800/80 pt-4">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase mb-3 tracking-wider flex items-center gap-1.5">
-              <Trophy size={14} className="text-amber-400" />
+            <h3 className="text-xs font-semibold text-gray-400 uppercase mb-3 tracking-wider">
               Preferencias y Favoritos (opcional)
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -746,13 +738,11 @@ function Registrarse() {
             </div>
           </div>
 
-          {/* Biografía */}
           <div className="border-t border-gray-800/80 pt-4">
             <label
               htmlFor="bio"
-              className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5"
+              className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
             >
-              <FileText size={14} className="text-blue-400" />
               Biografía / Sobre Mí (opcional)
             </label>
             <textarea
@@ -765,7 +755,6 @@ function Registrarse() {
             />
           </div>
 
-          {/* Foto de perfil (Dropzone) */}
           <div>
             <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
               Foto de Perfil (opcional)
@@ -822,7 +811,6 @@ function Registrarse() {
             )}
           </div>
 
-          {/* Botones de acción */}
           <div className="flex w-full justify-between pt-4 gap-4">
             <Button
               type="button"

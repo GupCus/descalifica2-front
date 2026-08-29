@@ -1,7 +1,7 @@
 import { Outlet, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { LogOut, Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { useLocation } from "react-router-dom";
 import { Suspense } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -20,6 +20,7 @@ import HeaderSearch from "@/components/HeaderSearch";
 
 function RootLayout() {
   const location = useLocation();
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [user, setUser] = useState<{
     username: string;
     user_type: string;
@@ -78,27 +79,53 @@ function RootLayout() {
           
           {/* MÓVIL: Menú Hamburguesa */}
           <div className="md:hidden flex items-center">
-            <Sheet>
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
               <SheetTrigger asChild>
-                <button className="text-white p-2">
+                <button className="text-white p-2 hover:bg-white/10 rounded-md transition-colors" aria-label="Abrir menú">
                   <Menu size={28} />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="bg-black/60 backdrop-blur-xl border-gray-800 text-white w-64">
-                <div className="flex flex-col gap-6 mt-8">
-                  <Link to="/" className="text-xl font-bold">Inicio</Link>
-                  <Link to="/calendario" className="text-xl font-semibold">Calendario</Link>
+              <SheetContent side="left" className="bg-black/80 backdrop-blur-xl border-gray-800 text-white w-72 sm:w-80 flex flex-col overflow-y-auto">
+                <SheetHeader className="sr-only">
+                  <SheetTitle>Menú de navegación</SheetTitle>
+                  <SheetDescription>Opciones de navegación y buscador</SheetDescription>
+                </SheetHeader>
+
+                <div className="flex flex-col gap-6 mt-6">
+                  {/* Buscador en Menú Mobile */}
+                  <HeaderSearch className="w-full" onSelect={() => setSheetOpen(false)} />
+
+                  <Link to="/" onClick={() => setSheetOpen(false)} className="text-xl font-bold hover:text-gray-300 transition-colors">
+                    Inicio
+                  </Link>
+                  <Link to="/calendario" onClick={() => setSheetOpen(false)} className="text-xl font-semibold hover:text-gray-300 transition-colors">
+                    Calendario
+                  </Link>
                   <div className="flex flex-col gap-3">
                     <span className="text-xl font-semibold opacity-50">Wiki</span>
-                    <Link to="/pilotos" className="ml-4 text-lg">Pilotos</Link>
-                    <Link to="/escuderias" className="ml-4 text-lg">Escuderías</Link>
-                    <Link to="/circuitos" className="ml-4 text-lg">Circuitos</Link>
-                    <Link to="/marcas" className="ml-4 text-lg">Marcas</Link>
-                    <Link to="/temporadas" className="ml-4 text-lg">Temporadas</Link>
+                    <Link to="/pilotos" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                      Pilotos
+                    </Link>
+                    <Link to="/escuderias" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                      Escuderías
+                    </Link>
+                    <Link to="/circuitos" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                      Circuitos
+                    </Link>
+                    <Link to="/marcas" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                      Marcas
+                    </Link>
+                    <Link to="/temporadas" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                      Temporadas
+                    </Link>
                   </div>
-                  <Link to="/dondever" className="text-xl font-semibold">¿Dónde Ver?</Link>
+                  <Link to="/dondever" onClick={() => setSheetOpen(false)} className="text-xl font-semibold hover:text-gray-300 transition-colors">
+                    ¿Dónde Ver?
+                  </Link>
                   <span className="text-xl font-semibold opacity-50 cursor-not-allowed">Foro</span>
-                  <Link to="/about" className="text-xl font-semibold">Sobre Nosotros</Link>
+                  <Link to="/about" onClick={() => setSheetOpen(false)} className="text-xl font-semibold hover:text-gray-300 transition-colors">
+                    Sobre Nosotros
+                  </Link>
                 </div>
               </SheetContent>
             </Sheet>
@@ -164,7 +191,7 @@ function RootLayout() {
             </NavigationMenuList>
           </NavigationMenu>
 
-          <HeaderSearch />
+          <HeaderSearch className="hidden md:block w-60 lg:w-72" />
 
           {/* Login / Usuario (Visible en ambos) */}
           <div className="flex items-center gap-3 md:mr-6">

@@ -5,6 +5,7 @@ import { SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { getPiloto } from "@/services/piloto.service.ts";
 import { getEscuderia } from "@/services/escuderia.service.ts";
 import { getCircuito } from "@/services/circuito.service.ts";
@@ -32,7 +33,12 @@ const normalize = (value: string) =>
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "");
 
-function HeaderSearch() {
+interface HeaderSearchProps {
+  className?: string;
+  onSelect?: () => void;
+}
+
+function HeaderSearch({ className, onSelect }: HeaderSearchProps) {
   const [items, setItems] = useState<SearchItem[]>([]);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -104,6 +110,7 @@ function HeaderSearch() {
     setOpen(false);
     setQuery("");
     navigate(`${item.path}/${item.id}`);
+    onSelect?.();
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -116,8 +123,8 @@ function HeaderSearch() {
   };
 
   return (
-    <div ref={containerRef} className="relative hidden md:block">
-      <ButtonGroup className="w-60 lg:w-72">
+    <div ref={containerRef} className={cn("relative", className)}>
+      <ButtonGroup className="w-full">
         <Input
           value={query}
           onChange={(event) => {
@@ -134,23 +141,23 @@ function HeaderSearch() {
           variant="outline"
           size="icon"
           aria-label="Buscar"
-          className="border-gray-600/70 bg-transparent text-gray-300 hover:bg-white/10 hover:text-white"
+          className="border-gray-600/70 bg-transparent text-gray-300 hover:bg-white/10 hover:text-white shrink-0"
         >
           <SearchIcon />
         </Button>
       </ButtonGroup>
 
       {open && query.trim().length > 0 && (
-        <div className="absolute top-full right-0 left-0 mt-2 overflow-hidden rounded-md border border-gray-800 bg-black/90 shadow-xl backdrop-blur-xl">
+        <div className="absolute top-full right-0 left-0 mt-2 z-50 max-h-60 overflow-y-auto overflow-x-hidden rounded-md border border-gray-800 bg-black/95 shadow-xl backdrop-blur-xl">
           {results.length === 0 ? (
             <p className="px-3 py-3 text-sm text-gray-400">Sin resultados</p>
           ) : (
-            <ul>
+            <ul className="py-1">
               {results.map((item) => (
                 <li key={`${item.path}-${item.id}`}>
                   <button
                     onClick={() => goTo(item)}
-                    className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-gray-200 hover:bg-white/10"
+                    className="flex w-full items-center justify-between px-3 py-2 text-left text-sm text-gray-200 hover:bg-white/10 transition-colors"
                   >
                     <span className="truncate">{item.name}</span>
                     <span className="ml-3 shrink-0 text-xs text-gray-500">
@@ -167,4 +174,5 @@ function HeaderSearch() {
   );
 }
 
+export { HeaderSearch };
 export default HeaderSearch;
