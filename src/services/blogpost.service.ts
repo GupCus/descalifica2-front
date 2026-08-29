@@ -51,3 +51,10 @@ export async function postBlogPostFormData(
   const response = await client.post('/', formData);
   return response.data.data;
 }
+
+export async function getSuggestedBlogPosts(
+  userId: number,
+): Promise<BlogPost[]> {
+  const response = await client.get('/suggested/' + userId.toString());
+  return response.data.data ?? [];
+}
