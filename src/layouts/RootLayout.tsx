@@ -13,25 +13,35 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import logoDescalifica2 from "../assets/descalifica2logo.png";
 import { AuthService } from "@/services/auth.service.ts";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 
 function RootLayout() {
   const location = useLocation();
   const [user, setUser] = useState<{
     username: string;
     user_type: string;
+    avatar?: string;
   } | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
   const loadUser = async () => {
     try {
       const currentUser = await AuthService.getCurrentUser();
       setUser(currentUser);
+      
+      if (currentUser && currentUser.avatar) {
+        setAvatarUrl(getAssetUrl(currentUser.avatar));
+      } else {
+        setAvatarUrl("");
+      }
     } catch (error) {
       console.error("Error loading user:", error);
       setUser(null);
+      setAvatarUrl("");
     } finally {
       setLoading(false);
     }
@@ -70,11 +80,10 @@ function RootLayout() {
   return (
     <>
       <header className="sticky top-0 z-50">
-        <div 
+        <div
           className="flex justify-between items-center relative w-full py-2 md:pt-0.5 md:pb-0.5 px-4"
           style={{ background: "var(--fondodescalifica2)" }}
         >
-          
           {/* MÓVIL: Menú Hamburguesa */}
           <div className="md:hidden flex items-center">
             <Sheet>
@@ -83,31 +92,59 @@ function RootLayout() {
                   <Menu size={28} />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="bg-black/60 backdrop-blur-xl border-gray-800 text-white w-64">
+              <SheetContent
+                side="left"
+                className="bg-black/60 backdrop-blur-xl border-gray-800 text-white w-64"
+              >
                 <div className="flex flex-col gap-6 mt-8">
-                  <Link to="/" className="text-xl font-bold">Inicio</Link>
-                  <Link to="/calendario" className="text-xl font-semibold">Calendario</Link>
+                  <Link to="/" className="text-xl font-bold">
+                    Inicio
+                  </Link>
+                  <Link to="/calendario" className="text-xl font-semibold">
+                    Calendario
+                  </Link>
                   <div className="flex flex-col gap-3">
-                    <span className="text-xl font-semibold opacity-50">Wiki</span>
-                    <Link to="/pilotos" className="ml-4 text-lg">Pilotos</Link>
-                    <Link to="/escuderias" className="ml-4 text-lg">Escuderías</Link>
-                    <Link to="/circuitos" className="ml-4 text-lg">Circuitos</Link>
-                    <Link to="/marcas" className="ml-4 text-lg">Marcas</Link>
-                    <Link to="/temporadas" className="ml-4 text-lg">Temporadas</Link>
+                    <span className="text-xl font-semibold opacity-50">
+                      Wiki
+                    </span>
+                    <Link to="/pilotos" className="ml-4 text-lg">
+                      Pilotos
+                    </Link>
+                    <Link to="/escuderias" className="ml-4 text-lg">
+                      Escuderías
+                    </Link>
+                    <Link to="/circuitos" className="ml-4 text-lg">
+                      Circuitos
+                    </Link>
+                    <Link to="/marcas" className="ml-4 text-lg">
+                      Marcas
+                    </Link>
+                    <Link to="/temporadas" className="ml-4 text-lg">
+                      Temporadas
+                    </Link>
                   </div>
-                  <Link to="/dondever" className="text-xl font-semibold">¿Dónde Ver?</Link>
-                  <span className="text-xl font-semibold opacity-50 cursor-not-allowed">Foro</span>
-                  <Link to="/about" className="text-xl font-semibold">Sobre Nosotros</Link>
+                  <Link to="/dondever" className="text-xl font-semibold">
+                    ¿Dónde Ver?
+                  </Link>
+                  <span className="text-xl font-semibold opacity-50 cursor-not-allowed">
+                    Foro
+                  </span>
+                  <Link to="/about" className="text-xl font-semibold">
+                    Sobre Nosotros
+                  </Link>
                 </div>
               </SheetContent>
             </Sheet>
-
           </div>
 
           {/* MÓVIL: Logo Centrado */}
           <div className="md:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             <Link to="/">
-              <img src={logoDescalifica2} alt="Descalifica2" className="h-10 w-auto object-cover" />
+              <img
+                src={logoDescalifica2}
+                alt="Descalifica2"
+                className="h-10 w-auto object-cover"
+              />
             </Link>
           </div>
 
@@ -125,7 +162,10 @@ function RootLayout() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink href="/calendario" className="font-semibold">
+                <NavigationMenuLink
+                  href="/calendario"
+                  className="font-semibold"
+                >
                   Calendario
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -135,11 +175,19 @@ function RootLayout() {
                   Wiki
                 </NavigationMenuTrigger>
                 <NavigationMenuContent className="z-50">
-                  <NavigationMenuLink href="/pilotos">Pilotos</NavigationMenuLink>
-                  <NavigationMenuLink href="/escuderias">Escuderías</NavigationMenuLink>
-                  <NavigationMenuLink href="/circuitos">Circuitos</NavigationMenuLink>
+                  <NavigationMenuLink href="/pilotos">
+                    Pilotos
+                  </NavigationMenuLink>
+                  <NavigationMenuLink href="/escuderias">
+                    Escuderías
+                  </NavigationMenuLink>
+                  <NavigationMenuLink href="/circuitos">
+                    Circuitos
+                  </NavigationMenuLink>
                   <NavigationMenuLink href="/marcas">Marcas</NavigationMenuLink>
-                  <NavigationMenuLink href="/temporadas">Temporadas</NavigationMenuLink>
+                  <NavigationMenuLink href="/temporadas">
+                    Temporadas
+                  </NavigationMenuLink>
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
@@ -174,7 +222,8 @@ function RootLayout() {
                 </span>
                 <Link to="/menuadmin">
                   <Avatar className="rounded-3xl border cursor-pointer hover:ring-2 hover:ring-accent transition-all">
-                    <AvatarFallback>{user.username}</AvatarFallback>
+                    {avatarUrl && <AvatarImage src={avatarUrl} alt={user.username} />}
+                    <AvatarFallback>{user.username.substring(0, 2).toUpperCase()}</AvatarFallback>
                   </Avatar>
                 </Link>
                 <button
@@ -205,7 +254,13 @@ function RootLayout() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <Suspense fallback={<div className="flex h-[calc(100vh-200px)] items-center justify-center text-xl font-semibold">Cargando...</div>}>
+            <Suspense
+              fallback={
+                <div className="flex h-[calc(100vh-200px)] items-center justify-center text-xl font-semibold">
+                  Cargando...
+                </div>
+              }
+            >
               <Outlet />
             </Suspense>
           </motion.div>

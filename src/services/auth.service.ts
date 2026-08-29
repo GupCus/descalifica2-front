@@ -21,6 +21,7 @@ export interface VerifyTokenResponse {
     email: string;
     username: string;
     user_type: string;
+    avatar?: string;
   };
 }
 

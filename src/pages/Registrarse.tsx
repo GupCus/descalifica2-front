@@ -27,7 +27,7 @@ type FormState = {
 function Registrarse() {
   const [message, setMessage] = useState<string | null>(null);
   const [messageType, setMessageType] = useState<"error" | "success" | null>(
-    null
+    null,
   );
   const [submitting, setSubmitting] = useState(false);
   const [openBirthDate, setOpenBirthDate] = React.useState(false);
@@ -73,7 +73,7 @@ function Registrarse() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
@@ -129,7 +129,7 @@ function Registrarse() {
 
       setMessageType("success");
       setMessage(
-        response?.message || "¡Usuario creado con éxito! Redirigiendo..."
+        response?.message || "¡Usuario creado con éxito! Redirigiendo...",
       );
 
       // Limpiar formulario
@@ -158,7 +158,7 @@ function Registrarse() {
           err.response?.data?.message ||
           err.message ||
           "No se pudo crear el usuario"
-        }`
+        }`,
       );
     } finally {
       setSubmitting(false);
