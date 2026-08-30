@@ -2,6 +2,11 @@ import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import RootLayout from "./layouts/RootLayout";
 import RutaProtegidaAdmin from "./shared/RutaProtegidaAdmin.tsx";
+import Foro from './pages/Foro.tsx';
+import DetallePost from './pages/blogpost/DetallePost.tsx';
+import NuevoBlogPost from './pages/blogpost/NuevoBlogPost.tsx';
+import RutaProtegida from "./shared/RutaProtegida.tsx";
+
 
 const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About"));
@@ -32,6 +37,7 @@ const Registrarse = lazy(() => import("./pages/Registrarse.tsx"));
 const Login = lazy(() => import("./pages/Login.tsx"));
 const AdminUsuarios = lazy(() => import("./pages/admin/AdminUsuarios.tsx"));
 
+
 function App() {
   return (
     <Routes>
@@ -46,8 +52,17 @@ function App() {
         <Route path="circuitos" element={<ListadoCircuitos />} />
         <Route path="temporadas" element={<ListadoTemporadas />} />
         <Route path="dondever" element={<DondeVer />} />
+        <Route path="foro" element={<Foro />} />
         <Route path="registrarse" element={<Registrarse />} />
         <Route path="login" element={<Login />} />
+        <Route
+          path="blogpost/nuevo"
+          element={
+            <RutaProtegida>
+              <NuevoBlogPost />
+            </RutaProtegida>
+          }
+        />
 
         {/* Rutas de detalle */}
         <Route path="escuderia/:id" element={<DetalleEscuderia />} />
@@ -55,6 +70,7 @@ function App() {
         <Route path="piloto/:id" element={<DetallePiloto />} />
         <Route path="temporada/:id" element={<DetalleTemporada />} />
         <Route path="marca/:id" element={<DetalleMarca />} />
+        <Route path="foro/:id" element={<DetallePost />} />
 
         {/* Rutas de administrador protegidas */}
         <Route
@@ -65,6 +81,17 @@ function App() {
             </RutaProtegidaAdmin>
           }
         >
+          {/* Rutas para Usuarios y/o Admins*/}
+
+          <Route
+            path="nuevapublicacion"
+            element={
+              <RutaProtegida>
+                <NuevoBlogPost />
+              </RutaProtegida>
+            }
+          />
+
           <Route path="nuevopiloto" element={<NuevoPiloto />} />
           <Route path="nuevaescuderia" element={<NuevaEscuderia />} />
           <Route path="nuevocircuito" element={<NuevoCircuito />} />

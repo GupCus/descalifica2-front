@@ -12,7 +12,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
+} from '@/components/ui/navigation-menu';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import logoDescalifica2 from "../assets/descalifica2logo.png";
 import { AuthService } from "@/services/auth.service.ts";
@@ -39,7 +39,7 @@ function RootLayout() {
         setAvatarUrl("");
       }
     } catch (error) {
-      console.error("Error loading user:", error);
+      console.error('Error loading user:', error);
       setUser(null);
       setAvatarUrl("");
     } finally {
@@ -54,21 +54,21 @@ function RootLayout() {
       loadUser();
     };
 
-    window.addEventListener("userLoggedIn", handleLoginEvent);
+    window.addEventListener('userLoggedIn', handleLoginEvent);
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "token" && !e.newValue) {
+      if (e.key === 'token' && !e.newValue) {
         setUser(null);
-      } else if (e.key === "token" && e.newValue) {
+      } else if (e.key === 'token' && e.newValue) {
         loadUser();
       }
     };
 
-    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
 
     return () => {
-      window.removeEventListener("userLoggedIn", handleLoginEvent);
-      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener('userLoggedIn', handleLoginEvent);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 
@@ -198,7 +198,10 @@ function RootLayout() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink className="font-semibold opacity-50 cursor-not-allowed pointer-events-none">
+                <NavigationMenuLink
+                  href="/foro"
+                  className="font-semibold"
+                >
                   Foro
                 </NavigationMenuLink>
               </NavigationMenuItem>

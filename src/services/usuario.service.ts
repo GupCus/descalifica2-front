@@ -9,6 +9,11 @@ const client = axios.create({
 
 //creo lo necesario para testear el registro de un usuario, hay que agregar las demás funciones.
 
+export async function getUsuarios(): Promise<Usuario[]> {
+  const response = await client.get("/");
+  return response.data.data;
+}
+
 export async function postUsuario(data: NewUsuario): Promise<Usuario> {
   const response = await client.post("/", data);
   return response.data.data;

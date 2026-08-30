@@ -4,6 +4,7 @@ import { Temporada } from "./temporada.entity.js";
 import { Piloto } from "./piloto.entity.js";
 
 export class Categoria extends baseEntity {
+  name!: string;
   description?: string;
   drivers?: Piloto[];
   teams?: Escuderia[];
