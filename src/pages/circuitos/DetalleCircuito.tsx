@@ -8,46 +8,6 @@ import {
 import { AuthService } from "@/services/auth.service.ts";
 import { getAssetUrl } from "@/utils/asset.util.ts";
 
-const getCountryFlag = (country: string): string => {
-  if (!country) return "";
-
-  // Mapa de casos especiales (opcional, para nacionalidades con nombres diferentes al archivo)
-  const specialCases: Record<string, string> = {
-    "Reino Unido": "UK",
-    "Estados Unidos": "USA",
-    "Países Bajos": "Paises_Bajos",
-    "Abu Dhabi": "EAU",
-    Baréin: "Bahrain",
-    Barein: "Bahrain",
-    Azerbaiyán: "Azerbaiyan",
-    España: "Espana",
-  };
-
-  // Si hay un caso especial, usarlo
-  if (specialCases[country]) {
-    return new URL(
-      `../../assets/banderas-paises/${specialCases[country]}.png`,
-      import.meta.url,
-    ).href;
-  }
-
-  // Normalizar el nombre del país para que coincida con los archivos
-  const normalizedName = country
-    .normalize("NFD") // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
-    .replace(/\s+/g, "_") // Reemplaza espacios con guiones bajos
-    .replace(/[^a-zA-Z0-9_]/g, ""); // Elimina caracteres especiales
-
-  // Construye la ruta automáticamente
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url,
-    ).href;
-  } catch {
-    return "";
-  }
-};
 
 function DetalleCircuito() {
   const { id } = useParams<{ id: string }>();
@@ -144,7 +104,7 @@ function DetalleCircuito() {
     );
   }
 
-  const flagUrl = getCountryFlag(circuito.country);
+  const flagUrl = new URL(`../../assets/banderas-paises/${circuito.country}.png`, import.meta.url).href
 
   return (
     <div className="relative min-h-screen flex items-start justify-center px-4 py-8">

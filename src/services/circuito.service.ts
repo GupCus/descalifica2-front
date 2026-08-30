@@ -1,6 +1,5 @@
 import { Circuito } from "@/entities/circuito.entity.ts";
 import axios from "axios";
-import { API_BASE_URL } from "./httpClient.ts";
 
 const URL_API = import.meta.env.VITE_API_URL;
 

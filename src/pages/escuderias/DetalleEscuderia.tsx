@@ -7,6 +7,7 @@ import {
   deleteEscuderia,
   getOneEscuderia,
   uploadEscuderiaImage,
+  uploadEscuderiaCarImage,
 } from "@/services/escuderia.service.ts";
 import { AuthService } from "@/services/auth.service.ts";
 import { getAssetUrl } from "@/utils/asset.util.ts";
@@ -19,6 +20,8 @@ function DetalleEscuderia() {
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [selectedCarFile, setSelectedCarFile] = useState<File | null>(null);
+  const [uploadingCarImage, setUploadingCarImage] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -28,6 +31,12 @@ function DetalleEscuderia() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleCarFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setSelectedCarFile(e.target.files[0]);
     }
   };
 
@@ -43,6 +52,21 @@ function DetalleEscuderia() {
     } finally {
       setUploadingImage(false);
       setSelectedFile(null);
+    }
+  };
+
+  const handleUploadCarImage = async () => {
+    if (!selectedCarFile || !escuderia || !escuderia.id) return;
+    setUploadingCarImage(true);
+    try {
+      await uploadEscuderiaCarImage(escuderia.id, selectedCarFile);
+      alert("Imagen del monoplaza actualizada correctamente");
+      window.location.reload();
+    } catch (error) {
+      alert("Error al actualizar la imagen del monoplaza");
+    } finally {
+      setUploadingCarImage(false);
+      setSelectedCarFile(null);
     }
   };
 
@@ -132,7 +156,10 @@ function DetalleEscuderia() {
             </Button>
           </div>
 
-          <div className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-red-700/40">
+          <div 
+            className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border relative overflow-hidden"
+          >
+            <div className="relative z-10">
             <h1
               className="text-white-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase mb-8"
               style={{ fontFamily: "'Oswald', sans-serif" }}
@@ -202,6 +229,17 @@ function DetalleEscuderia() {
               )}
             </div>
 
+            {escuderia.car_image && (
+              <div className="mt-8 flex justify-center">
+                <img
+                  src={getAssetUrl(escuderia.car_image)}
+                  alt="Monoplaza"
+                  className="max-w-full h-auto rounded-lg shadow-2xl border border-gray-700/50"
+                  style={{ maxHeight: '400px' }}
+                />
+              </div>
+            )}
+
             {isAdmin && (
               <div className="mt-10 bg-gray-900/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50">
                 <h3 className="text-xl font-bold mb-4 text-white">
@@ -227,12 +265,37 @@ function DetalleEscuderia() {
                     {uploadingImage ? "Subiendo..." : "Subir Imagen"}
                   </button>
                 </div>
+
+                <h3 className="text-xl font-bold mt-8 mb-4 text-white">
+                  Actualizar Imagen del Monoplaza
+                </h3>
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCarFileChange}
+                    className="block w-full sm:w-auto text-sm text-gray-300
+                      file:mr-4 file:py-2 file:px-4
+                      file:rounded-md file:border-0
+                      file:text-sm file:font-semibold
+                      file:bg-red-700 file:text-white
+                      hover:file:bg-red-800"
+                  />
+                  <button
+                    onClick={handleUploadCarImage}
+                    disabled={!selectedCarFile || uploadingCarImage}
+                    className="px-6 py-2 bg-red-700 hover:bg-red-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
+                  >
+                    {uploadingCarImage ? "Subiendo..." : "Subir Monoplaza"}
+                  </button>
+                </div>
               </div>
             )}
           </div>
         </div>
       </div>
     </div>
+  </div>
   );
 }
 
