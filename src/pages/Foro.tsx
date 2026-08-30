@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, User } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { ChromaGrid } from '@/components/ui/Chroma-grid';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AuthService, VerifyTokenResponse } from '@/services/auth.service';
@@ -207,6 +209,14 @@ function Foro() {
                   <div className="flex items-center gap-1.5 mt-2 text-sm text-gray-400">
                     <User className="h-3.5 w-3.5" />
                     <span>{usernameDe(getAuthorId(post))}</span>
+                    {post.created_at && (
+                      <span className="text-xs text-gray-500 ml-1">
+                        · {formatDistanceToNow(new Date(post.created_at), {
+                          addSuffix: true,
+                          locale: es,
+                        })}
+                      </span>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="px-6 pb-5">

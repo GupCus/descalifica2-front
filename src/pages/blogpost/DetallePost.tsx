@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, User } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -144,6 +146,14 @@ function DetallePost() {
           <div className="flex items-center gap-2 mb-4 text-gray-400">
             <User className="h-4 w-4" />
             <span className="text-sm">Publicado por <span className="font-medium text-gray-300">{usernameDe(getAuthorId(post))}</span></span>
+            {post.created_at && (
+              <span className="text-xs text-gray-500">
+                · {formatDistanceToNow(new Date(post.created_at), {
+                  addSuffix: true,
+                  locale: es,
+                })}
+              </span>
+            )}
           </div>
 
           {post.cover_image && (
