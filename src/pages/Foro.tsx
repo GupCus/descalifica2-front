@@ -26,7 +26,12 @@ function Foro() {
   useEffect(() => {
     getBlogPost()
       .then(async (data) => {
-        setPosts(data ?? []);
+        const sorted = [...(data ?? [])].sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() -
+            new Date(a.created_at).getTime(),
+        );
+        setPosts(sorted);
         const counts: Record<number, number> = {};
         await Promise.all(
           data.map(async (post) => {
