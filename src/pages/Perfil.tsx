@@ -1,14 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import {
-  Shield,
-  Pencil,
-  ArrowLeft,
-  Trophy,
-  Flag,
-  MapPin,
-} from "lucide-react";
+import { Shield, Pencil, ArrowLeft, Trophy, Flag, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { AuthService } from "@/services/auth.service.ts";
 import { apiClient } from "@/services/httpClient";
 import fondoPerfil from "../assets/garageRB.jpg";
@@ -99,12 +93,10 @@ function Perfil() {
 
   const resolvedAvatar = profile.avatar_url ?? null;
   const isAdmin = userRole === "admin" || profile.user_type === "admin";
-  const fullName = [profile.name, profile.surname].filter(Boolean).join(" ");
   const formattedBirthDate = formatDate(profile.date_of_birth);
 
   return (
-    <div className="relative min-h-screen py-10 flex flex-col justify-start">
-      {/* Fondo de pantalla */}
+    <div className="relative min-h-screen py-4 sm:py-8 flex flex-col justify-start">
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
@@ -115,42 +107,48 @@ function Perfil() {
         }}
       />
 
-      <div className="relative z-10 max-w-2xl w-full mx-auto px-4">
-        {/* Barra superior de navegación */}
-        <div className="flex items-center justify-between mb-8">
+      <div className="relative z-10 max-w-xl w-full mx-auto px-3 sm:px-4">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition-all bg-gray-900/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700/60 hover:border-gray-500"
+            className="inline-flex items-center gap-1.5 text-gray-300 hover:text-white transition-all bg-gray-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-gray-700/60 hover:border-gray-500 text-xs sm:text-sm"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={14} />
             Volver al inicio
           </Link>
           {isAdmin && (
             <Link
               to="/menuadmin"
-              className="inline-flex items-center gap-2 text-red-400 hover:text-red-300 transition-all bg-red-950/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-red-800/60 hover:border-red-600 text-sm"
+              className="inline-flex items-center gap-1.5 text-red-400 hover:text-red-300 transition-all bg-red-950/50 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-red-800/60 hover:border-red-600 text-xs sm:text-sm"
             >
-              <Shield size={16} />
-              Panel de Admin
+              <Shield size={14} />
+              Panel Admin
             </Link>
           )}
         </div>
 
-        {/* Tarjeta de detalle de usuario */}
-        <div className="bg-gray-950/75 backdrop-blur-md rounded-2xl p-8 border border-gray-700/60 shadow-2xl">
-          <h1
-            className="text-gray-200 mb-8 text-3xl md:text-4xl font-bold tracking-wider text-center uppercase"
-            style={{
-              fontFamily: "'Orbitron', 'Rajdhani', sans-serif",
-              letterSpacing: "0.1em",
-            }}
-          >
-            Mi Perfil
-          </h1>
+        <div className="bg-gray-950/80 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700/60 shadow-2xl">
+          <div className="flex items-center justify-between border-b border-gray-700/60 pb-3 mb-3.5">
+            <h1
+              className="text-gray-200 text-lg sm:text-2xl font-bold tracking-wider uppercase"
+              style={{
+                fontFamily: "'Orbitron', 'Rajdhani', sans-serif",
+                letterSpacing: "0.08em",
+              }}
+            >
+              Mi Perfil
+            </h1>
+            <Button
+              onClick={() => navigate("/perfil/editar")}
+              className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-1.5 px-3 py-1.5 h-8 rounded-lg text-xs font-medium cursor-pointer shadow-md"
+            >
+              <Pencil size={13} />
+              <span>Editar</span>
+            </Button>
+          </div>
 
-          {/* Encabezado con Avatar, Nombre y Rol */}
-          <div className="flex flex-col items-center mb-8">
-            <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500/60 bg-gray-900 flex items-center justify-center shadow-xl shadow-blue-950/40">
+          <div className="flex flex-col items-center mb-4">
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-blue-500/60 bg-gray-900 flex items-center justify-center shadow-lg shadow-blue-950/40">
               {resolvedAvatar ? (
                 <img
                   src={resolvedAvatar}
@@ -158,7 +156,7 @@ function Perfil() {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-4xl text-gray-400 font-bold">
+                <span className="text-2xl text-gray-400 font-bold">
                   {(profile.name || profile.username || "U")
                     .charAt(0)
                     .toUpperCase()}
@@ -166,69 +164,74 @@ function Perfil() {
               )}
             </div>
 
-            <h2 className="text-2xl font-bold text-white mt-4 text-center">
-              {fullName || profile.username}
-            </h2>
-            <p className="text-blue-400 text-sm font-medium mt-0.5">
+            <h2 className="text-base sm:text-lg font-bold text-white mt-2 text-center">
               @{profile.username}
-            </p>
+            </h2>
+            {isAdmin && (
+              <Badge
+                variant="destructive"
+                className="mt-1 text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 bg-red-500/20 text-red-400 border border-red-500/30"
+              >
+                Admin
+              </Badge>
+            )}
           </div>
 
-          {/* Secciones de Detalles */}
-          <div className="space-y-6 border-t border-b border-gray-700/60 py-6 mb-8">
-            {/* Sección: Información Personal */}
+          <div className="space-y-3.5 border-t border-gray-700/60 pt-3.5">
             <div>
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+              <h3 className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
                 Información Personal
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3.5 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40">
-                  <span className="text-[11px] text-gray-400 uppercase font-semibold tracking-wider block">
+              <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                <div className="p-2 sm:p-2.5 bg-gray-900/60 backdrop-blur-sm rounded-lg border border-gray-700/40">
+                  <span className="text-[9px] sm:text-[10px] text-gray-400 uppercase font-semibold tracking-wider block">
                     Nombre
                   </span>
-                  <span className="text-sm text-gray-200 font-medium truncate block mt-0.5">
+                  <span className="text-xs sm:text-sm text-gray-200 font-medium truncate block mt-0.5">
                     {profile.name || "—"}
                   </span>
                 </div>
 
-                <div className="p-3.5 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40">
-                  <span className="text-[11px] text-gray-400 uppercase font-semibold tracking-wider block">
+                <div className="p-2 sm:p-2.5 bg-gray-900/60 backdrop-blur-sm rounded-lg border border-gray-700/40">
+                  <span className="text-[9px] sm:text-[10px] text-gray-400 uppercase font-semibold tracking-wider block">
                     Apellido
                   </span>
-                  <span className="text-sm text-gray-200 font-medium truncate block mt-0.5">
+                  <span className="text-xs sm:text-sm text-gray-200 font-medium truncate block mt-0.5">
                     {profile.surname || "—"}
                   </span>
                 </div>
 
-                <div className="p-3.5 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40 sm:col-span-2">
-                  <span className="text-[11px] text-gray-400 uppercase font-semibold tracking-wider block">
+                <div className="p-2 sm:p-2.5 bg-gray-900/60 backdrop-blur-sm rounded-lg border border-gray-700/40 col-span-2">
+                  <span className="text-[9px] sm:text-[10px] text-gray-400 uppercase font-semibold tracking-wider block">
                     Correo Electrónico
                   </span>
-                  <span className="text-sm text-gray-200 font-medium truncate block mt-0.5">
+                  <span className="text-xs sm:text-sm text-gray-200 font-medium truncate block mt-0.5">
                     {profile.email}
                   </span>
                 </div>
 
-                <div className="p-3.5 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40">
-                  <span className="text-[11px] text-gray-400 uppercase font-semibold tracking-wider block">
-                    Fecha de Nacimiento
+                <div className="p-2 sm:p-2.5 bg-gray-900/60 backdrop-blur-sm rounded-lg border border-gray-700/40">
+                  <span className="text-[9px] sm:text-[10px] text-gray-400 uppercase font-semibold tracking-wider block">
+                    Nacimiento
                   </span>
-                  <span className="text-sm text-gray-200 font-medium truncate block mt-0.5">
+                  <span className="text-xs sm:text-sm text-gray-200 font-medium truncate block mt-0.5">
                     {formattedBirthDate || (
-                      <span className="text-gray-500 italic text-xs">No especificada</span>
+                      <span className="text-gray-500 italic text-[11px]">
+                        No especificada
+                      </span>
                     )}
                   </span>
                 </div>
 
-                <div className="p-3.5 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40">
-                  <span className="text-[11px] text-gray-400 uppercase font-semibold tracking-wider block">
+                <div className="p-2 sm:p-2.5 bg-gray-900/60 backdrop-blur-sm rounded-lg border border-gray-700/40">
+                  <span className="text-[9px] sm:text-[10px] text-gray-400 uppercase font-semibold tracking-wider block">
                     Telegram
                   </span>
-                  <span className="text-sm text-gray-200 font-medium truncate block mt-0.5">
+                  <span className="text-xs sm:text-sm text-gray-200 font-medium truncate block mt-0.5">
                     {profile.telegram_username ? (
                       `@${profile.telegram_username}`
                     ) : (
-                      <span className="text-gray-500 italic text-xs">
+                      <span className="text-gray-500 italic text-[11px]">
                         No configurado
                       </span>
                     )}
@@ -237,95 +240,79 @@ function Perfil() {
               </div>
             </div>
 
-            {/* Sección: Favoritos y Preferencias */}
             <div>
-              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+              <h3 className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
                 Preferencias de Automovilismo
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {/* Piloto Favorito */}
-                <div className="p-4 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40 flex flex-col justify-between hover:border-amber-500/30 transition-colors">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-1.5 bg-amber-500/10 text-amber-400 rounded-lg shrink-0">
-                      <Trophy size={15} />
+              <div className="space-y-1.5">
+                <div className="p-2 sm:p-2.5 bg-gray-900/60 backdrop-blur-sm rounded-lg border border-gray-700/40 flex items-center justify-between gap-2 hover:border-amber-500/30 transition-colors">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="p-1 bg-amber-500/10 text-amber-400 rounded-md">
+                      <Trophy size={13} />
                     </div>
-                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                    <span className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
                       Piloto Favorito
                     </span>
                   </div>
-                  <p className="text-sm font-semibold text-gray-200 mt-1">
+                  <span className="text-xs sm:text-sm font-semibold text-gray-200 text-right truncate">
                     {profile.fav_driver || (
                       <span className="text-gray-500 font-normal italic text-xs">
                         No especificado
                       </span>
                     )}
-                  </p>
+                  </span>
                 </div>
 
-                {/* Escudería Favorita */}
-                <div className="p-4 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40 flex flex-col justify-between hover:border-red-500/30 transition-colors">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-1.5 bg-red-500/10 text-red-400 rounded-lg shrink-0">
-                      <Flag size={15} />
+                <div className="p-2 sm:p-2.5 bg-gray-900/60 backdrop-blur-sm rounded-lg border border-gray-700/40 flex items-center justify-between gap-2 hover:border-red-500/30 transition-colors">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="p-1 bg-red-500/10 text-red-400 rounded-md">
+                      <Flag size={13} />
                     </div>
-                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                    <span className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
                       Escudería Favorita
                     </span>
                   </div>
-                  <p className="text-sm font-semibold text-gray-200 mt-1">
+                  <span className="text-xs sm:text-sm font-semibold text-gray-200 text-right truncate">
                     {profile.fav_team || (
                       <span className="text-gray-500 font-normal italic text-xs">
                         No especificada
                       </span>
                     )}
-                  </p>
+                  </span>
                 </div>
 
-                {/* Circuito Favorito */}
-                <div className="p-4 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40 flex flex-col justify-between hover:border-emerald-500/30 transition-colors">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg shrink-0">
-                      <MapPin size={15} />
+                <div className="p-2 sm:p-2.5 bg-gray-900/60 backdrop-blur-sm rounded-lg border border-gray-700/40 flex items-center justify-between gap-2 hover:border-emerald-500/30 transition-colors">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="p-1 bg-emerald-500/10 text-emerald-400 rounded-md">
+                      <MapPin size={13} />
                     </div>
-                    <span className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
+                    <span className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
                       Circuito Favorito
                     </span>
                   </div>
-                  <p className="text-sm font-semibold text-gray-200 mt-1">
+                  <span className="text-xs sm:text-sm font-semibold text-gray-200 text-right truncate">
                     {profile.fav_circuit || (
                       <span className="text-gray-500 font-normal italic text-xs">
                         No especificado
                       </span>
                     )}
-                  </p>
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* Sección: Biografía */}
             {profile.bio && (
               <div>
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                  Biografía / Sobre mí
+                <h3 className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+                  Sobre mí
                 </h3>
-                <div className="p-4 bg-gray-900/60 backdrop-blur-sm rounded-xl border border-gray-700/40">
-                  <p className="text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">
+                <div className="p-2 sm:p-2.5 bg-gray-900/60 backdrop-blur-sm rounded-lg border border-gray-700/40">
+                  <p className="text-xs sm:text-sm text-gray-200 leading-relaxed whitespace-pre-wrap">
                     {profile.bio}
                   </p>
                 </div>
               </div>
             )}
-          </div>
-
-          {/* Botones de acción */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button
-              onClick={() => navigate("/perfil/editar")}
-              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 px-8 py-2.5 rounded-lg font-medium cursor-pointer shadow-lg shadow-blue-900/20"
-            >
-              <Pencil size={18} />
-              Editar Perfil
-            </Button>
           </div>
         </div>
       </div>

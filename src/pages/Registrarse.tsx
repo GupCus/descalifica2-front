@@ -1,6 +1,8 @@
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group.tsx";
 import { Button } from "@/components/ui/button.tsx";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { Label } from "@/components/ui/label.tsx";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover.tsx";
+import { useState, useEffect, useCallback } from "react";
 import { AuthService } from "@/services/auth.service.ts";
 import { useNavigate, Link } from "react-router-dom";
 import * as React from "react";
@@ -104,8 +106,6 @@ function Registrarse() {
   const [viewYear, setViewYear] = useState<number>(2000);
   const [viewMonth, setViewMonth] = useState<number>(0);
 
-  const datePickerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     getPiloto()
       .then((res) => setPilotosList(getUniqueNames(res)))
@@ -117,24 +117,6 @@ function Registrarse() {
       .then((res) => setCircuitosList(getUniqueNames(res)))
       .catch(() => {});
   }, []);
-
-  // Cerrar picker al hacer clic afuera
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        datePickerRef.current &&
-        !datePickerRef.current.contains(event.target as Node)
-      ) {
-        setOpenBirthDate(false);
-      }
-    };
-    if (openBirthDate) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [openBirthDate]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
@@ -321,7 +303,7 @@ function Registrarse() {
   );
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center py-12 px-4">
+    <div className="relative min-h-screen flex items-center justify-center py-6 sm:py-10 px-3 sm:px-4">
       <datalist id="pilotos-reg-list">
         {pilotosList.map((p) => (
           <option key={p} value={p} />
@@ -348,8 +330,8 @@ function Registrarse() {
         }}
       />
 
-      <div className="relative z-10 w-full max-w-xl p-8 md:p-10 bg-gray-950/80 backdrop-blur-md rounded-2xl border border-gray-700/60 shadow-2xl my-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="relative z-10 w-full max-w-xl p-4 sm:p-7 bg-gray-950/80 backdrop-blur-md rounded-xl sm:rounded-2xl border border-gray-700/60 shadow-2xl my-4">
+        <div className="flex items-center justify-between mb-3">
           <Link
             to="/login"
             className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors"
@@ -360,85 +342,85 @@ function Registrarse() {
         </div>
 
         <h1
-          className="text-gray-200 text-3xl font-bold tracking-wider text-center uppercase"
+          className="text-gray-200 text-xl sm:text-2xl font-bold tracking-wider text-center uppercase"
           style={{
             fontFamily: "'Orbitron', 'Rajdhani', sans-serif",
-            letterSpacing: "0.1em",
+            letterSpacing: "0.08em",
           }}
         >
           Crear Cuenta
         </h1>
-        <p className="text-gray-400 text-sm text-center mt-1.5 mb-8">
+        <p className="text-gray-400 text-xs text-center mt-1 mb-4">
           Únete a la comunidad de Descalifica2
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <div>
-              <label
+              <Label
                 htmlFor="name"
-                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block"
               >
                 Nombre *
-              </label>
+              </Label>
               <InputGroup>
                 <InputGroupInput
                   placeholder="Nombre"
                   id="name"
                   value={form.name}
                   onChange={handleChange}
-                  className="placeholder:text-gray-500/50"
+                  className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   required
                 />
               </InputGroup>
             </div>
 
             <div>
-              <label
+              <Label
                 htmlFor="surname"
-                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block"
               >
                 Apellido
-              </label>
+              </Label>
               <InputGroup>
                 <InputGroupInput
                   placeholder="Apellido"
                   id="surname"
                   value={form.surname}
                   onChange={handleChange}
-                  className="placeholder:text-gray-500/50"
+                  className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                 />
               </InputGroup>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
             <div>
-              <label
+              <Label
                 htmlFor="username"
-                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block"
               >
                 Nombre de Usuario *
-              </label>
+              </Label>
               <InputGroup>
                 <InputGroupInput
                   placeholder="Nombre de usuario"
                   id="username"
                   value={form.username}
                   onChange={handleChange}
-                  className="placeholder:text-gray-500/50"
+                  className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   required
                 />
               </InputGroup>
             </div>
 
             <div>
-              <label
+              <Label
                 htmlFor="email"
-                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block"
               >
                 Correo Electrónico *
-              </label>
+              </Label>
               <InputGroup>
                 <InputGroupInput
                   placeholder="correo@ejemplo.com"
@@ -446,29 +428,29 @@ function Registrarse() {
                   type="email"
                   value={form.email}
                   onChange={handleChange}
-                  className="placeholder:text-gray-500/50"
+                  className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   required
                 />
               </InputGroup>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             <div>
-              <label
+              <Label
                 htmlFor="password"
-                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block"
               >
                 Contraseña *
-              </label>
+              </Label>
               <InputGroup>
                 <InputGroupInput
-                  placeholder="Al menos 6 caracteres"
+                  placeholder="Mín. 6 caracteres"
                   id="password"
                   type="password"
                   value={form.password}
                   onChange={handleChange}
-                  className="placeholder:text-gray-500/50"
+                  className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   required
                   minLength={6}
                 />
@@ -476,20 +458,20 @@ function Registrarse() {
             </div>
 
             <div>
-              <label
+              <Label
                 htmlFor="confirmPassword"
-                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block"
               >
-                Confirmar Contraseña *
-              </label>
+                Confirmar *
+              </Label>
               <InputGroup>
                 <InputGroupInput
-                  placeholder="Repite tu contraseña"
+                  placeholder="Repite contraseña"
                   id="confirmPassword"
                   type="password"
                   value={form.confirmPassword}
                   onChange={handleChange}
-                  className="placeholder:text-gray-500/50"
+                  className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   required
                   minLength={6}
                 />
@@ -497,73 +479,66 @@ function Registrarse() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="relative w-full" ref={datePickerRef}>
-              <label
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="relative w-full">
+              <Label
                 htmlFor="birth_date_btn"
-                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block"
               >
                 Fecha de Nacimiento *
-              </label>
-              <InputGroup
-                id="birth_date_btn"
-                role="button"
-                tabIndex={0}
-                onClick={() => {
-                  if (!openBirthDate && form.date_of_birth) {
-                    setViewYear(form.date_of_birth.getUTCFullYear());
-                    setViewMonth(form.date_of_birth.getUTCMonth());
-                  }
-                  setOpenBirthDate((prev) => !prev);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    if (!openBirthDate && form.date_of_birth) {
-                      setViewYear(form.date_of_birth.getUTCFullYear());
-                      setViewMonth(form.date_of_birth.getUTCMonth());
-                    }
-                    setOpenBirthDate((prev) => !prev);
-                  }
-                }}
-                className="cursor-pointer px-3 justify-between hover:border-ring/50 hover:dark:bg-input/50 transition-colors select-none"
-              >
-                <span
-                  className={
-                    form.date_of_birth
-                      ? "text-foreground font-medium text-sm"
-                      : "text-gray-500/50 text-sm"
-                  }
-                >
-                  {form.date_of_birth
-                    ? form.date_of_birth.toLocaleDateString("es-ES", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        timeZone: "UTC",
-                      })
-                    : "Fecha de nacimiento"}
-                </span>
-                <CalendarIcon className="h-4 w-4 text-muted-foreground opacity-50" />
-              </InputGroup>
+              </Label>
+              <Popover open={openBirthDate} onOpenChange={setOpenBirthDate}>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    id="birth_date_btn"
+                    onClick={() => {
+                      if (!openBirthDate && form.date_of_birth) {
+                        setViewYear(form.date_of_birth.getUTCFullYear());
+                        setViewMonth(form.date_of_birth.getUTCMonth());
+                      }
+                    }}
+                    className="w-full h-9 border border-input dark:bg-input/30 rounded-md px-2.5 sm:px-3 flex items-center justify-between text-left cursor-pointer hover:border-ring/50 transition-colors select-none"
+                  >
+                    <span
+                      className={
+                        form.date_of_birth
+                          ? "text-foreground font-medium text-xs sm:text-sm truncate"
+                          : "text-gray-500/50 text-xs sm:text-sm truncate"
+                      }
+                    >
+                      {form.date_of_birth
+                        ? form.date_of_birth.toLocaleDateString("es-ES", {
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            timeZone: "UTC",
+                          })
+                        : "Seleccionar"}
+                    </span>
+                    <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground opacity-50 shrink-0" />
+                  </button>
+                </PopoverTrigger>
 
-              {openBirthDate && (
-                <div className="absolute top-full left-0 mt-2 z-50 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl w-72 max-w-[calc(100vw-2rem)]">
-                  <div className="flex items-center justify-between gap-1 mb-3">
+                <PopoverContent
+                  className="w-72 max-w-[calc(100vw-2rem)] p-3 sm:p-4 bg-gray-900 border-gray-700 text-gray-200 shadow-2xl z-50"
+                  align="start"
+                >
+                  <div className="flex items-center justify-between gap-1 mb-2.5">
                     <button
                       type="button"
                       onClick={handlePrevMonth}
                       className="p-1 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
                       title="Mes anterior"
                     >
-                      <ChevronLeft size={16} />
+                      <ChevronLeft size={15} />
                     </button>
 
-                    <div className="flex items-center gap-1.5 flex-1 justify-center">
+                    <div className="flex items-center gap-1 flex-1 justify-center">
                       <select
                         value={viewMonth}
                         onChange={(e) => setViewMonth(Number(e.target.value))}
-                        className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-2 py-1 outline-none focus:border-blue-500 cursor-pointer"
+                        className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-1.5 py-1 outline-none focus:border-blue-500 cursor-pointer"
                       >
                         {MONTH_NAMES.map((month, idx) => (
                           <option
@@ -579,7 +554,7 @@ function Registrarse() {
                       <select
                         value={viewYear}
                         onChange={(e) => setViewYear(Number(e.target.value))}
-                        className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-2 py-1 outline-none focus:border-blue-500 cursor-pointer"
+                        className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-1.5 py-1 outline-none focus:border-blue-500 cursor-pointer"
                       >
                         {yearsOptions.map((year) => (
                           <option
@@ -603,7 +578,7 @@ function Registrarse() {
                       className="p-1 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                       title="Mes siguiente"
                     >
-                      <ChevronRight size={16} />
+                      <ChevronRight size={15} />
                     </button>
                   </div>
 
@@ -611,7 +586,7 @@ function Registrarse() {
                     {WEEKDAY_NAMES.map((d) => (
                       <span
                         key={d}
-                        className="text-[11px] font-semibold text-gray-400 select-none"
+                        className="text-[10px] font-semibold text-gray-400 select-none"
                       >
                         {d}
                       </span>
@@ -647,42 +622,43 @@ function Registrarse() {
                       );
                     })}
                   </div>
-                </div>
-              )}
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div>
-              <label
+              <Label
                 htmlFor="telegram_username"
-                className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+                className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block"
               >
                 Telegram (opcional)
-              </label>
+              </Label>
               <InputGroup>
                 <InputGroupInput
                   placeholder="Sin @"
                   id="telegram_username"
                   value={form.telegram_username}
                   onChange={handleChange}
-                  className="placeholder:text-gray-500/50"
+                  className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                 />
               </InputGroup>
             </div>
           </div>
 
-          <div className="border-t border-gray-800/80 pt-4">
-            <h3 className="text-xs font-semibold text-gray-400 uppercase mb-3 tracking-wider">
+          <div className="border-t border-gray-800/80 pt-3 mt-3">
+            <h3 className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase mb-2 tracking-wider flex items-center gap-1.5">
+              <Trophy size={13} className="text-amber-400" />
               Preferencias y Favoritos (opcional)
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
               <div>
-                <label
+                <Label
                   htmlFor="fav_driver"
-                  className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"
+                  className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"
                 >
-                  <Trophy size={12} className="text-amber-400" />
+                  <Trophy size={11} className="text-amber-400" />
                   Piloto Favorito
-                </label>
+                </Label>
                 <InputGroup>
                   <InputGroupInput
                     list="pilotos-reg-list"
@@ -690,19 +666,19 @@ function Registrarse() {
                     id="fav_driver"
                     value={form.fav_driver}
                     onChange={handleChange}
-                    className="placeholder:text-gray-500/50 text-xs"
+                    className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   />
                 </InputGroup>
               </div>
 
               <div>
-                <label
+                <Label
                   htmlFor="fav_team"
-                  className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"
+                  className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"
                 >
-                  <Flag size={12} className="text-red-400" />
+                  <Flag size={11} className="text-red-400" />
                   Escudería Favorita
-                </label>
+                </Label>
                 <InputGroup>
                   <InputGroupInput
                     list="escuderias-reg-list"
@@ -710,19 +686,19 @@ function Registrarse() {
                     id="fav_team"
                     value={form.fav_team}
                     onChange={handleChange}
-                    className="placeholder:text-gray-500/50 text-xs"
+                    className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   />
                 </InputGroup>
               </div>
 
               <div>
-                <label
+                <Label
                   htmlFor="fav_circuit"
-                  className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"
+                  className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1"
                 >
-                  <MapPin size={12} className="text-emerald-400" />
+                  <MapPin size={11} className="text-emerald-400" />
                   Circuito Favorito
-                </label>
+                </Label>
                 <InputGroup>
                   <InputGroupInput
                     list="circuitos-reg-list"
@@ -730,69 +706,66 @@ function Registrarse() {
                     id="fav_circuit"
                     value={form.fav_circuit}
                     onChange={handleChange}
-                    className="placeholder:text-gray-500/50 text-xs"
+                    className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   />
                 </InputGroup>
               </div>
             </div>
           </div>
 
-          <div className="border-t border-gray-800/80 pt-4">
-            <label
+          <div className="border-t border-gray-800/80 pt-3 mt-3">
+            <Label
               htmlFor="bio"
-              className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+              className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block"
             >
-              Biografía / Sobre Mí (opcional)
-            </label>
+              Sobre Mí (opcional)
+            </Label>
             <textarea
               id="bio"
               placeholder="Cuéntanos un poco sobre ti..."
               value={form.bio}
               onChange={handleChange}
               rows={2}
-              className="w-full bg-gray-900/60 border border-gray-700/80 rounded-xl p-3 text-sm text-gray-200 placeholder:text-gray-500/50 focus:outline-none focus:border-blue-500 transition-colors resize-none"
+              className="w-full bg-gray-900/60 border border-gray-700/80 rounded-lg p-2.5 text-xs sm:text-sm text-gray-200 placeholder:text-gray-500/50 focus:outline-none focus:border-blue-500 transition-colors resize-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+            <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block">
               Foto de Perfil (opcional)
-            </label>
+            </Label>
             {!form.avatar ? (
               <div
                 {...getRootProps()}
-                className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
+                className={`border border-dashed rounded-lg p-2.5 sm:p-3 text-center cursor-pointer transition-all flex items-center justify-center gap-2 ${
                   isDragActive
                     ? "border-blue-500 bg-blue-500/10"
-                    : "border-gray-700/80 hover:border-gray-500 bg-gray-900/50 hover:bg-gray-900/80"
+                    : "border-gray-700 hover:border-gray-500 bg-gray-900/50 hover:bg-gray-900/80"
                 }`}
               >
                 <input {...getInputProps()} />
-                <Upload className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                <p className="text-sm text-gray-300 font-medium">
+                <Upload className="h-4 w-4 text-gray-400 shrink-0" />
+                <p className="text-xs text-gray-300 font-medium truncate">
                   {isDragActive
                     ? "Suelta la imagen aquí..."
-                    : "Arrastra una imagen o haz clic para seleccionarla"}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  PNG, JPG, WEBP hasta 5MB
+                    : "Arrastra una foto o haz clic para subirla (PNG, JPG, WEBP)"}
                 </p>
               </div>
             ) : (
-              <div className="relative border border-gray-700 rounded-xl p-3.5 bg-gray-900/60 backdrop-blur-sm">
-                <div className="flex items-center gap-3.5">
+              <div className="relative border border-gray-700 rounded-lg p-2 bg-gray-900/60 backdrop-blur-sm">
+                <div className="flex items-center gap-2.5">
                   {previewUrl && (
                     <img
                       src={previewUrl}
                       alt="Preview"
-                      className="h-14 w-14 rounded-full object-cover border-2 border-blue-500 shadow-md"
+                      className="h-10 w-10 rounded-full object-cover border-2 border-blue-500 shadow-md shrink-0"
                     />
                   )}
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-200 truncate">
+                    <p className="text-xs font-medium text-gray-200 truncate">
                       {form.avatar.name}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-[10px] text-gray-400">
                       {(form.avatar.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   </div>
@@ -801,7 +774,7 @@ function Registrarse() {
                     variant="ghost"
                     size="sm"
                     onClick={removeAvatar}
-                    className="hover:bg-red-500/20 hover:text-red-400 text-gray-400 cursor-pointer p-2"
+                    className="hover:bg-red-500/20 hover:text-red-400 text-gray-400 cursor-pointer p-1.5 h-auto"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -810,10 +783,10 @@ function Registrarse() {
             )}
           </div>
 
-          <div className="flex w-full justify-between pt-4 gap-4">
+          <div className="flex w-full justify-between pt-3 gap-3">
             <Button
               type="button"
-              className="flex-1 bg-gray-800/80 hover:bg-gray-700 text-gray-300 border border-gray-700 hover:text-white cursor-pointer"
+              className="flex-1 bg-gray-800/80 hover:bg-gray-700 text-gray-300 border border-gray-700 hover:text-white px-4 py-2 text-xs sm:text-sm cursor-pointer"
               onClick={() => navigate("/login")}
             >
               Cancelar
@@ -821,7 +794,7 @@ function Registrarse() {
             <Button
               type="submit"
               disabled={submitting}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-900/50 border-0 cursor-pointer"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-900/50 border-0 px-4 py-2 text-xs sm:text-sm cursor-pointer"
             >
               {submitting ? "Creando cuenta..." : "Crear cuenta"}
             </Button>
@@ -829,7 +802,7 @@ function Registrarse() {
 
           {message && (
             <p
-              className={`mt-3 text-sm text-center font-semibold pt-1 ${
+              className={`mt-2 text-xs sm:text-sm text-center font-semibold pt-1 ${
                 messageType === "success" ? "text-green-400" : "text-red-400"
               }`}
             >
@@ -838,7 +811,7 @@ function Registrarse() {
           )}
         </form>
 
-        <div className="mt-6 text-center border-t border-gray-800/80 pt-4">
+        <div className="mt-3.5 text-center border-t border-gray-800/80 pt-3">
           <p className="text-xs text-gray-400">
             ¿Ya tienes una cuenta?{" "}
             <Link

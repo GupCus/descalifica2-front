@@ -39,7 +39,6 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<RootLayout />}>
-        {/* Rutas públicas */}
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="calendario" element={<Calendario />} />
@@ -52,14 +51,11 @@ function App() {
         <Route path="registrarse" element={<Registrarse />} />
         <Route path="login" element={<Login />} />
 
-        {/* Rutas de detalle */}
         <Route path="escuderia/:id" element={<DetalleEscuderia />} />
         <Route path="circuito/:id" element={<DetalleCircuito />} />
         <Route path="piloto/:id" element={<DetallePiloto />} />
         <Route path="temporada/:id" element={<DetalleTemporada />} />
         <Route path="marca/:id" element={<DetalleMarca />} />
-
-        {/* Rutas de administrador protegidas */}
 
         <Route
           path="perfil"
@@ -98,7 +94,6 @@ function App() {
           <Route path="adminusuarios" element={<AdminUsuarios />} />
         </Route>
 
-        {/* 404 - debe ir al final */}
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

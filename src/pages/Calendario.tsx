@@ -67,7 +67,6 @@ function Calendario() {
     <div className="flex flex-col gap-8 py-10 px-4 max-w-6xl mx-auto relative z-10">
       {esHoy(carreraActual)}
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Columna izquierda */}
         <div>
           <h1 className="text-4xl mb-6 font-bold tracking-tight text-primary-foreground">
             ¿Qué sigue?
@@ -84,7 +83,6 @@ function Calendario() {
           </div>
         </div>
 
-        {/* Columna derecha */ }
         <Card className="bg-gradient-to-br from-primary/70 via-accent/70 to-primary/70">
           <CardHeader>
             <CardTitle className="text-3xl font-extrabold text-primary-foreground flex gap-3 border-b-2 border-accent pb-3">

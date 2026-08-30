@@ -62,7 +62,6 @@ function NuevoCircuito() {
   };
   return (
     <div className="relative min-h-screen">
-      {/* Fondo Spa blurreado */}
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
@@ -73,7 +72,6 @@ function NuevoCircuito() {
         }}
       />
 
-      {/* Contenido del formulario */}
       <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
         <form
           onSubmit={handleSubmit}

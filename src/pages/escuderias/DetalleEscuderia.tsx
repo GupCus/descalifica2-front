@@ -124,95 +124,133 @@ function DetalleEscuderia() {
   }
 
   const flagUrl = getAssetUrl(`/flags/${escuderia.nationality}.svg`);
+  const logoUrl = getAssetUrl(escuderia.logo_image);
 
   return (
-    <div className="relative min-h-screen">
-      <div
-        className="absolute inset-0 w-full h-full z-0"
-        style={{
-          backgroundImage: getAssetUrl(escuderia.logo_image),
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "blur(8px) brightness(0.4)",
-        }}
-      />
+    <div className="relative min-h-screen bg-gradient-to-br from-slate-950 via-gray-900 to-slate-950 py-4 sm:py-8">
+      {logoUrl && (
+        <div
+          className="absolute inset-0 z-0 opacity-10"
+          style={{
+            backgroundImage: `url(${logoUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: "blur(50px) brightness(0.4)",
+          }}
+        />
+      )}
 
-      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
-        <div className="w-full max-w-4xl mx-8">
-          <div className="flex justify-between items-center mb-6">
-            <Link
-              to="/escuderias"
-              className="inline-block text-gray-300 hover:text-white transition-all bg-gray-900/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700 hover:border-red-500"
+      <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+        <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-red-600/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-blue-600/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 max-w-5xl">
+        <div className="flex justify-between items-center mb-4">
+          <Link
+            to="/escuderias"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-white transition-colors bg-slate-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-700/50"
+          >
+            ← Volver al listado
+          </Link>
+          {isAdmin && (
+            <Button
+              onClick={handleDelete}
+              variant="destructive"
+              size="sm"
+              className="flex items-center gap-1.5 text-xs h-8 cursor-pointer"
             >
-              ← Volver al listado
-            </Link>
-            {isAdmin && (
-              <Button
-                onClick={handleDelete}
-                variant="destructive"
-                className="flex items-center gap-2"
-              >
-                <Trash2 className="h-4 w-4" />
-                Eliminar
-              </Button>
-            )}
+              <Trash2 className="h-3.5 w-3.5" />
+              Eliminar
+            </Button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+          <div className="lg:col-span-5">
+            <div className="bg-slate-900/70 backdrop-blur-md rounded-xl overflow-hidden shadow-xl border border-slate-700/50 flex items-center justify-center p-4 sm:p-6 h-56 sm:h-72 lg:h-[400px]">
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt={escuderia.name}
+                  className="max-h-full max-w-full object-contain"
+                  onError={(e) => {
+                    const target = e.currentTarget as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = new URL(
+                      "../../assets/descalifica2logo.png",
+                      import.meta.url,
+                    ).href;
+                    target.classList.add("object-contain", "p-4");
+                  }}
+                />
+              ) : (
+                <div className="text-5xl sm:text-6xl font-bold text-gray-600">
+                  {escuderia.name.charAt(0)}
+                </div>
+              )}
+            </div>
           </div>
 
-          <div 
-            className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border relative overflow-hidden"
-          >
-            <div className="relative z-10">
-            <h1
-              className="text-white-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase mb-8"
-              style={{ fontFamily: "'Oswald', sans-serif" }}
-            >
-              {escuderia.name}
-            </h1>
+          <div className="lg:col-span-7 space-y-3 sm:space-y-4">
+            <div className="bg-slate-900/70 backdrop-blur-md rounded-xl p-4 sm:p-6 shadow-lg border border-slate-700/50">
+              <span className="text-[10px] sm:text-xs font-semibold text-red-400 uppercase tracking-wider block mb-0.5">
+                {typeof escuderia.racing_series === "string"
+                  ? escuderia.racing_series
+                  : escuderia.racing_series?.name || "Escudería"}
+              </span>
+              <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-tight leading-tight truncate">
+                {escuderia.name}
+              </h1>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-                <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
+              <div className="bg-slate-900/60 backdrop-blur-md rounded-xl p-3 sm:p-4 shadow border border-slate-700/40 hover:bg-slate-900/80 transition-all">
+                <h3 className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
                   Nacionalidad
                 </h3>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   {flagUrl && (
                     <img
-                      src={getAssetUrl(`/flags/${escuderia.nationality}.svg`)}
-                      alt="AT"
-                      className="w-12 h-8 object-cover rounded shadow-lg"
+                      src={flagUrl}
+                      alt={`Bandera de ${escuderia.nationality}`}
+                      className="w-6 h-4 sm:w-8 sm:h-5 object-cover rounded shadow border border-white/10 shrink-0"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
                     />
                   )}
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-xs sm:text-base font-semibold text-white truncate">
                     {escuderia.nationality}
                   </p>
                 </div>
               </div>
 
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-                <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+              <div className="bg-slate-900/60 backdrop-blur-md rounded-xl p-3 sm:p-4 shadow border border-slate-700/40 hover:bg-slate-900/80 transition-all">
+                <h3 className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
                   Motor
                 </h3>
-                <p className="text-2xl font-bold text-white">
-                  {escuderia.engine}
+                <p className="text-xs sm:text-base font-semibold text-white truncate">
+                  {escuderia.engine || "—"}
                 </p>
               </div>
 
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-                <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+              <div className="bg-slate-900/60 backdrop-blur-md rounded-xl p-3 sm:p-4 shadow border border-slate-700/40 hover:bg-slate-900/80 transition-all">
+                <h3 className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
                   Marca
                 </h3>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-xs sm:text-base font-semibold text-white truncate">
                   {typeof escuderia.brand === "string"
                     ? escuderia.brand
                     : escuderia.brand?.name || "—"}
                 </p>
               </div>
 
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50">
-                <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+              <div className="bg-slate-900/60 backdrop-blur-md rounded-xl p-3 sm:p-4 shadow border border-slate-700/40 hover:bg-slate-900/80 transition-all">
+                <h3 className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
                   Categoría
                 </h3>
-                <p className="text-2xl font-bold text-white">
+                <p className="text-xs sm:text-base font-semibold text-white truncate">
                   {typeof escuderia.racing_series === "string"
                     ? escuderia.racing_series
                     : escuderia.racing_series?.name || "—"}
@@ -220,11 +258,11 @@ function DetalleEscuderia() {
               </div>
 
               {escuderia.fundation && (
-                <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 border border-gray-700/50 md:col-span-2">
-                  <h3 className="text-gray-400 text-sm font-semibold mb-3 uppercase tracking-wider">
+                <div className="bg-slate-900/60 backdrop-blur-md rounded-xl p-3 sm:p-4 shadow border border-slate-700/40 hover:bg-slate-900/80 transition-all col-span-2">
+                  <h3 className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
                     Año de Fundación
                   </h3>
-                  <p className="text-2xl font-bold text-white">
+                  <p className="text-xs sm:text-base font-semibold text-white">
                     {escuderia.fundation}
                   </p>
                 </div>
@@ -243,26 +281,26 @@ function DetalleEscuderia() {
             )}
 
             {isAdmin && (
-              <div className="mt-10 bg-gray-900/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50">
-                <h3 className="text-xl font-bold mb-4 text-white">
+              <div className="mt-4 bg-slate-900/60 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-slate-700/40">
+                <h3 className="text-xs sm:text-sm font-bold mb-2.5 text-white uppercase tracking-wider">
                   Actualizar Imagen de la Escudería
                 </h3>
-                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
-                    className="block w-full sm:w-auto text-sm text-gray-300
-                      file:mr-4 file:py-2 file:px-4
+                    className="block w-full text-xs text-slate-300
+                      file:mr-3 file:py-1.5 file:px-3
                       file:rounded-md file:border-0
-                      file:text-sm file:font-semibold
+                      file:text-xs file:font-semibold
                       file:bg-red-700 file:text-white
-                      hover:file:bg-red-800"
+                      hover:file:bg-red-800 cursor-pointer"
                   />
                   <button
                     onClick={handleUploadImage}
                     disabled={!selectedFile || uploadingImage}
-                    className="px-6 py-2 bg-red-700 hover:bg-red-800 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
+                    className="px-4 py-1.5 bg-red-700 hover:bg-red-800 text-white rounded-md text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0 shrink-0 cursor-pointer"
                   >
                     {uploadingImage ? "Subiendo..." : "Subir Imagen"}
                   </button>
@@ -297,7 +335,6 @@ function DetalleEscuderia() {
         </div>
       </div>
     </div>
-  </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import {
   Upload,
@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
+import { Label } from "@/components/ui/label";
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { AuthService } from "@/services/auth.service.ts";
 import { apiClient } from "@/services/httpClient";
 import { getPiloto } from "@/services/piloto.service";
@@ -102,24 +104,6 @@ function EditarPerfil() {
   const [openBirthDate, setOpenBirthDate] = useState(false);
   const [viewYear, setViewYear] = useState<number>(2000);
   const [viewMonth, setViewMonth] = useState<number>(0);
-  const datePickerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        datePickerRef.current &&
-        !datePickerRef.current.contains(event.target as Node)
-      ) {
-        setOpenBirthDate(false);
-      }
-    };
-    if (openBirthDate) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [openBirthDate]);
 
   useEffect(() => {
     const load = async () => {
@@ -338,8 +322,7 @@ function EditarPerfil() {
   );
 
   return (
-    <div className="relative min-h-screen py-10 flex flex-col justify-start">
-      {/* Listas de autocompletado para datos favoritos */}
+    <div className="relative min-h-screen py-4 sm:py-8 flex flex-col justify-start">
       <datalist id="pilotos-list">
         {pilotosList.map((p) => (
           <option key={p} value={p} />
@@ -356,7 +339,6 @@ function EditarPerfil() {
         ))}
       </datalist>
 
-      {/* Fondo de pantalla */}
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
@@ -367,32 +349,31 @@ function EditarPerfil() {
         }}
       />
 
-      <div className="relative z-10 max-w-2xl w-full mx-auto px-4">
-        <div className="flex items-center justify-between mb-8">
+      <div className="relative z-10 max-w-xl w-full mx-auto px-3 sm:px-4">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <Link
             to="/perfil"
-            className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition-all bg-gray-900/60 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700/60 hover:border-gray-500"
+            className="inline-flex items-center gap-1.5 text-gray-300 hover:text-white transition-all bg-gray-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-gray-700/60 hover:border-gray-500 text-xs sm:text-sm"
           >
-            <ArrowLeft size={16} />
+            <ArrowLeft size={14} />
             Volver al perfil
           </Link>
         </div>
 
-        <div className="bg-gray-950/75 backdrop-blur-md rounded-2xl p-8 border border-gray-700/60 shadow-2xl">
+        <div className="bg-gray-950/80 backdrop-blur-md rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-gray-700/60 shadow-2xl">
           <h1
-            className="text-gray-200 mb-8 text-3xl md:text-4xl font-bold tracking-wider text-center uppercase"
+            className="text-gray-200 mb-4 text-xl sm:text-2xl font-bold tracking-wider text-center uppercase"
             style={{
               fontFamily: "'Orbitron', 'Rajdhani', sans-serif",
-              letterSpacing: "0.1em",
+              letterSpacing: "0.08em",
             }}
           >
             Editar Perfil
           </h1>
 
-          <form onSubmit={handleSave} className="space-y-5">
-            {/* Avatar */}
-            <div className="flex flex-col items-center mb-6">
-              <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center shadow-lg">
+          <form onSubmit={handleSave} className="space-y-3.5">
+            <div className="flex flex-col items-center mb-3">
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center shadow-md">
                 {resolvedAvatar ? (
                   <img
                     src={resolvedAvatar}
@@ -400,14 +381,14 @@ function EditarPerfil() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="text-3xl text-gray-500 font-semibold">
+                  <span className="text-xl sm:text-2xl text-gray-500 font-semibold">
                     {(name || username || "U").charAt(0).toUpperCase()}
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-3 mt-3">
+              <div className="flex items-center gap-3 mt-2">
                 <label className="text-xs text-blue-400 hover:text-blue-300 cursor-pointer flex items-center gap-1 font-medium">
-                  <Upload size={14} />
+                  <Upload size={13} />
                   Cambiar foto
                   <input
                     type="file"
@@ -426,151 +407,141 @@ function EditarPerfil() {
                         handleDeleteAvatar();
                       }
                     }}
-                    className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 font-medium"
+                    className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 font-medium cursor-pointer"
                   >
-                    <X size={14} />
+                    <X size={13} />
                     Quitar foto
                   </button>
                 )}
               </div>
               {avatarFile && (
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-[10px] text-gray-400 mt-0.5">
                   Nueva foto seleccionada (se guarda al guardar cambios)
                 </p>
               )}
             </div>
 
-            {/* Fila: Nombre y Apellido */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+                <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block">
                   Nombre *
-                </label>
+                </Label>
                 <InputGroup>
                   <InputGroupInput
                     placeholder="Nombre"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="placeholder:text-gray-500/50"
+                    className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                     required
                   />
                 </InputGroup>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+                <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block">
                   Apellido
-                </label>
+                </Label>
                 <InputGroup>
                   <InputGroupInput
                     placeholder="Apellido"
                     value={surname}
                     onChange={(e) => setSurname(e.target.value)}
-                    className="placeholder:text-gray-500/50"
+                    className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   />
                 </InputGroup>
               </div>
             </div>
 
-            {/* Fila: Nombre de Usuario y Correo */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+                <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block">
                   Nombre de Usuario *
-                </label>
+                </Label>
                 <InputGroup>
                   <InputGroupInput
                     placeholder="Nombre de usuario"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="placeholder:text-gray-500/50"
+                    className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                     required
                   />
                 </InputGroup>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+                <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block">
                   Correo Electrónico *
-                </label>
+                </Label>
                 <InputGroup>
                   <InputGroupInput
                     placeholder="correo@ejemplo.com"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="placeholder:text-gray-500/50"
+                    className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                     required
                   />
                 </InputGroup>
               </div>
             </div>
 
-            {/* Fila: Fecha de Nacimiento y Telegram */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="relative w-full" ref={datePickerRef}>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+              <div className="relative w-full">
+                <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block">
                   Fecha de Nacimiento
-                </label>
-                <InputGroup
-                  id="birth_date_edit_btn"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => {
-                    if (!openBirthDate && dateOfBirth) {
-                      setViewYear(dateOfBirth.getUTCFullYear());
-                      setViewMonth(dateOfBirth.getUTCMonth());
-                    }
-                    setOpenBirthDate((prev) => !prev);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      if (!openBirthDate && dateOfBirth) {
-                        setViewYear(dateOfBirth.getUTCFullYear());
-                        setViewMonth(dateOfBirth.getUTCMonth());
-                      }
-                      setOpenBirthDate((prev) => !prev);
-                    }
-                  }}
-                  className="cursor-pointer px-3 justify-between hover:border-ring/50 hover:dark:bg-input/50 transition-colors select-none"
-                >
-                  <span
-                    className={
-                      dateOfBirth
-                        ? "text-foreground font-medium text-sm"
-                        : "text-gray-500/50 text-sm"
-                    }
-                  >
-                    {dateOfBirth
-                      ? dateOfBirth.toLocaleDateString("es-ES", {
-                          day: "2-digit",
-                          month: "2-digit",
-                          year: "numeric",
-                          timeZone: "UTC",
-                        })
-                      : "Seleccionar fecha"}
-                  </span>
-                  <CalendarIcon className="h-4 w-4 text-muted-foreground opacity-50" />
-                </InputGroup>
+                </Label>
+                <Popover open={openBirthDate} onOpenChange={setOpenBirthDate}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      id="birth_date_edit_btn"
+                      onClick={() => {
+                        if (!openBirthDate && dateOfBirth) {
+                          setViewYear(dateOfBirth.getUTCFullYear());
+                          setViewMonth(dateOfBirth.getUTCMonth());
+                        }
+                      }}
+                      className="w-full h-9 border border-input dark:bg-input/30 rounded-md px-2.5 sm:px-3 flex items-center justify-between text-left cursor-pointer hover:border-ring/50 transition-colors select-none"
+                    >
+                      <span
+                        className={
+                          dateOfBirth
+                            ? "text-foreground font-medium text-xs sm:text-sm truncate"
+                            : "text-gray-500/50 text-xs sm:text-sm truncate"
+                        }
+                      >
+                        {dateOfBirth
+                          ? dateOfBirth.toLocaleDateString("es-ES", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              timeZone: "UTC",
+                            })
+                          : "Seleccionar"}
+                      </span>
+                      <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground opacity-50 shrink-0" />
+                    </button>
+                  </PopoverTrigger>
 
-                {openBirthDate && (
-                  <div className="absolute top-full left-0 mt-2 z-50 p-4 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl w-72 max-w-[calc(100vw-2rem)]">
-                    <div className="flex items-center justify-between gap-1 mb-3">
+                  <PopoverContent
+                    className="w-72 max-w-[calc(100vw-2rem)] p-3 sm:p-4 bg-gray-900 border-gray-700 text-gray-200 shadow-2xl z-50"
+                    align="start"
+                  >
+                    <div className="flex items-center justify-between gap-1 mb-2.5">
                       <button
                         type="button"
                         onClick={handlePrevMonth}
                         className="p-1 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
                         title="Mes anterior"
                       >
-                        <ChevronLeft size={16} />
+                        <ChevronLeft size={15} />
                       </button>
 
-                      <div className="flex items-center gap-1.5 flex-1 justify-center">
+                      <div className="flex items-center gap-1 flex-1 justify-center">
                         <select
                           value={viewMonth}
                           onChange={(e) => setViewMonth(Number(e.target.value))}
-                          className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-2 py-1 outline-none focus:border-blue-500 cursor-pointer"
+                          className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-1.5 py-1 outline-none focus:border-blue-500 cursor-pointer"
                         >
                           {MONTH_NAMES.map((month, idx) => (
                             <option key={month} value={idx} className="bg-gray-900">
@@ -582,7 +553,7 @@ function EditarPerfil() {
                         <select
                           value={viewYear}
                           onChange={(e) => setViewYear(Number(e.target.value))}
-                          className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-2 py-1 outline-none focus:border-blue-500 cursor-pointer"
+                          className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-1.5 py-1 outline-none focus:border-blue-500 cursor-pointer"
                         >
                           {yearsOptions.map((year) => (
                             <option key={year} value={year} className="bg-gray-900">
@@ -599,7 +570,7 @@ function EditarPerfil() {
                         className="p-1 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                         title="Mes siguiente"
                       >
-                        <ChevronRight size={16} />
+                        <ChevronRight size={15} />
                       </button>
                     </div>
 
@@ -607,7 +578,7 @@ function EditarPerfil() {
                       {WEEKDAY_NAMES.map((d) => (
                         <span
                           key={d}
-                          className="text-[11px] font-semibold text-gray-400 select-none"
+                          className="text-[10px] font-semibold text-gray-400 select-none"
                         >
                           {d}
                         </span>
@@ -643,110 +614,107 @@ function EditarPerfil() {
                         );
                       })}
                     </div>
-                  </div>
-                )}
+                  </PopoverContent>
+                </Popover>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
-                  Usuario de Telegram (opcional)
-                </label>
+                <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block">
+                  Telegram (opcional)
+                </Label>
                 <InputGroup>
                   <InputGroupInput
                     placeholder="Sin @"
                     value={telegram}
                     onChange={(e) => setTelegram(e.target.value)}
-                    className="placeholder:text-gray-500/50"
+                    className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   />
                 </InputGroup>
               </div>
             </div>
 
-            {/* Preferencias de Automovilismo */}
-            <div className="border-t border-gray-700/60 pt-5 mt-6">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-4 tracking-wider flex items-center gap-2">
-                <Trophy size={16} className="text-amber-400" />
+            <div className="border-t border-gray-700/60 pt-3 mt-3">
+              <h3 className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase mb-2 tracking-wider flex items-center gap-1.5">
+                <Trophy size={13} className="text-amber-400" />
                 Preferencias y Favoritos
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                    <Trophy size={13} className="text-amber-400" />
+                  <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <Trophy size={11} className="text-amber-400" />
                     Piloto Favorito
-                  </label>
+                  </Label>
                   <InputGroup>
                     <InputGroupInput
                       list="pilotos-list"
                       placeholder="ej. Franco Colapinto"
                       value={favDriver}
                       onChange={(e) => setFavDriver(e.target.value)}
-                      className="placeholder:text-gray-500/50"
+                      className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                     />
                   </InputGroup>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                    <Flag size={13} className="text-red-400" />
+                  <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <Flag size={11} className="text-red-400" />
                     Escudería Favorita
-                  </label>
+                  </Label>
                   <InputGroup>
                     <InputGroupInput
                       list="escuderias-list"
                       placeholder="ej. Williams Racing"
                       value={favTeam}
                       onChange={(e) => setFavTeam(e.target.value)}
-                      className="placeholder:text-gray-500/50"
+                      className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                     />
                   </InputGroup>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                    <MapPin size={13} className="text-emerald-400" />
+                  <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <MapPin size={11} className="text-emerald-400" />
                     Circuito Favorito
-                  </label>
+                  </Label>
                   <InputGroup>
                     <InputGroupInput
                       list="circuitos-list"
                       placeholder="ej. Monza"
                       value={favCircuit}
                       onChange={(e) => setFavCircuit(e.target.value)}
-                      className="placeholder:text-gray-500/50"
+                      className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                     />
                   </InputGroup>
                 </div>
               </div>
             </div>
 
-            {/* Biografía */}
-            <div className="border-t border-gray-700/60 pt-5 mt-6">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-3 tracking-wider flex items-center gap-2">
-                <FileText size={16} className="text-blue-400" />
-                Biografía / Sobre Mí
+            <div className="border-t border-gray-700/60 pt-3 mt-3">
+              <h3 className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase mb-2 tracking-wider flex items-center gap-1.5">
+                <FileText size={13} className="text-blue-400" />
+                Sobre Mí
               </h3>
               <textarea
                 placeholder="Cuéntanos sobre tu pasión por el automovilismo..."
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                rows={3}
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-sm text-gray-200 placeholder:text-gray-500/50 focus:outline-none focus:border-blue-500 transition-colors resize-none"
+                rows={2}
+                className="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-xs sm:text-sm text-gray-200 placeholder:text-gray-500/50 focus:outline-none focus:border-blue-500 transition-colors resize-none"
               />
             </div>
 
-            {/* Contraseña */}
-            <div className="border-t border-gray-700/60 pt-5 mt-6">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase mb-4 tracking-wider">
+            <div className="border-t border-gray-700/60 pt-3 mt-3">
+              <h3 className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase mb-2 tracking-wider">
                 Cambiar Contraseña
               </h3>
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                 <InputGroup>
                   <InputGroupInput
                     placeholder="Nueva contraseña (opcional)"
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="placeholder:text-gray-500/50"
+                    className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                     minLength={newPassword ? 6 : undefined}
                   />
                 </InputGroup>
@@ -756,16 +724,16 @@ function EditarPerfil() {
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="placeholder:text-gray-500/50"
+                    className="placeholder:text-gray-500/50 text-xs sm:text-sm"
                   />
                 </InputGroup>
               </div>
             </div>
 
-            <div className="flex w-full justify-between pt-6 gap-4">
+            <div className="flex w-full justify-between pt-3 gap-3">
               <Button
                 type="button"
-                className="bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 px-6 cursor-pointer"
+                className="bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 px-4 sm:px-5 py-2 text-xs sm:text-sm cursor-pointer"
                 onClick={() => navigate("/perfil")}
               >
                 Cancelar
@@ -773,7 +741,7 @@ function EditarPerfil() {
               <Button
                 type="submit"
                 disabled={saving}
-                className="bg-blue-600 hover:bg-blue-700 text-white border-0 px-6 cursor-pointer"
+                className="bg-blue-600 hover:bg-blue-700 text-white border-0 px-4 sm:px-5 py-2 text-xs sm:text-sm cursor-pointer"
               >
                 {saving ? "Guardando..." : "Guardar cambios"}
               </Button>
@@ -781,7 +749,7 @@ function EditarPerfil() {
 
             {message && (
               <p
-                className={`text-sm text-center font-semibold pt-2 ${
+                className={`text-xs sm:text-sm text-center font-semibold pt-1 ${
                   messageType === "success" ? "text-green-400" : "text-red-400"
                 }`}
               >

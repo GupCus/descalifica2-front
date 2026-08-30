@@ -94,7 +94,6 @@ function Login() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center py-12 px-4">
-      {/* Imagen de fondo con blur y overlay */}
       <div
         className="absolute inset-0 w-full h-full z-0"
         style={{
@@ -105,7 +104,6 @@ function Login() {
         }}
       />
 
-      {/* Tarjeta de login */}
       <div className="relative z-10 w-full max-w-md p-8 md:p-10 bg-gray-950/80 backdrop-blur-md rounded-2xl border border-gray-700/60 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
           <Link
