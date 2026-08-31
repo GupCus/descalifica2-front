@@ -25,7 +25,7 @@ export class NewEscuderia {
   engine!: string;
   brand!: string | number | null;
   racing_series!: string | number;
-  color!: string;
+  color?: string;
   logo_image?: string;
   car_image?: string;
 }

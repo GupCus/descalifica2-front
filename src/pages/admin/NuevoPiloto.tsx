@@ -16,7 +16,7 @@ import { Escuderia } from "@/entities/escuderia.entity.ts";
 import { Categoria } from "@/entities/categoria.entity.ts";
 import { getEscuderia } from "@/services/escuderia.service.ts";
 import { getCategoria } from "@/services/categoria.service.ts";
-import { postPiloto, postPilotoFormData } from "@/services/piloto.service.ts";
+import { postPilotoFormData } from "@/services/piloto.service.ts";
 import { NewPiloto } from "@/entities/piloto.entity.ts";
 import {
   Popover,

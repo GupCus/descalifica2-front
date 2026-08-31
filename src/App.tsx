@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import RootLayout from "./layouts/RootLayout";
+import RutaProtegida from "./shared/RutaProtegida.tsx";
 import RutaProtegidaAdmin from "./shared/RutaProtegidaAdmin.tsx";
 import Foro from './pages/Foro.tsx';
 import DetallePost from './pages/blogpost/DetallePost.tsx';
@@ -36,13 +37,14 @@ const DetalleMarca = lazy(() => import("./pages/marcas/DetalleMarca.tsx"));
 const Registrarse = lazy(() => import("./pages/Registrarse.tsx"));
 const Login = lazy(() => import("./pages/Login.tsx"));
 const AdminUsuarios = lazy(() => import("./pages/admin/AdminUsuarios.tsx"));
+const Perfil = lazy(() => import("./pages/Perfil.tsx"));
+const EditarPerfil = lazy(() => import("./pages/EditarPerfil.tsx"));
 
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<RootLayout />}>
-        {/* Rutas públicas */}
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="calendario" element={<Calendario />} />
@@ -64,7 +66,6 @@ function App() {
           }
         />
 
-        {/* Rutas de detalle */}
         <Route path="escuderia/:id" element={<DetalleEscuderia />} />
         <Route path="circuito/:id" element={<DetalleCircuito />} />
         <Route path="piloto/:id" element={<DetallePiloto />} />
@@ -72,7 +73,23 @@ function App() {
         <Route path="marca/:id" element={<DetalleMarca />} />
         <Route path="foro/:id" element={<DetallePost />} />
 
-        {/* Rutas de administrador protegidas */}
+        <Route
+          path="perfil"
+          element={
+            <RutaProtegida>
+              <Perfil />
+            </RutaProtegida>
+          }
+        />
+        <Route
+          path="perfil/editar"
+          element={
+            <RutaProtegida>
+              <EditarPerfil />
+            </RutaProtegida>
+          }
+        />
+
         <Route
           path="menuadmin"
           element={
@@ -104,7 +121,6 @@ function App() {
           <Route path="adminusuarios" element={<AdminUsuarios />} />
         </Route>
 
-        {/* 404 - debe ir al final */}
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
