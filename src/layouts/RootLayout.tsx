@@ -1,6 +1,10 @@
-import { Outlet, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { LogOut } from 'lucide-react';
+import { Outlet, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { LogOut, Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { useLocation } from "react-router-dom";
+import { Suspense } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -9,24 +13,37 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import logoDescalifica2 from '../assets/descalifica2logo.png';
-import { AuthService } from '@/services/auth.service.ts';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import logoDescalifica2 from "../assets/descalifica2logo.png";
+import { AuthService } from "@/services/auth.service.ts";
+import HeaderSearch from "@/components/HeaderSearch";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 
 function RootLayout() {
+  const location = useLocation();
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [user, setUser] = useState<{
     username: string;
     user_type: string;
+    avatar?: string;
   } | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
   const loadUser = async () => {
     try {
       const currentUser = await AuthService.getCurrentUser();
       setUser(currentUser);
+      
+      if (currentUser && currentUser.avatar) {
+        setAvatarUrl(getAssetUrl(currentUser.avatar));
+      } else {
+        setAvatarUrl("");
+      }
     } catch (error) {
       console.error('Error loading user:', error);
       setUser(null);
+      setAvatarUrl("");
     } finally {
       setLoading(false);
     }
@@ -66,18 +83,80 @@ function RootLayout() {
     <>
       <header className="sticky top-0 z-50">
         <div
-          className="flex justify-between items-center w-full pt-0.5 pb-0.5 px-4"
-          style={{ background: 'var(--fondodescalifica2)' }}
+          className="flex justify-between items-center relative w-full py-2 md:pt-0.5 md:pb-0.5 px-4"
+          style={{ background: "var(--fondodescalifica2)" }}
         >
-          {/* NavigationMenu con menús */}
-          <NavigationMenu viewport={false} className="flex-1">
+          {/* MÓVIL: Menú Hamburguesa */}
+          <div className="md:hidden flex items-center">
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+              <SheetTrigger asChild>
+                <button className="text-white p-2 hover:bg-white/10 rounded-md transition-colors" aria-label="Abrir menú">
+                  <Menu size={28} />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="left" className="bg-black/80 backdrop-blur-xl border-gray-800 text-white w-72 sm:w-80 flex flex-col overflow-y-auto">
+                <SheetHeader className="sr-only">
+                  <SheetTitle>Menú de navegación</SheetTitle>
+                  <SheetDescription>Opciones de navegación y buscador</SheetDescription>
+                </SheetHeader>
+
+                <div className="flex flex-col gap-6 mt-6">
+                  <HeaderSearch className="w-full" onSelect={() => setSheetOpen(false)} />
+
+                  <Link to="/" onClick={() => setSheetOpen(false)} className="text-xl font-bold hover:text-gray-300 transition-colors">
+                    Inicio
+                  </Link>
+                  <Link to="/calendario" onClick={() => setSheetOpen(false)} className="text-xl font-semibold hover:text-gray-300 transition-colors">
+                    Calendario
+                  </Link>
+                  <div className="flex flex-col gap-3">
+                    <span className="text-xl font-semibold opacity-50">Wiki</span>
+                    <Link to="/pilotos" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                      Pilotos
+                    </Link>
+                    <Link to="/escuderias" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                      Escuderías
+                    </Link>
+                    <Link to="/circuitos" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                      Circuitos
+                    </Link>
+                    <Link to="/marcas" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                      Marcas
+                    </Link>
+                    <Link to="/temporadas" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                      Temporadas
+                    </Link>
+                  </div>
+                  <Link to="/dondever" onClick={() => setSheetOpen(false)} className="text-xl font-semibold hover:text-gray-300 transition-colors">
+                    ¿Dónde Ver?
+                  </Link>
+                  <span className="text-xl font-semibold opacity-50 cursor-not-allowed">Foro</span>
+                  <Link to="/about" onClick={() => setSheetOpen(false)} className="text-xl font-semibold hover:text-gray-300 transition-colors">
+                    Sobre Nosotros
+                  </Link>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          <div className="md:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Link to="/">
+              <img
+                src={logoDescalifica2}
+                alt="Descalifica2"
+                className="h-10 w-auto object-cover"
+              />
+            </Link>
+          </div>
+
+          <NavigationMenu viewport={false} className="hidden md:flex flex-1">
             <NavigationMenuList className="flex items-center gap-4">
               <NavigationMenuItem>
                 <Link to="/">
                   <img
                     src={logoDescalifica2}
                     alt="Descalifica2"
-                    className="mt-2 mb-2 ml-6 h-auto w-32 object-cover [overflow-clip-margin:unset] hover:scale-102 transition-transform"
+                    className="my-2 ml-6 h-auto w-32 object-cover [overflow-clip-margin:unset] hover:scale-102 transition-transform"
                   />
                 </Link>
               </NavigationMenuItem>
@@ -135,22 +214,28 @@ function RootLayout() {
             </NavigationMenuList>
           </NavigationMenu>
 
-          <div className="flex items-center gap-3 mr-6">
+          <HeaderSearch className="hidden md:block w-60 lg:w-72" />
+
+          <div className="flex items-center gap-3 md:mr-6">
             {loading ? (
               <div className="text-sm text-gray-400">Cargando...</div>
             ) : user ? (
               <>
-                <span className="text-sm font-medium text-gray-200">
-                  {user.username}
-                </span>
-                <Link to="/menuadmin">
-                  <Avatar className="rounded-3xl border cursor-pointer hover:ring-2 hover:ring-accent transition-all">
-                    <AvatarFallback>{user.username}</AvatarFallback>
+                <Link
+                  to={user.user_type === "ADMIN" ? "/menuadmin" : "/perfil"}
+                  className="flex items-center gap-2 text-sm font-medium text-gray-200 hover:text-white transition-all group"
+                >
+                  <span className="group-hover:text-white transition-colors">
+                    {user.username}
+                  </span>
+                  <Avatar className="rounded-3xl border cursor-pointer group-hover:ring-2 group-hover:ring-accent transition-all">
+                    {avatarUrl && <AvatarImage src={avatarUrl} alt={user.username} />}
+                    <AvatarFallback>{user.username.substring(0, 2).toUpperCase()}</AvatarFallback>
                   </Avatar>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-700/50 rounded-lg transition-colors"
+                  className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-700/50 rounded-lg transition-colors cursor-pointer"
                   title="Cerrar sesión"
                 >
                   <LogOut size={20} />
@@ -167,8 +252,26 @@ function RootLayout() {
         </div>
       </header>
 
-      <main>
-        <Outlet />
+      <main className="flex-1">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Suspense
+              fallback={
+                <div className="flex h-[calc(100vh-200px)] items-center justify-center text-xl font-semibold">
+                  Cargando...
+                </div>
+              }
+            >
+              <Outlet />
+            </Suspense>
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <footer>

@@ -1,5 +1,5 @@
 import { useEffect, useState, PropsWithChildren } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { AuthService } from "../services/auth.service";
 
 const RutaProtegida = ({ children }: PropsWithChildren) => {

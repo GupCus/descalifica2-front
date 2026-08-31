@@ -224,7 +224,6 @@ function CargarDatosSesion() {
               </SelectContent>
             </Select>
           </div>
-          {/* Selector de Sesión */}
           <div>
             <Label className="text-white-100 mb-1">Sesión</Label>
             <Select
@@ -272,7 +271,6 @@ function CargarDatosSesion() {
               </div>
             </div>
           )}
-          {/* Botón de guardar */}
           <div className="flex w-full justify-between pt-4">
             <Link to="/menuadmin">
               <Button

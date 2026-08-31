@@ -1,4 +1,4 @@
-import DashboardAccordion from "@/components/DashboardAccordion.tsx";
+import DashboardAccordion from '@/components/DashboardAccordion.tsx';
 import {
   Accordion,
   AccordionContent,
@@ -9,6 +9,7 @@ import TextType from "@/components/ui/TextType.tsx";
 import { Carrera } from "@/entities/carrera.entity.ts";
 import PostRecomendados from "@/components/PostsRecomendados.tsx";
 import { getCarrera } from "@/services/carrera.service.ts";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 import { useEffect, useState } from "react";
 
 function Home() {
@@ -34,7 +35,7 @@ function Home() {
     !carreras || carreras.length === 0
       ? undefined
       : carreras
-          .filter((c) => new Date(c.end_date) < new Date())
+          .filter((c) => new Date(c.start_date) <= new Date())
           .sort(
             (a, b) =>
               new Date(b.start_date).getTime() -
@@ -48,27 +49,29 @@ function Home() {
           className="absolute inset-0 w-full h-full z-0 blur-[3px]"
           style={{
             backgroundImage: "url('./src/assets/ferrari-lluvia-sainz.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
         />
 
-        <div className="relative z-10">
-          <TextType
-            className="text-5xl font-extrabold tracking-tight text-primary-foreground"
-            text={[
-              "Bienvenido al mejor foro sobre automovilismo.",
-              "Welcome to the best motorsport forum.",
-              "Willkommen im berühmtesten Motorsportforum.",
-              "Bem-vindo ao mais melhor fórum do automobilismo",
-              "モータースポーツに関する最高のフォーラムへようこそ",
-            ]}
-            typingSpeed={75}
-            pauseDuration={3500}
-            showCursor={true}
-            cursorCharacter="_"
-          />
-          <h3 className="text-primary-foreground mt-5 scroll-m-20 text-xl font-semibold tracking-tight text-center">
+        <div className="relative z-10 px-4 w-full max-w-5xl mx-auto">
+          <div className="min-h-[130px] md:min-h-[160px] flex flex-col justify-center">
+            <TextType
+              className="text-3xl md:text-5xl font-extrabold tracking-tight text-primary-foreground"
+              text={[
+                'Bienvenido al mejor foro sobre automovilismo.',
+                'Welcome to the best motorsport forum.',
+                'Willkommen im berühmtesten Motorsportforum.',
+                'Bem-vindo ao mais mejor fórum do automobilismo',
+                'モータースポーツに関する最高のフォーラムへようこそ',
+              ]}
+              typingSpeed={75}
+              pauseDuration={3500}
+              showCursor={true}
+              cursorCharacter="_"
+            />
+          </div>
+          <h3 className="text-primary-foreground mt-5 scroll-m-20 text-lg md:text-xl font-semibold tracking-tight text-center">
             En descalifica2 vas a encontrar toda la información que necesitás
             para tu deporte motor favorito.
           </h3>
@@ -77,33 +80,39 @@ function Home() {
 
       <div>
         <h4 className="text-xl font-semibold tracking-tight mt-5 mb-5 text-center">
-          Últimos grandes premios:{" "}
+          Últimos grandes premios:{' '}
         </h4>
         <Accordion
           className="max-w-5xl w-full mx-auto px-4 bg-secondary rounded-lg"
           type="single"
           collapsible
         >
-          {carrerasAnteriores && carrerasAnteriores.length > 0 ? (
+          {carrerasAnteriores ? (
             carrerasAnteriores.map((gp) =>
               !gp ? null : (
                 <AccordionItem key={gp.id} value={gp.id.toString()}>
-                  <AccordionTrigger className="mx-auto text-2xl font-semibold">
+                  <AccordionTrigger className="mx-auto text-xl md:text-2xl font-semibold text-center md:text-left">
                     {gp.name}
                   </AccordionTrigger>
 
                   <AccordionContent>
-                    <div className="flex h-auto">
-                      <div className="flex-3 w-99 h-full">
+                    <div className="flex flex-col-reverse md:flex-row h-auto gap-4 md:gap-0 items-center md:items-start">
+                      <div className="w-full min-w-0 md:flex-1 h-full">
                         <DashboardAccordion sesiones={gp.sessions} />
                       </div>
 
                       <img
                         src={gp.track?.track_map_image}
                         alt={gp.track?.name}
-                        className="max-w-[40%] max-h-48 w-auto h-auto object-contain"
+                        className="max-w-full md:max-w-[40%] mx-auto max-h-48 w-auto h-auto object-contain"
                       />
                     </div>
+
+                    <img
+                      src={getAssetUrl(gp.track?.track_map_image)}
+                      alt={gp.track?.name}
+                      className="max-w-[40%] max-h-48 w-auto h-auto object-contain"
+                    />
                   </AccordionContent>
                 </AccordionItem>
               ),
@@ -115,7 +124,7 @@ function Home() {
           )}
         </Accordion>
       </div>
-      <PostRecomendados />
+      <PostRecomendados/>
     </>
   );
     

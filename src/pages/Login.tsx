@@ -2,8 +2,10 @@ import { InputGroup, InputGroupInput } from "@/components/ui/input-group.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { useState } from "react";
 import { AuthService } from "@/services/auth.service.ts";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import * as React from "react";
+import { ArrowLeft } from "lucide-react";
+import fondoLogin from "../assets/grilla-cola-2021.jpg";
 
 function Login() {
   const [message, setMessage] = useState<string | null>(null);
@@ -54,7 +56,7 @@ function Login() {
       setMessageType("success");
       setMessage("¡Sesión iniciada! Redirigiendo...");
 
-      // Guardar token en localStorage
+      // Guardar token en localStorage / sessionStorage
       if (response.token) {
         AuthService.saveToken(response.token, rememberMe);
 
@@ -68,10 +70,10 @@ function Login() {
         password: "",
       });
 
-      // Redirigir después de 2 segundos
+      // Redirigir después de 1 segundo
       setTimeout(() => {
         navigate("/");
-      }, 2000);
+      }, 1000);
     } catch (err: any) {
       setMessageType("error");
       console.error("Error completo:", err);
@@ -91,46 +93,90 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <div className="w-full max-w-md p-8 bg-gray-800 rounded-lg border border-gray-700">
-        <h1 className="text-2xl font-bold text-white mb-6 text-center">
+    <div className="relative min-h-screen flex items-center justify-center py-12 px-4">
+      <div
+        className="absolute inset-0 w-full h-full z-0"
+        style={{
+          backgroundImage: `url(${fondoLogin})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          filter: "blur(6px) brightness(0.35)",
+        }}
+      />
+
+      <div className="relative z-10 w-full max-w-md p-8 md:p-10 bg-gray-950/80 backdrop-blur-md rounded-2xl border border-gray-700/60 shadow-2xl">
+        <div className="flex items-center justify-between mb-4">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors"
+          >
+            <ArrowLeft size={14} />
+            Volver al inicio
+          </Link>
+        </div>
+
+        <h1
+          className="text-gray-200 mb-6 text-3xl font-bold tracking-wider text-center uppercase"
+          style={{
+            fontFamily: "'Orbitron', 'Rajdhani', sans-serif",
+            letterSpacing: "0.1em",
+          }}
+        >
           Iniciar Sesión
         </h1>
 
-        <form onSubmit={handleSubmit}>
-          <InputGroup className="mb-6">
-            <InputGroupInput
-              placeholder="Email"
-              id="mail"
-              type="email"
-              value={form.mail}
-              onChange={handleChange}
-              required
-            />
-          </InputGroup>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label
+              htmlFor="mail"
+              className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+            >
+              Correo Electrónico
+            </label>
+            <InputGroup>
+              <InputGroupInput
+                placeholder="correo@ejemplo.com"
+                id="mail"
+                type="email"
+                value={form.mail}
+                onChange={handleChange}
+                className="placeholder:text-gray-500/50"
+                required
+              />
+            </InputGroup>
+          </div>
 
-          <InputGroup className="mb-6">
-            <InputGroupInput
-              placeholder="Contraseña"
-              id="password"
-              type="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-          </InputGroup>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5"
+            >
+              Contraseña
+            </label>
+            <InputGroup>
+              <InputGroupInput
+                placeholder="••••••••"
+                id="password"
+                type="password"
+                value={form.password}
+                onChange={handleChange}
+                className="placeholder:text-gray-500/50"
+                required
+              />
+            </InputGroup>
+          </div>
 
-          <div className="mb-6 flex items-center gap-2">
+          <div className="flex items-center gap-2 pt-1">
             <input
               type="checkbox"
               id="rememberMe"
               checked={rememberMe}
               onChange={handleRememberMeChange}
-              className="w-4 h-4 cursor-pointer"
+              className="w-4 h-4 cursor-pointer accent-blue-600 rounded"
             />
             <label
               htmlFor="rememberMe"
-              className="text-sm text-gray-300 cursor-pointer"
+              className="text-sm text-gray-300 cursor-pointer select-none"
             >
               Recuérdame
             </label>
@@ -139,15 +185,15 @@ function Login() {
           <div className="flex w-full justify-between pt-4 gap-4">
             <Button
               type="button"
-              className="flex-1 bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
-              onClick={() => navigate("/registrarse")}
+              className="flex-1 bg-gray-800/80 hover:bg-gray-700 text-gray-300 border border-gray-700 hover:text-white cursor-pointer"
+              onClick={() => navigate("/")}
             >
-              Registrarse
+              Cancelar
             </Button>
             <Button
               type="submit"
               disabled={submitting}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-900/50 border-0"
+              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-900/50 border-0 cursor-pointer"
             >
               {submitting ? "Entrando..." : "Entrar"}
             </Button>
@@ -155,7 +201,7 @@ function Login() {
 
           {message && (
             <p
-              className={`mt-4 text-sm text-center font-semibold ${
+              className={`mt-4 text-sm text-center font-semibold pt-1 ${
                 messageType === "success" ? "text-green-400" : "text-red-400"
               }`}
             >
@@ -163,6 +209,18 @@ function Login() {
             </p>
           )}
         </form>
+
+        <div className="mt-6 text-center border-t border-gray-800/80 pt-4">
+          <p className="text-xs text-gray-400">
+            ¿No tienes una cuenta?{" "}
+            <Link
+              to="/registrarse"
+              className="text-blue-400 hover:text-blue-300 font-semibold underline ml-1"
+            >
+              Registrarse
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

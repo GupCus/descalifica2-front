@@ -7,47 +7,6 @@ import { getCircuito } from "@/services/circuito.service.ts";
 import { Link } from "react-router-dom";
 import { getAssetUrl } from "@/utils/asset.util.ts";
 
-// Helper function para obtener la bandera del país automáticamente
-const getCountryFlag = (country: string): string => {
-  if (!country) return "";
-
-  // Mapa de casos especiales (opcional, para nacionalidades con nombres diferentes al archivo)
-  const specialCases: Record<string, string> = {
-    "Reino Unido": "UK",
-    "Estados Unidos": "USA",
-    "Países Bajos": "Paises_Bajos",
-    "Abu Dhabi": "EAU",
-    Baréin: "bahrain",
-    Barein: "bahrain",
-    Azerbaiyán: "Azerbaiyan",
-  };
-
-  // Si hay un caso especial, usarlo
-  if (specialCases[country]) {
-    return new URL(
-      `../../assets/banderas-paises/${specialCases[country]}.png`,
-      import.meta.url,
-    ).href;
-  }
-
-  // Normalizar el nombre del país para que coincida con los archivos
-  const normalizedName = country
-    .normalize("NFD") // Descompone caracteres con acentos
-    .replace(/[\u0300-\u036f]/g, "") // Elimina los acentos
-    .replace(/\s+/g, "_") // Reemplaza espacios con guiones bajos
-    .replace(/[^a-zA-Z0-9_]/g, ""); // Elimina caracteres especiales
-
-  // Construye la ruta automáticamente
-  try {
-    return new URL(
-      `../../assets/banderas-paises/${normalizedName}.png`,
-      import.meta.url,
-    ).href;
-  } catch {
-    return "";
-  }
-};
-
 function ListadoCircuitos() {
   const [circuitos, setCircuitos] = useState<Circuito[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,19 +31,18 @@ function ListadoCircuitos() {
             <Skeleton className="h-12 w-64 mb-2" />
             <Skeleton className="h-6 w-96" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Card
                 key={i}
-                className="bg-slate-900/50 border-slate-700 overflow-hidden h-40"
+                className="bg-slate-900/50 border-slate-700 overflow-hidden py-0 border-t-0 border-b-0"
               >
-                <CardHeader>
-                  <CardTitle>
-                    <Skeleton className="h-6 w-32" />
-                  </CardTitle>
+                <Skeleton className="h-44 sm:h-56 w-full" />
+                <CardHeader className="p-3 sm:p-6">
+                  <Skeleton className="h-5 sm:h-6 w-3/4" />
                 </CardHeader>
-                <CardContent className="p-2">
-                  <Skeleton className="h-4 w-full" />
+                <CardContent className="p-3 sm:p-6 pt-0">
+                  <Skeleton className="h-3 sm:h-4 w-full" />
                 </CardContent>
               </Card>
             ))}
@@ -115,7 +73,7 @@ function ListadoCircuitos() {
       <ChromaGrid />
       <div className="relative z-10 container mx-auto px-4 py-8">
         <header className="mb-6 text-center">
-          <h1 className="text-white text-4xl md:text-5xl font-bold tracking-tight drop-shadow-lg">
+          <h1 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight drop-shadow-lg">
             Circuitos
           </h1>
         </header>
@@ -127,7 +85,7 @@ function ListadoCircuitos() {
             </CardHeader>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6">
             {circuitos.map((circuito) => {
               const flagUrl = getAssetUrl(`/flags/${circuito.country}.svg`);
               return (
@@ -140,14 +98,13 @@ function ListadoCircuitos() {
                     key={circuito.id}
                     className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
                   >
-                    <div className="relative w-full h-48 overflow-hidden">
+                    <div className="relative w-full h-44 sm:h-56 overflow-hidden">
                       <img
                         src={getAssetUrl(circuito.track_map_image)}
                         alt={circuito.name}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          // reemplazar con placeholder si no existe
                           target.src = new URL(
                             "../../assets/descalifica2logo.png",
                             import.meta.url,
@@ -156,20 +113,20 @@ function ListadoCircuitos() {
                             "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
                         }}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-top from-slate-900/90 via-slate-900/30 to-transparent"></div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
 
                       {flagUrl && (
-                        <div className="absolute top-4 right-4 z-10">
+                        <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
                           <img
                             src={flagUrl}
                             alt={`Bandera de ${circuito.country}`}
-                            className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
+                            className="w-8 h-6 sm:w-14 sm:h-10 object-cover rounded shadow-2xl border border-white/20 sm:border-2"
                           />
                         </div>
                       )}
 
-                      <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                        <h3 className="text-2xl font-bold text-white tracking-tight">
+                      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 z-10">
+                        <h3 className="text-base sm:text-2xl font-bold text-white tracking-tight leading-tight line-clamp-2">
                           {circuito.name}
                         </h3>
                       </div>

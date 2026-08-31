@@ -71,3 +71,18 @@ export async function uploadEscuderiaImage(
   });
   return response.data;
 }
+
+export async function uploadEscuderiaCarImage(
+  id: number,
+  file: File,
+): Promise<any> {
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await client.patch(`/${id}/car-image`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+}

@@ -107,8 +107,8 @@ function PostsRecomendados() {
         </h4>
         <Card className="bg-secondary/60 border-border">
           <CardContent className="py-8 text-center text-muted-foreground">
-            No encontramos publicaciones que coincidan con tus intereses todavía.
-            ¡Explorá el foro para descubrir contenido nuevo!
+            No encontramos publicaciones que coincidan con tus intereses
+            todavía. ¡Explorá el foro para descubrir contenido nuevo!
             <div className="mt-4">
               <Button variant="outline" asChild>
                 <Link to="/foro" className="gap-2">
@@ -146,21 +146,26 @@ function PostsRecomendados() {
             <Link
               key={post.id}
               to={`/foro/${post.id}`}
+              className="min-w-[300px] max-w-[340px] flex-shrink-0 snap-start"
             >
               <Card className="h-full bg-secondary/60 border-border hover:bg-secondary/90 transition-colors duration-200 overflow-hidden py-0 group">
-                {/* Imagen de portada (solo si tiene) */}
-                {post.cover_image && (
+                {/* Imagen de portada */}
+                {post.cover_image ? (
                   <div className="relative w-full h-40 overflow-hidden">
                     <img
                       src={getAssetUrl(post.cover_image)}
                       alt={post.title}
-                      className="w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
+                  </div>
+                ) : (
+                  <div className="w-full h-40 bg-muted/50 flex items-center justify-center">
+                    <MessageCircle className="h-10 w-10 text-muted-foreground/40" />
                   </div>
                 )}
 
-                <CardHeader className={`pb-1 px-4 ${post.cover_image ? 'pt-4' : 'pt-5'}`}>
-                  <CardTitle className={`font-bold line-clamp-2 ${post.cover_image ? 'text-base' : 'text-lg'}`}>
+                <CardHeader className="pt-4 pb-1 px-4">
+                  <CardTitle className="text-base font-bold line-clamp-2">
                     {post.title}
                   </CardTitle>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
@@ -170,7 +175,7 @@ function PostsRecomendados() {
                 </CardHeader>
 
                 <CardContent className="px-4 pb-4">
-                  <p className={`text-sm text-muted-foreground leading-relaxed ${post.cover_image ? 'line-clamp-2' : 'line-clamp-4'}`}>
+                  <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
                     {post.content}
                   </p>
                   <div className="flex items-center gap-1 mt-3 text-xs text-sky-400">
@@ -184,9 +189,9 @@ function PostsRecomendados() {
               </Card>
             </Link>
           ))}
+        </div>
       </div>
-
-      {/* Botón ver más (móvil) */}
+      );
       <div className="mt-4 flex justify-center sm:hidden">
         <Button variant="outline" asChild>
           <Link to="/foro" className="gap-2">
@@ -195,8 +200,6 @@ function PostsRecomendados() {
           </Link>
         </Button>
       </div>
-    </div>
-  );
 }
 
 export default PostsRecomendados;

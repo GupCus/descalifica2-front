@@ -1,13 +1,15 @@
 import { Marca } from "@/entities/marca.entity.ts";
 import { useState, useEffect } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
-import { ArrowLeftIcon } from "lucide-react";
-import { uploadMarcaImage } from "@/services/marca.service.ts";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
+import { ArrowLeftIcon, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button.tsx";
+import { deleteMarca, uploadMarcaImage } from "@/services/marca.service.ts";
 import { AuthService } from "@/services/auth.service.ts";
 import { getAssetUrl } from "@/utils/asset.util.ts";
 
 function DetalleMarca() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const location = useLocation();
   const [marca, setMarca] = useState<Marca | null>(
     location.state?.marca || null,
@@ -64,6 +66,20 @@ function DetalleMarca() {
       });
   }, [id, api, location.state]);
 
+  const handleDelete = async () => {
+    if (!marca?.id || !isAdmin) return;
+
+    if (confirm(`¿Estás seguro de eliminar "${marca.name}"?`)) {
+      try {
+        await deleteMarca(marca.id);
+        navigate("/marcas");
+      } catch (err) {
+        console.error("Error eliminando marca", err);
+        alert("Error al eliminar la marca");
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -106,89 +122,113 @@ function DetalleMarca() {
         />
       )}
 
-      <div className="absolute inset-0 overflow-hidden z-0">
+      <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
         <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-blue-600/5 rounded-full blur-3xl" />
         <div className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-red-600/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 py-8">
-        <Link
-          to="/marcas"
-          className="inline-flex items-center gap-2 mb-6 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeftIcon className="w-4 h-4" />
-          Volver al listado
-        </Link>
+      <div className="relative z-10 container mx-auto px-3 sm:px-4 max-w-5xl">
+        <div className="flex justify-between items-center mb-4">
+          <Link
+            to="/marcas"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-white transition-colors bg-slate-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-700/50"
+          >
+            <ArrowLeftIcon className="w-3.5 h-3.5" />
+            Volver al listado
+          </Link>
+          {isAdmin && (
+            <Button
+              onClick={handleDelete}
+              variant="destructive"
+              size="sm"
+              className="flex items-center gap-1.5 text-xs h-8 cursor-pointer"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Eliminar
+            </Button>
+          )}
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg overflow-hidden shadow-lg border border-gray-700/50 p-8 flex items-center justify-center min-h-[400px]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+          <div className="lg:col-span-5">
+            <div className="bg-slate-900/70 backdrop-blur-md rounded-xl overflow-hidden shadow-xl border border-slate-700/50 p-4 sm:p-6 flex items-center justify-center h-56 sm:h-72 lg:h-[400px]">
               {logoUrl ? (
                 <img
                   src={logoUrl}
                   alt={marca.name}
-                  className="w-full h-auto object-contain"
+                  className="max-h-full max-w-full object-contain"
                   onError={(e) => {
-                    e.currentTarget.style.display = "none";
+                    const target = e.currentTarget as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = new URL(
+                      "../../assets/descalifica2logo.png",
+                      import.meta.url,
+                    ).href;
+                    target.classList.add("object-contain", "p-4");
                   }}
                 />
               ) : (
-                <div className="text-6xl font-bold text-gray-600">
+                <div className="text-5xl sm:text-6xl font-bold text-gray-600">
                   {marca.name.charAt(0)}
                 </div>
               )}
             </div>
           </div>
 
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-6 shadow-lg border border-gray-700/50">
-              <h1 className="text-4xl font-bold">{marca.name}</h1>
+          <div className="lg:col-span-7 space-y-3 sm:space-y-4">
+            <div className="bg-slate-900/70 backdrop-blur-md rounded-xl p-4 sm:p-6 shadow-lg border border-slate-700/50">
+              <span className="text-[10px] sm:text-xs font-semibold text-blue-400 uppercase tracking-wider block mb-0.5">
+                Marca
+              </span>
+              <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-tight leading-tight truncate">
+                {marca.name}
+              </h1>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 shadow border border-gray-700/50 hover:bg-gray-800/70 transition-all">
-                <h3 className="text-sm font-semibold text-gray-400 mb-2">
-                  NACIONALIDAD
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5">
+              <div className="bg-slate-900/60 backdrop-blur-md rounded-xl p-3 sm:p-4 shadow border border-slate-700/40 hover:bg-slate-900/80 transition-all">
+                <h3 className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                  Nacionalidad
                 </h3>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
                   {flagUrl && (
                     <img
                       src={flagUrl}
                       alt={`Bandera de ${marca.nationality}`}
-                      className="w-8 h-6 object-cover rounded shadow"
+                      className="w-6 h-4 sm:w-8 sm:h-5 object-cover rounded shadow border border-white/10 shrink-0"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
                       }}
                     />
                   )}
-                  <p className="text-lg font-semibold text-white">
+                  <p className="text-xs sm:text-base font-semibold text-white truncate">
                     {marca.nationality}
                   </p>
                 </div>
               </div>
 
               {marca.foundation && (
-                <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 shadow border border-gray-700/50 hover:bg-gray-800/70 transition-all">
-                  <h3 className="text-sm font-semibold text-gray-400 mb-2">
-                    AÑO DE FUNDACIÓN
+                <div className="bg-slate-900/60 backdrop-blur-md rounded-xl p-3 sm:p-4 shadow border border-slate-700/40 hover:bg-slate-900/80 transition-all">
+                  <h3 className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    Año de Fundación
                   </h3>
-                  <p className="text-lg font-semibold text-white">
+                  <p className="text-xs sm:text-base font-semibold text-white truncate">
                     {marca.foundation}
                   </p>
                 </div>
               )}
 
               {marca.teams && marca.teams.length > 0 && (
-                <div className="bg-gray-800/50 backdrop-blur-sm rounded-lg p-4 shadow border border-gray-700/50 hover:bg-gray-800/70 transition-all md:col-span-2">
-                  <h3 className="text-sm font-semibold text-gray-400 mb-3">
-                    ESCUDERÍAS ASOCIADAS
+                <div className="bg-slate-900/60 backdrop-blur-md rounded-xl p-3 sm:p-4 shadow border border-slate-700/40 hover:bg-slate-900/80 transition-all col-span-2">
+                  <h3 className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                    Escuderías Asociadas
                   </h3>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {marca.teams.map((escuderia) => (
                       <Link
                         key={escuderia.id}
                         to={`/escuderia/${escuderia.id}`}
-                        className="bg-gray-700/50 hover:bg-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                        className="bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-3 py-1 rounded-lg text-xs font-medium transition-colors border border-slate-700/50"
                       >
                         {escuderia.name}
                       </Link>
@@ -199,26 +239,26 @@ function DetalleMarca() {
             </div>
 
             {isAdmin && (
-              <div className="mt-8 bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-gray-700/50 shadow-lg">
-                <h3 className="text-xl font-bold mb-4 text-white">
+              <div className="mt-4 bg-slate-900/60 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-slate-700/40">
+                <h3 className="text-xs sm:text-sm font-bold mb-2.5 text-white uppercase tracking-wider">
                   Actualizar Imagen de la Marca
                 </h3>
-                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <div className="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
-                    className="block w-full sm:w-auto text-sm text-gray-300
-                      file:mr-4 file:py-2 file:px-4
+                    className="block w-full text-xs text-slate-300
+                      file:mr-3 file:py-1.5 file:px-3
                       file:rounded-md file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-red-800 file:text-white
-                      hover:file:bg-red-900"
+                      file:text-xs file:font-semibold
+                      file:bg-blue-600 file:text-white
+                      hover:file:bg-blue-700 cursor-pointer"
                   />
                   <button
                     onClick={handleUploadImage}
                     disabled={!selectedFile || uploadingImage}
-                    className="px-6 py-2 bg-red-800 hover:bg-red-900 text-white rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0"
+                    className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0 shrink-0 cursor-pointer"
                   >
                     {uploadingImage ? "Subiendo..." : "Subir Imagen"}
                   </button>

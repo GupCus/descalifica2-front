@@ -52,20 +52,20 @@ function ListadoEscuderias() {
             <Skeleton className="h-12 w-64 mb-2" />
             <Skeleton className="h-6 w-96" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Card
                 key={i}
-                className="bg-slate-900/50 border-slate-700 overflow-hidden"
+                className="bg-slate-900/50 border-slate-700 overflow-hidden py-0 border-t-0 border-b-0"
               >
-                <Skeleton className="h-48 w-full" />
-                <CardHeader>
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-52 sm:h-64 w-full" />
+                <CardHeader className="p-3 sm:p-6">
+                  <Skeleton className="h-5 sm:h-6 w-3/4" />
+                  <Skeleton className="h-3 sm:h-4 w-1/2" />
                 </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-2/3" />
+                <CardContent className="p-3 sm:p-6 pt-0">
+                  <Skeleton className="h-3 sm:h-4 w-full mb-2" />
+                  <Skeleton className="h-3 sm:h-4 w-2/3" />
                 </CardContent>
               </Card>
             ))}
@@ -103,33 +103,15 @@ function ListadoEscuderias() {
     );
   }
 
-  //helper para extraer el nombre de categoria
-  const getCategoryName = (cat?: { id?: string; name?: string } | string) => {
-    if (!cat) return "";
-    if (typeof cat === "string") return cat.trim().toLowerCase();
-    return String(cat.name ?? "")
-      .trim()
-      .toLowerCase();
-  };
-
   //Separamos por categoria
-
   const f2Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
-    return (
-      getCategoryName(e.racing_series.name) === "f2" ||
-      e.racing_series.name === "Fórmula 2" ||
-      e.racing_series.name === "Formula 2"
-    );
+    return e.racing_series.name === "F2";
   });
 
   const f1Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
-    return (
-      getCategoryName(e.racing_series.name) === "f1" ||
-      e.racing_series.name === "Fórmula 1" ||
-      e.racing_series.name === "Formula 1"
-    );
+    return e.racing_series.name === "F1";
   });
 
   const escuderiasF1Filtradas = f1Escuderias.filter(
@@ -154,11 +136,11 @@ function ListadoEscuderias() {
           <img
             src={new URL("../../assets/f1-logo.png", import.meta.url).href}
             alt="Logo de Formula 1"
-            className="mx-auto w-50 h-auto object-contain"
+            className="mx-auto w-40 sm:w-50 h-auto object-contain"
           />
         </div>
         <div className="mb-6 max-w-md mx-auto">
-          <h4 className="mb-1 ml-3 font-semibold">Filtrar por país</h4>
+          <h4 className="mb-1 ml-3 font-semibold text-xs sm:text-sm text-gray-300">Filtrar por país</h4>
           <Select value={filtroPaisF1} onValueChange={setFiltroPaisF1}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Filtrar escuderías por país" />
@@ -184,7 +166,7 @@ function ListadoEscuderias() {
             </CardHeader>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {escuderiasF1Filtradas.map((escuderia) => {
               const flagUrl = getAssetUrl(
                 `/flags/${escuderia.nationality}.svg`,
@@ -193,15 +175,16 @@ function ListadoEscuderias() {
 
               return (
                 <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
-                  <Card className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0">
-                    <div className="relative w-full h-64 overflow-hidden">
+                  <Card 
+                    className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
+                  >
+                    <div className="relative w-full h-52 sm:h-64 overflow-hidden">
                       <img
                         src={logoUrl}
                         alt={`Logo de ${escuderia.name}`}
-                        className="absolute inset-0 w-full h-full object-cover auto transition-transform duration-300 group-hover:scale-105"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          // reemplazar con placeholder si no existe
                           target.src = "/src/assets/descalifica2logo.png";
                           target.className =
                             "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
@@ -211,17 +194,17 @@ function ListadoEscuderias() {
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
 
                       {flagUrl && (
-                        <div className="absolute top-4 right-4 z-10">
+                        <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
                           <img
                             src={flagUrl}
                             alt={`Bandera de ${escuderia.nationality}`}
-                            className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
+                            className="w-8 h-6 sm:w-14 sm:h-10 object-cover rounded shadow-2xl border border-white/20 sm:border-2"
                           />
                         </div>
                       )}
 
-                      <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                        <h3 className="text-2xl font-bold text-white tracking-tight">
+                      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 z-10">
+                        <h3 className="text-base sm:text-2xl font-bold text-white tracking-tight leading-tight line-clamp-2">
                           {escuderia.name}
                         </h3>
                       </div>
@@ -233,14 +216,14 @@ function ListadoEscuderias() {
           </div>
         )}
 
-        <div>
+        <div className="mt-10 sm:mt-12">
           <img
             src={new URL("../../assets/f2-logo.png", import.meta.url).href}
             alt="Logo de Formula 2"
-            className="mx-auto w-50 h-auto object-contain"
+            className="mx-auto w-40 sm:w-50 h-auto object-contain"
           />
         </div>
-        <div>
+        <div className="mt-4">
           {f2Escuderias.length === 0 ? (
             <Card className="bg-slate-900/50 border-slate-700">
               <CardHeader>
@@ -253,7 +236,7 @@ function ListadoEscuderias() {
               </CardHeader>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 mb-8">
               {f2Escuderias.map((escuderia) => {
                 const flagUrl = getAssetUrl(
                   `/flags/${escuderia.nationality}.svg`,
@@ -262,17 +245,15 @@ function ListadoEscuderias() {
                 return (
                   <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
                     <Card
-                      key={escuderia.id}
                       className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
                     >
-                      <div className="relative w-full h-64 overflow-hidden">
+                      <div className="relative w-full h-52 sm:h-64 overflow-hidden">
                         <img
                           src={logoUrl}
                           alt={`Logo de ${escuderia.name}`}
                           className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;
-                            // reemplazar con placeholder si no existe
                             target.src = "/src/assets/descalifica2logo.png";
                             target.className =
                               "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
@@ -280,16 +261,16 @@ function ListadoEscuderias() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
                         {flagUrl && (
-                          <div className="absolute top-4 right-4 z-10">
+                          <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
                             <img
                               src={flagUrl}
                               alt={`Bandera de ${escuderia.nationality}`}
-                              className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
+                              className="w-8 h-6 sm:w-14 sm:h-10 object-cover rounded shadow-2xl border border-white/20 sm:border-2"
                             />
                           </div>
                         )}
-                        <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                          <h3 className="text-2xl font-bold text-white tracking-tight">
+                        <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 z-10">
+                          <h3 className="text-base sm:text-2xl font-bold text-white tracking-tight leading-tight line-clamp-2">
                             {escuderia.name}
                           </h3>
                         </div>

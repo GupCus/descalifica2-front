@@ -22,13 +22,6 @@ import { getEscuderia } from "@/services/escuderia.service.ts";
 import { Link } from "react-router-dom";
 import { getAssetUrl } from "@/utils/asset.util.ts";
 
-const getRacingSeries = (cat?: { id?: string; name?: string } | string) => {
-  if (!cat) return "";
-  if (typeof cat === "string") return cat.trim().toLowerCase();
-  return String(cat.name ?? "")
-    .trim()
-    .toLowerCase();
-};
 
 function ListadoPilotos() {
   const [pilotos, setPilotos] = useState<Piloto[]>([]);
@@ -53,24 +46,18 @@ function ListadoPilotos() {
   }, []);
 
   const f1Escuderias = escuderias.filter(
-    (e) =>
-      e.racing_series.name === "Fórmula 1" || e.racing_series.name === "f1",
+    (e) => e.racing_series.name === "F1"
   );
 
   const f2Escuderias = escuderias.filter(
-    (e) =>
-      e.racing_series.name === "Fórmula 2" || e.racing_series.name === "f2",
+    (e) => e.racing_series.name === "F2"
   );
 
   const f2Pilotos = pilotos.filter(
-    (p) =>
-      getRacingSeries(p.racing_series.name) === "f2" ||
-      p.racing_series.name === "Fórmula 2",
+    (p) => p.racing_series.name === "F2" && p.season.year === 2026
   );
   const f1Pilotos = pilotos.filter(
-    (p) =>
-      getRacingSeries(p.racing_series.name) === "f1" ||
-      p.racing_series.name === "Fórmula 1",
+    (p) => p.racing_series.name === "F1" && p.season.year === 2026 && p.profile_image
   );
 
   const f1Filtrados = f1Pilotos.filter(
@@ -93,20 +80,20 @@ function ListadoPilotos() {
             <Skeleton className="h-12 w-64 mb-2" />
             <Skeleton className="h-6 w-96" />
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <Card
                 key={i}
                 className="bg-slate-900/50 border-slate-700 overflow-hidden"
               >
-                <Skeleton className="h-80 w-auto" />
-                <CardHeader>
-                  <Skeleton className="h-6 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-64 sm:h-80 w-auto" />
+                <CardHeader className="p-3 sm:p-6">
+                  <Skeleton className="h-5 sm:h-6 w-3/4" />
+                  <Skeleton className="h-3 sm:h-4 w-1/2" />
                 </CardHeader>
-                <CardContent>
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-2/3" />
+                <CardContent className="p-3 sm:p-6 pt-0">
+                  <Skeleton className="h-3 sm:h-4 w-full mb-2" />
+                  <Skeleton className="h-3 sm:h-4 w-2/3" />
                 </CardContent>
               </Card>
             ))}
@@ -148,7 +135,6 @@ function ListadoPilotos() {
       />
       <ChromaGrid />
       <div className="relative z-10 container mx-auto px-4 py-8">
-        {/* F1 */}
         <div className="mb-6">
           <img
             src={new URL("../../assets/f1-logo.png", import.meta.url).href}
@@ -186,7 +172,7 @@ function ListadoPilotos() {
           </Card>
         ) : (
           <div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
               {f1Filtrados.map((piloto) => {
                 const flagUrl = getAssetUrl(`/flags/${piloto.nationality}.svg`);
                 const photoUrl = getAssetUrl(piloto.profile_image);
@@ -196,7 +182,7 @@ function ListadoPilotos() {
                       key={piloto.id}
                       className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
                     >
-                      <div className="relative w-auto h-80 overflow-hidden">
+                      <div className="relative w-auto h-64 sm:h-80 overflow-hidden">
                         <img
                           src={photoUrl}
                           alt={`Foto de ${piloto.name}`}
@@ -217,16 +203,16 @@ function ListadoPilotos() {
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
                         {flagUrl && (
-                          <div className="absolute top-4 right-4 z-10">
+                          <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
                             <img
                               src={flagUrl}
                               alt={`Bandera de ${piloto.nationality}`}
-                              className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
+                              className="w-8 h-6 sm:w-14 sm:h-10 object-cover rounded shadow-2xl border border-white/20 sm:border-2"
                             />
                           </div>
                         )}
-                        <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                          <h3 className="text-2xl font-bold text-white tracking-tight">
+                        <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 z-10">
+                          <h3 className="text-base sm:text-2xl font-bold text-white tracking-tight leading-tight line-clamp-2">
                             {piloto.name}
                           </h3>
                         </div>
@@ -277,7 +263,7 @@ function ListadoPilotos() {
             </CardHeader>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
             {f2Filtrados.map((piloto) => {
               const flagUrl = getAssetUrl(`/flags/${piloto.nationality}.svg`);
               const photoUrl = getAssetUrl(piloto.profile_image);
@@ -287,7 +273,7 @@ function ListadoPilotos() {
                     key={piloto.id}
                     className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
                   >
-                    <div className="relative w-auto h-80 overflow-hidden">
+                    <div className="relative w-auto h-64 sm:h-80 overflow-hidden">
                       <img
                         src={photoUrl}
                         alt={`Foto de ${piloto.name}`}
@@ -308,16 +294,16 @@ function ListadoPilotos() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
                       {flagUrl && (
-                        <div className="absolute top-4 right-4 z-10">
+                        <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
                           <img
                             src={flagUrl}
                             alt={`Bandera de ${piloto.nationality}`}
-                            className="w-14 h-10 object-cover rounded shadow-2xl border-2 border-white/20"
+                            className="w-8 h-6 sm:w-14 sm:h-10 object-cover rounded shadow-2xl border border-white/20 sm:border-2"
                           />
                         </div>
                       )}
-                      <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
-                        <h3 className="text-2xl font-bold text-white tracking-tight">
+                      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 z-10">
+                        <h3 className="text-base sm:text-2xl font-bold text-white tracking-tight leading-tight line-clamp-2">
                           {piloto.name}
                         </h3>
                       </div>

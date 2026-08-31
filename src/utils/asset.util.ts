@@ -11,6 +11,11 @@ export function getAssetUrl(relativePath: string | undefined | null): string {
     return "";
   }
 
+  // Si ya es una URL completa, la retornamos tal cual
+  if (relativePath.startsWith("http")) {
+    return relativePath;
+  }
+
   // Usamos la URL de la API base definida en el entorno
   const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -22,5 +27,5 @@ export function getAssetUrl(relativePath: string | undefined | null): string {
   // DEBUG
   console.log("RUTA COMPLETA:" + `${baseUrl}/assets/${cleanPath}`);
   const rutaCompleta = `${baseUrl}/assets/${cleanPath}`;
-  return rutaCompleta.toLowerCase();
+  return rutaCompleta;
 }

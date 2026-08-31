@@ -11,17 +11,17 @@ interface AnimatedItemProps {
 
 const AnimatedItem: React.FC<AnimatedItemProps> = ({ children, delay = 0, index, onMouseEnter, onClick }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { amount: 0.5, once: false });
+  const inView = useInView(ref, { amount: 0.1, once: true });
   return (
     <motion.div
       ref={ref}
       data-index={index}
       onMouseEnter={onMouseEnter}
       onClick={onClick}
-      initial={{ scale: 0.7, opacity: 0 }}
-      animate={inView ? { scale: 1, opacity: 1 } : { scale: 0.7, opacity: 0 }}
+      initial={{ scale: 0.95, opacity: 0 }}
+      animate={inView ? { scale: 1, opacity: 1 } : { scale: 0.95, opacity: 0 }}
       transition={{ duration: 0.2, delay }}
-      className="mb-4 cursor-pointer"
+      className="mb-2.5 sm:mb-3 cursor-pointer w-full"
     >
       {children}
     </motion.div>
@@ -126,24 +126,24 @@ const AnimatedList: React.FC<AnimatedListProps> = ({
   }, [selectedIndex, keyboardNav]);
 
   return (
-    <div className={`relative w-[500px] ${className}`}>
+    <div className={`relative w-full max-w-full ${className}`}>
       <div
         ref={listRef}
-        className={`max-h-[400px] overflow-y-auto p-4 ${
+        className={`max-h-[480px] overflow-y-auto p-1 sm:p-2 ${
           displayScrollbar
-            ? '[&::-webkit-scrollbar]:w-[8px] [&::-webkit-scrollbar-track]:bg-[#060010] [&::-webkit-scrollbar-thumb]:bg-[#222] [&::-webkit-scrollbar-thumb]:rounded-[4px]'
+            ? '[&::-webkit-scrollbar]:w-[6px] [&::-webkit-scrollbar-track]:bg-slate-950/40 [&::-webkit-scrollbar-thumb]:bg-slate-700/60 [&::-webkit-scrollbar-thumb]:rounded-[3px]'
             : 'scrollbar-hide'
         }`}
         onScroll={handleScroll}
         style={{
           scrollbarWidth: displayScrollbar ? 'thin' : 'none',
-          scrollbarColor: '#222 #060010'
+          scrollbarColor: '#334155 #020617'
         }}
       >
         {items.map((item, index) => (
           <AnimatedItem
             key={index}
-            delay={0.1}
+            delay={index * 0.04}
             index={index}
             onMouseEnter={() => setSelectedIndex(index)}
             onClick={() => {
@@ -153,8 +153,8 @@ const AnimatedList: React.FC<AnimatedListProps> = ({
               }
             }}
           >
-            <div className={`p-4 bg-[#111] rounded-lg ${selectedIndex === index ? 'bg-[#222]' : ''} ${itemClassName}`}>
-              <p className="text-white m-0">{item}</p>
+            <div className={`p-3.5 sm:p-4 bg-slate-900/80 hover:bg-slate-800 border border-slate-700/50 hover:border-slate-500 rounded-xl transition-all shadow-md flex items-center justify-between ${selectedIndex === index ? 'bg-slate-800 border-slate-500 shadow-blue-500/10' : ''} ${itemClassName}`}>
+              <p className="text-white font-semibold text-sm sm:text-base m-0 tracking-wide">{item}</p>
             </div>
           </AnimatedItem>
         ))}
@@ -162,11 +162,11 @@ const AnimatedList: React.FC<AnimatedListProps> = ({
       {showGradients && (
         <>
           <div
-            className="absolute top-0 left-0 right-0 h-[50px] bg-gradient-to-b from-[#060010] to-transparent pointer-events-none transition-opacity duration-300 ease"
+            className="absolute top-0 left-0 right-0 h-[40px] bg-gradient-to-b from-slate-950/80 to-transparent pointer-events-none transition-opacity duration-300 ease rounded-t-xl"
             style={{ opacity: topGradientOpacity }}
           ></div>
           <div
-            className="absolute bottom-0 left-0 right-0 h-[100px] bg-gradient-to-t from-[#060010] to-transparent pointer-events-none transition-opacity duration-300 ease"
+            className="absolute bottom-0 left-0 right-0 h-[60px] bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none transition-opacity duration-300 ease rounded-b-xl"
             style={{ opacity: bottomGradientOpacity }}
           ></div>
         </>

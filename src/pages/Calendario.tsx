@@ -29,16 +29,10 @@ function Calendario() {
   .filter((c) => new Date(c.end_date) >= new Date()) 
   .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0];
 
-  //Consigue la fecha de la sesión dada
-  const getSesionFecha = (tipo: string) => {
-    if(!carreraActual){
-      return undefined
-    } else if(!carreraActual.sessions){
-      return undefined
-    } else {
-      const sesion = carreraActual.sessions.find((s) => s.type === tipo);
-      return sesion ? new Date(sesion.start_time) : undefined;
-    }
+  const getSesionFecha = (tipo?: string) => {
+    const s = carreraActual?.sessions?.filter(s => tipo ? s.type === tipo : new Date(s.start_time) > new Date())
+      .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())[0];
+    return s ? new Date(s.start_time) : undefined;
   };
   //En caso de haber f1 hoy, lo indica con un mensaje
   const esHoy = (c?:Carrera) =>{
@@ -73,14 +67,13 @@ function Calendario() {
     <div className="flex flex-col gap-8 py-10 px-4 max-w-6xl mx-auto relative z-10">
       {esHoy(carreraActual)}
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Columna izquierda */}
         <div>
           <h1 className="text-4xl mb-6 font-bold tracking-tight text-primary-foreground">
             ¿Qué sigue?
           </h1>
           <div className="flex flex-col gap-4">
             <CountdownTimer
-              targetDate={getSesionFecha("FP1")}
+              targetDate={getSesionFecha()}
               title="Tiempo hasta la próxima sesión"
             />
             <CountdownTimer
@@ -90,7 +83,6 @@ function Calendario() {
           </div>
         </div>
 
-        {/* Columna derecha */ }
         <Card className="bg-gradient-to-br from-primary/70 via-accent/70 to-primary/70">
           <CardHeader>
             <CardTitle className="text-3xl font-extrabold text-primary-foreground flex gap-3 border-b-2 border-accent pb-3">
