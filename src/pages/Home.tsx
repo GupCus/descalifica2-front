@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import TextType from "@/components/ui/TextType.tsx";
 import { Carrera } from "@/entities/carrera.entity.ts";
+import PostRecomendados from "@/components/PostsRecomendados.tsx";
 import { getCarrera } from "@/services/carrera.service.ts";
 import { useEffect, useState } from "react";
 
@@ -98,7 +99,7 @@ function Home() {
                       </div>
 
                       <img
-                        src={gp.track?.track_map_url}
+                        src={gp.track?.track_map_image}
                         alt={gp.track?.name}
                         className="max-w-[40%] max-h-48 w-auto h-auto object-contain"
                       />
@@ -114,8 +115,10 @@ function Home() {
           )}
         </Accordion>
       </div>
+      <PostRecomendados />
     </>
   );
+    
 }
 
 export default Home;

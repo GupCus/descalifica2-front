@@ -45,9 +45,19 @@ export async function postBlogPostFormData(
   if (data.author !== undefined) {
     formData.append('authorID', String(data.author));
   }
+  if (data.tags && data.tags.length > 0) {
+    formData.append('tags', JSON.stringify(data.tags));
+  }
   if (file) {
     formData.append('image', file);
   }
   const response = await client.post('/', formData);
   return response.data.data;
+}
+
+export async function getSuggestedBlogPosts(
+  userId: number,
+): Promise<BlogPost[]> {
+  const response = await client.get('/suggested/' + userId.toString());
+  return response.data.data ?? [];
 }

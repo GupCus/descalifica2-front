@@ -160,7 +160,7 @@ function DetallePost() {
             <img
               src={getAssetUrl(post.cover_image)}
               alt={post.title}
-              className="w-full h-72 object-cover rounded-lg border border-slate-700/40 mb-6"
+              className="w-full h-full object-cover rounded-lg border border-slate-700/40 mb-6"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}

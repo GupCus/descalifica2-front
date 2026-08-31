@@ -6,6 +6,7 @@ export class BlogPost extends baseEntity {
   cover_image?: string;
   cover_image_url?: string;
   author!: number;
+  tags?: string[];
   created_at!: string;
 }
 
@@ -15,5 +16,6 @@ export class NewBlogPost {
   content!: string;
   cover_image?: string;
   author!: number;
+  tags?: string[];
 }
 export default BlogPost;
