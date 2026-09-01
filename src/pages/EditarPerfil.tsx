@@ -16,11 +16,13 @@ import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AuthService } from "@/services/auth.service.ts";
 import { apiClient } from "@/services/httpClient";
 import { getPiloto } from "@/services/piloto.service";
 import { getEscuderia } from "@/services/escuderia.service";
 import { getCircuito } from "@/services/circuito.service";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 import fondoPerfil from "../assets/Pitwall.jpg";
 
 interface ProfileData {
@@ -35,7 +37,8 @@ interface ProfileData {
   fav_circuit: string | null;
   bio: string | null;
   telegram_username: string | null;
-  avatar_url: string | null;
+  avatar_url?: string | null;
+  avatar?: string | null;
 }
 
 const MONTH_NAMES = [
@@ -114,6 +117,9 @@ function EditarPerfil() {
           return;
         }
         setUserId(me.id);
+        if (me.avatar) {
+          setServerAvatar(me.avatar);
+        }
         const response = await apiClient.get<{ data: ProfileData }>(
           `/usuarios/${me.id}`
         );
@@ -135,7 +141,8 @@ function EditarPerfil() {
         setFavTeam(data.fav_team ?? "");
         setFavCircuit(data.fav_circuit ?? "");
         setBio(data.bio ?? "");
-        setServerAvatar(data.avatar_url ?? null);
+        const avatarPath = data.avatar || data.avatar_url || me.avatar;
+        setServerAvatar(avatarPath ?? null);
 
         // Cargar sugerencias
         getPiloto()
@@ -288,7 +295,9 @@ function EditarPerfil() {
       const updated = await apiClient.get<{ data: ProfileData }>(
         `/usuarios/${userId}`
       );
-      setServerAvatar(updated.data.data.avatar_url ?? null);
+      const updatedAvatarPath =
+        updated.data.data.avatar || updated.data.data.avatar_url;
+      setServerAvatar(updatedAvatarPath ?? null);
 
       window.dispatchEvent(new Event("userLoggedIn"));
 
@@ -313,7 +322,8 @@ function EditarPerfil() {
     );
   }
 
-  const resolvedAvatar = avatarPreview || serverAvatar || null;
+  const resolvedAvatar =
+    avatarPreview || (serverAvatar ? getAssetUrl(serverAvatar) : null);
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
   const firstDayIndex = (new Date(viewYear, viewMonth, 1).getDay() + 6) % 7;
   const yearsOptions = Array.from(
@@ -373,19 +383,18 @@ function EditarPerfil() {
 
           <form onSubmit={handleSave} className="space-y-3.5">
             <div className="flex flex-col items-center mb-3">
-              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-gray-700 bg-gray-900 flex items-center justify-center shadow-md">
-                {resolvedAvatar ? (
-                  <img
+              <Avatar className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-gray-700 shadow-md">
+                {resolvedAvatar && (
+                  <AvatarImage
                     src={resolvedAvatar}
                     alt="Avatar"
-                    className="w-full h-full object-cover"
+                    className="object-cover"
                   />
-                ) : (
-                  <span className="text-xl sm:text-2xl text-gray-500 font-semibold">
-                    {(name || username || "U").charAt(0).toUpperCase()}
-                  </span>
                 )}
-              </div>
+                <AvatarFallback className="text-xl sm:text-2xl text-gray-500 font-semibold bg-gray-900">
+                  {(name || username || "U").charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
               <div className="flex items-center gap-3 mt-2">
                 <label className="text-xs text-blue-400 hover:text-blue-300 cursor-pointer flex items-center gap-1 font-medium">
                   <Upload size={13} />

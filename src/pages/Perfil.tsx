@@ -3,8 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { Shield, Pencil, ArrowLeft, Trophy, Flag, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AuthService } from "@/services/auth.service.ts";
 import { apiClient } from "@/services/httpClient";
+import { getAssetUrl } from "@/utils/asset.util.ts";
 import fondoPerfil from "../assets/garageRB.jpg";
 
 interface ProfileData {
@@ -19,7 +21,8 @@ interface ProfileData {
   fav_circuit: string | null;
   bio: string | null;
   telegram_username: string | null;
-  avatar_url: string | null;
+  avatar_url?: string | null;
+  avatar?: string | null;
   user_type?: string;
 }
 
@@ -38,6 +41,7 @@ function formatDate(dateStr?: string | null) {
 function Perfil() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [userRole, setUserRole] = useState<string>("user");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,10 +56,22 @@ function Perfil() {
         }
         setUserRole(me.user_type || "user");
 
+        if (me.avatar) {
+          setAvatarUrl(getAssetUrl(me.avatar));
+        }
+
         const response = await apiClient.get<{ data: ProfileData }>(
           `/usuarios/${me.id}`,
         );
-        setProfile(response.data.data);
+        const data = response.data.data;
+        setProfile(data);
+
+        const avatarPath = data.avatar || data.avatar_url || me.avatar;
+        if (avatarPath) {
+          setAvatarUrl(getAssetUrl(avatarPath));
+        } else if (!me.avatar) {
+          setAvatarUrl("");
+        }
       } catch (err: any) {
         console.error("Error al cargar perfil:", err);
         setError("Error al cargar los datos del perfil.");
@@ -91,7 +107,6 @@ function Perfil() {
     );
   }
 
-  const resolvedAvatar = profile.avatar_url ?? null;
   const isAdmin = userRole === "admin" || profile.user_type === "admin";
   const formattedBirthDate = formatDate(profile.date_of_birth);
 
@@ -148,21 +163,20 @@ function Perfil() {
           </div>
 
           <div className="flex flex-col items-center mb-4">
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-blue-500/60 bg-gray-900 flex items-center justify-center shadow-lg shadow-blue-950/40">
-              {resolvedAvatar ? (
-                <img
-                  src={resolvedAvatar}
-                  alt="Avatar"
-                  className="w-full h-full object-cover"
+            <Avatar className="w-16 h-16 sm:w-20 sm:h-20 border-2 border-blue-500/60 shadow-lg shadow-blue-950/40">
+              {avatarUrl && (
+                <AvatarImage
+                  src={avatarUrl}
+                  alt={profile.username}
+                  className="object-cover"
                 />
-              ) : (
-                <span className="text-2xl text-gray-400 font-bold">
-                  {(profile.name || profile.username || "U")
-                    .charAt(0)
-                    .toUpperCase()}
-                </span>
               )}
-            </div>
+              <AvatarFallback className="text-xl sm:text-2xl font-bold bg-gray-900 text-gray-400">
+                {(profile.name || profile.username || "U")
+                  .charAt(0)
+                  .toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
 
             <h2 className="text-base sm:text-lg font-bold text-white mt-2 text-center">
               @{profile.username}

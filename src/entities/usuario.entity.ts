@@ -2,11 +2,9 @@ import { baseEntity } from "./baseEntity.entity.ts";
 
 export class Usuario extends baseEntity {
   name!: string;
-  username?: string;
+  username!: string;
   email!: string;
   password!: string;
-  username!: string;
-  declare name: string;
   surname?: string;
   date_of_birth?: Date | string;
   fav_driver?: string;
