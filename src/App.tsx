@@ -1,45 +1,56 @@
-import { lazy } from "react";
-import { Routes, Route } from "react-router-dom";
-import RootLayout from "./layouts/RootLayout";
-import RutaProtegida from "./shared/RutaProtegida.tsx";
-import RutaProtegidaAdmin from "./shared/RutaProtegidaAdmin.tsx";
+import { lazy } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import RootLayout from './layouts/RootLayout';
+import RutaProtegida from './shared/RutaProtegida.tsx';
+import RutaProtegidaAdmin from './shared/RutaProtegidaAdmin.tsx';
 import Foro from './pages/Foro.tsx';
 import DetallePost from './pages/blogpost/DetallePost.tsx';
 import NuevoBlogPost from './pages/blogpost/NuevoBlogPost.tsx';
-import RutaProtegida from "./shared/RutaProtegida.tsx";
 
-
-const Home = lazy(() => import("./pages/Home"));
-const About = lazy(() => import("./pages/About"));
-const NotFound = lazy(() => import("./pages/NotFound"));
-const ListadoEscuderias = lazy(() => import("./pages/escuderias/ListadoEscuderias.tsx"));
-const ListadoMarcas = lazy(() => import("./pages/marcas/ListadoMarcas.tsx"));
-const ListadoCircuitos = lazy(() => import("./pages/circuitos/ListadoCircuitos.tsx"));
-const ListadoTemporadas = lazy(() => import("./pages/temporada/ListadoTemporadas.tsx"));
-const DondeVer = lazy(() => import("./pages/DondeVer.tsx"));
-const Calendario = lazy(() => import("./pages/Calendario.tsx"));
-const NuevoPiloto = lazy(() => import("./pages/admin/NuevoPiloto.tsx"));
-const MenuAdmin = lazy(() => import("./pages/admin/MenuAdmin.tsx"));
-const NuevaEscuderia = lazy(() => import("./pages/admin/NuevaEscuderia.tsx"));
-const NuevoCircuito = lazy(() => import("./pages/admin/NuevoCircuito.tsx"));
-const DetalleEscuderia = lazy(() => import("./pages/escuderias/DetalleEscuderia.tsx"));
-const NuevaMarca = lazy(() => import("./pages/admin/NuevaMarca.tsx"));
-const NuevaCarrera = lazy(() => import("./pages/admin/NuevaCarrera.tsx"));
-const NuevaTemporada = lazy(() => import("./pages/admin/NuevaTemporada.tsx"));
-const NuevaCategoria = lazy(() => import("./pages/admin/NuevaCategoria.tsx"));
-const ListadoPilotos = lazy(() => import("./pages/pilotos/ListadoPilotos.tsx"));
-const NuevaSesion = lazy(() => import("./pages/admin/NuevaSesion.tsx"));
-const CargarDatosSesion = lazy(() => import("./pages/admin/CargarDatosSesion.tsx"));
-const DetalleCircuito = lazy(() => import("./pages/circuitos/DetalleCircuito.tsx"));
-const DetallePiloto = lazy(() => import("./pages/pilotos/DetallePiloto.tsx"));
-const DetalleTemporada = lazy(() => import("./pages/temporada/DetalleTemporada.tsx"));
-const DetalleMarca = lazy(() => import("./pages/marcas/DetalleMarca.tsx"));
-const Registrarse = lazy(() => import("./pages/Registrarse.tsx"));
-const Login = lazy(() => import("./pages/Login.tsx"));
-const AdminUsuarios = lazy(() => import("./pages/admin/AdminUsuarios.tsx"));
-const Perfil = lazy(() => import("./pages/Perfil.tsx"));
-const EditarPerfil = lazy(() => import("./pages/EditarPerfil.tsx"));
-
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const ListadoEscuderias = lazy(
+  () => import('./pages/escuderias/ListadoEscuderias.tsx'),
+);
+const ListadoMarcas = lazy(() => import('./pages/marcas/ListadoMarcas.tsx'));
+const ListadoCircuitos = lazy(
+  () => import('./pages/circuitos/ListadoCircuitos.tsx'),
+);
+const ListadoTemporadas = lazy(
+  () => import('./pages/temporada/ListadoTemporadas.tsx'),
+);
+const DondeVer = lazy(() => import('./pages/DondeVer.tsx'));
+const Calendario = lazy(() => import('./pages/Calendario.tsx'));
+const NuevoPiloto = lazy(() => import('./pages/admin/NuevoPiloto.tsx'));
+const MenuAdmin = lazy(() => import('./pages/admin/MenuAdmin.tsx'));
+const NuevaEscuderia = lazy(() => import('./pages/admin/NuevaEscuderia.tsx'));
+const NuevoCircuito = lazy(() => import('./pages/admin/NuevoCircuito.tsx'));
+const DetalleEscuderia = lazy(
+  () => import('./pages/escuderias/DetalleEscuderia.tsx'),
+);
+const NuevaMarca = lazy(() => import('./pages/admin/NuevaMarca.tsx'));
+const NuevaCarrera = lazy(() => import('./pages/admin/NuevaCarrera.tsx'));
+const NuevaTemporada = lazy(() => import('./pages/admin/NuevaTemporada.tsx'));
+const NuevaCategoria = lazy(() => import('./pages/admin/NuevaCategoria.tsx'));
+const ListadoPilotos = lazy(() => import('./pages/pilotos/ListadoPilotos.tsx'));
+const NuevaSesion = lazy(() => import('./pages/admin/NuevaSesion.tsx'));
+const CargarDatosSesion = lazy(
+  () => import('./pages/admin/CargarDatosSesion.tsx'),
+);
+const DetalleCircuito = lazy(
+  () => import('./pages/circuitos/DetalleCircuito.tsx'),
+);
+const DetallePiloto = lazy(() => import('./pages/pilotos/DetallePiloto.tsx'));
+const DetalleTemporada = lazy(
+  () => import('./pages/temporada/DetalleTemporada.tsx'),
+);
+const DetalleMarca = lazy(() => import('./pages/marcas/DetalleMarca.tsx'));
+const Registrarse = lazy(() => import('./pages/Registrarse.tsx'));
+const Login = lazy(() => import('./pages/Login.tsx'));
+const AdminUsuarios = lazy(() => import('./pages/admin/AdminUsuarios.tsx'));
+const Perfil = lazy(() => import('./pages/Perfil.tsx'));
+const EditarPerfil = lazy(() => import('./pages/EditarPerfil.tsx'));
 
 function App() {
   return (
