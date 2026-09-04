@@ -124,7 +124,7 @@ function PostsRecomendados() {
   }
 
   return (
-    <div className="max-w-5xl w-full mx-auto px-4 mt-8 mb-4">
+    <div className="max-w-5xl w-100 mx-auto px-4 mt-8 mb-4">
       <div className="flex items-center justify-between mb-4">
         <h4 className="text-xl font-semibold tracking-tight">
           📰 Publicaciones que te pueden interesar
@@ -141,26 +141,22 @@ function PostsRecomendados() {
       </div>
 
       {/* Contenedor en grilla */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-4">
         {posts.map((post) => (
           <Link
             key={post.id}
             to={`/foro/${post.id}`}
             className="min-w-[300px] max-w-[340px] flex-shrink-0 snap-start"
           >
-            <Card className="h-full bg-secondary/60 border-border hover:bg-secondary/90 transition-colors duration-200 overflow-hidden py-0 group">
-              {/* Imagen de portada */}
-              {post.cover_image ? (
+            <Card className="h-full bg-secondary/40 border-border hover:bg-secondary/90 transition-colors duration-200 overflow-hidden py-0 group">
+              {/* Imagen de portada (solo si tiene) */}
+              {post.cover_image && (
                 <div className="relative w-full h-40 overflow-hidden">
                   <img
                     src={getAssetUrl(post.cover_image)}
                     alt={post.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                </div>
-              ) : (
-                <div className="w-full h-40 bg-muted/50 flex items-center justify-center">
-                  <MessageCircle className="h-10 w-10 text-muted-foreground/40" />
                 </div>
               )}
 
