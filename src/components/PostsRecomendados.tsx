@@ -11,6 +11,8 @@ import { getComentarioByBlogPost } from '@/services/comentario.service';
 import { getUsuarios } from '@/services/usuario.service';
 import { AuthService } from '@/services/auth.service';
 import { getAssetUrl } from '@/utils/asset.util';
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
 
 function PostsRecomendados() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -124,7 +126,7 @@ function PostsRecomendados() {
   }
 
   return (
-    <div className="max-w-5xl w-100 mx-auto px-4 mt-8 mb-4">
+    <div className="w-full max-w-xl mx-auto px-4 mt-8 mb-4">
       <div className="flex items-center justify-between mb-4">
         <h4 className="text-xl font-semibold tracking-tight">
           📰 Publicaciones que te pueden interesar
@@ -140,62 +142,59 @@ function PostsRecomendados() {
         </Button>
       </div>
 
-      {/* Contenedor en grilla */}
-      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-4">
-        {posts.map((post) => (
-          <Link
-            key={post.id}
-            to={`/foro/${post.id}`}
-            className="min-w-[300px] max-w-[340px] flex-shrink-0 snap-start"
-          >
-            <Card className="h-full bg-secondary/40 border-border hover:bg-secondary/90 transition-colors duration-200 overflow-hidden py-0 group">
-              {/* Imagen de portada (solo si tiene) */}
-              {post.cover_image && (
-                <div className="relative w-full h-40 overflow-hidden">
-                  <img
-                    src={getAssetUrl(post.cover_image)}
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              )}
+      {/* Feed vertical con scroll custom */}
+      <SimpleBar
+        style={{ maxHeight: 600 }}
+        className="simplebar-posts pr-4"
+      >
+        <div className="flex flex-col gap-4 py-2">
+          {posts.map((post) => (
+            <Link
+              key={post.id}
+              to={`/foro/${post.id}`}
+              className="block w-full"
+            >
+              <Card className="w-full bg-secondary/40  border-border hover:bg-secondary/90 transition-colors duration-100 overflow-hidden py-0 group">
+                {/* Imagen de portada (solo si tiene) */}
+                {post.cover_image && (
+                  <div className="relative w-full h-full overflow-hidden">
+                    <img
+                      src={getAssetUrl(post.cover_image)}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
 
-              <CardHeader className="pt-4 pb-1 px-4">
-                <CardTitle className="text-base font-bold line-clamp-2">
-                  {post.title}
-                </CardTitle>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
-                  <User className="h-3 w-3" />
-                  <span>{usernameDe(getAuthorId(post))}</span>
-                </div>
-              </CardHeader>
+                <CardHeader className="pt-4 pb-1 px-4">
+                  <CardTitle className="text-base font-bold line-clamp-2">
+                    {post.title}
+                  </CardTitle>
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
+                    <User className="h-3 w-3" />
+                    <span>{usernameDe(getAuthorId(post))}</span>
+                  </div>
+                </CardHeader>
 
-              <CardContent className="px-4 pb-4">
-                <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                  {post.content}
-                </p>
-                <div className="flex items-center gap-1 mt-3 text-xs text-sky-400">
-                  <MessageCircle className="h-3.5 w-3.5" />
-                  <span>
-                    {commentCounts[post.id] ?? 0} comentario
-                    {(commentCounts[post.id] ?? 0) !== 1 ? 's' : ''}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+                <CardContent className="px-4 pb-4">
+                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                    {post.content}
+                  </p>
+                  <div className="flex items-center gap-1 mt-3 text-xs text-sky-400">
+                    <MessageCircle className="h-3.5 w-3.5" />
+                    <span>
+                      {commentCounts[post.id] ?? 0} comentario
+                      {(commentCounts[post.id] ?? 0) !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </SimpleBar>
     </div>
   );
-  <div className="mt-4 flex justify-center sm:hidden">
-    <Button variant="outline" asChild>
-      <Link to="/foro" className="gap-2">
-        Ver más posteos
-        <ArrowRight className="h-4 w-4" />
-      </Link>
-    </Button>
-  </div>;
 }
 
 export default PostsRecomendados;

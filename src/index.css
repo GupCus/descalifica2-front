@@ -138,4 +138,23 @@
 }
 
 
+/* SimpleBar custom scrollbar - posts feed */
+.simplebar-posts .simplebar-scrollbar::before {
+  background-color: #6b7280;
+  border-radius: 6px;
+  opacity: 0.5;
+}
 
+.simplebar-posts .simplebar-scrollbar.simplebar-visible::before {
+  opacity: 0.75;
+}
+
+.simplebar-posts .simplebar-track.simplebar-vertical {
+  width: 8px;
+  right: 0px;
+}
+
+.simplebar-posts .simplebar-track.simplebar-vertical .simplebar-scrollbar {
+  right: 0;
+  width: 6px;
+}
