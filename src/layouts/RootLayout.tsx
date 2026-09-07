@@ -1,7 +1,14 @@
 import { Outlet, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { LogOut, Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { useLocation } from "react-router-dom";
 import { Suspense } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -12,7 +19,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
+} from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import logoDescalifica2 from "../assets/descalifica2logo.png";
 import { AuthService } from "@/services/auth.service.ts";
@@ -34,14 +41,14 @@ function RootLayout() {
     try {
       const currentUser = await AuthService.getCurrentUser();
       setUser(currentUser);
-      
+
       if (currentUser && currentUser.avatar) {
         setAvatarUrl(getAssetUrl(currentUser.avatar));
       } else {
         setAvatarUrl("");
       }
     } catch (error) {
-      console.error('Error loading user:', error);
+      console.error("Error loading user:", error);
       setUser(null);
       setAvatarUrl("");
     } finally {
@@ -56,21 +63,21 @@ function RootLayout() {
       loadUser();
     };
 
-    window.addEventListener('userLoggedIn', handleLoginEvent);
+    window.addEventListener("userLoggedIn", handleLoginEvent);
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'token' && !e.newValue) {
+      if (e.key === "token" && !e.newValue) {
         setUser(null);
-      } else if (e.key === 'token' && e.newValue) {
+      } else if (e.key === "token" && e.newValue) {
         loadUser();
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
 
     return () => {
-      window.removeEventListener('userLoggedIn', handleLoginEvent);
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("userLoggedIn", handleLoginEvent);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -86,52 +93,102 @@ function RootLayout() {
           className="flex justify-between items-center relative w-full py-2 md:pt-0.5 md:pb-0.5 px-4"
           style={{ background: "var(--fondodescalifica2)" }}
         >
-          {/* MÓVIL: Menú Hamburguesa */}
           <div className="md:hidden flex items-center">
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
               <SheetTrigger asChild>
-                <button className="text-white p-2 hover:bg-white/10 rounded-md transition-colors" aria-label="Abrir menú">
+                <button
+                  className="text-white p-2 hover:bg-white/10 rounded-md transition-colors"
+                  aria-label="Abrir menú"
+                >
                   <Menu size={28} />
                 </button>
               </SheetTrigger>
-              <SheetContent side="left" className="bg-black/80 backdrop-blur-xl border-gray-800 text-white w-72 sm:w-80 flex flex-col overflow-y-auto">
+              <SheetContent
+                side="left"
+                className="bg-black/80 backdrop-blur-xl border-gray-800 text-white w-72 sm:w-80 flex flex-col overflow-y-auto"
+              >
                 <SheetHeader className="sr-only">
                   <SheetTitle>Menú de navegación</SheetTitle>
-                  <SheetDescription>Opciones de navegación y buscador</SheetDescription>
+                  <SheetDescription>
+                    Opciones de navegación y buscador
+                  </SheetDescription>
                 </SheetHeader>
 
                 <div className="flex flex-col gap-6 mt-6">
-                  <HeaderSearch className="w-full" onSelect={() => setSheetOpen(false)} />
+                  <HeaderSearch
+                    className="w-full"
+                    onSelect={() => setSheetOpen(false)}
+                  />
 
-                  <Link to="/" onClick={() => setSheetOpen(false)} className="text-xl font-bold hover:text-gray-300 transition-colors">
+                  <Link
+                    to="/"
+                    onClick={() => setSheetOpen(false)}
+                    className="text-xl font-bold hover:text-gray-300 transition-colors"
+                  >
                     Inicio
                   </Link>
-                  <Link to="/calendario" onClick={() => setSheetOpen(false)} className="text-xl font-semibold hover:text-gray-300 transition-colors">
+                  <Link
+                    to="/calendario"
+                    onClick={() => setSheetOpen(false)}
+                    className="text-xl font-semibold hover:text-gray-300 transition-colors"
+                  >
                     Calendario
                   </Link>
                   <div className="flex flex-col gap-3">
-                    <span className="text-xl font-semibold opacity-50">Wiki</span>
-                    <Link to="/pilotos" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                    <span className="text-xl font-semibold opacity-50">
+                      Wiki
+                    </span>
+                    <Link
+                      to="/pilotos"
+                      onClick={() => setSheetOpen(false)}
+                      className="ml-4 text-lg hover:text-gray-300 transition-colors"
+                    >
                       Pilotos
                     </Link>
-                    <Link to="/escuderias" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                    <Link
+                      to="/escuderias"
+                      onClick={() => setSheetOpen(false)}
+                      className="ml-4 text-lg hover:text-gray-300 transition-colors"
+                    >
                       Escuderías
                     </Link>
-                    <Link to="/circuitos" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                    <Link
+                      to="/circuitos"
+                      onClick={() => setSheetOpen(false)}
+                      className="ml-4 text-lg hover:text-gray-300 transition-colors"
+                    >
                       Circuitos
                     </Link>
-                    <Link to="/marcas" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                    <Link
+                      to="/marcas"
+                      onClick={() => setSheetOpen(false)}
+                      className="ml-4 text-lg hover:text-gray-300 transition-colors"
+                    >
                       Marcas
                     </Link>
-                    <Link to="/temporadas" onClick={() => setSheetOpen(false)} className="ml-4 text-lg hover:text-gray-300 transition-colors">
+                    <Link
+                      to="/temporadas"
+                      onClick={() => setSheetOpen(false)}
+                      className="ml-4 text-lg hover:text-gray-300 transition-colors"
+                    >
                       Temporadas
                     </Link>
                   </div>
-                  <Link to="/dondever" onClick={() => setSheetOpen(false)} className="text-xl font-semibold hover:text-gray-300 transition-colors">
+                  <Link
+                    to="/dondever"
+                    onClick={() => setSheetOpen(false)}
+                    className="text-xl font-semibold hover:text-gray-300 transition-colors"
+                  >
                     ¿Dónde Ver?
                   </Link>
-                  <span className="text-xl font-semibold opacity-50 cursor-not-allowed">Foro</span>
-                  <Link to="/about" onClick={() => setSheetOpen(false)} className="text-xl font-semibold hover:text-gray-300 transition-colors">
+                  <span className="text-xl font-semibold opacity-50 cursor-not-allowed">
+                    Foro
+                  </span>
+                  <Link
+                    to="/about"
+                    onClick={() => setSheetOpen(false)}
+                    className="text-xl font-semibold hover:text-gray-300 transition-colors"
+                  >
                     Sobre Nosotros
                   </Link>
                 </div>
@@ -198,10 +255,7 @@ function RootLayout() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuLink
-                  href="/foro"
-                  className="font-semibold"
-                >
+                <NavigationMenuLink href="/foro" className="font-semibold">
                   Foro
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -229,8 +283,12 @@ function RootLayout() {
                     {user.username}
                   </span>
                   <Avatar className="rounded-3xl border cursor-pointer group-hover:ring-2 group-hover:ring-accent transition-all">
-                    {avatarUrl && <AvatarImage src={avatarUrl} alt={user.username} />}
-                    <AvatarFallback>{user.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                    {avatarUrl && (
+                      <AvatarImage src={avatarUrl} alt={user.username} />
+                    )}
+                    <AvatarFallback>
+                      {user.username.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
                   </Avatar>
                 </Link>
                 <button

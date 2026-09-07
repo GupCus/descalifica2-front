@@ -6,7 +6,6 @@ import RutaProtegidaAdmin from './shared/RutaProtegidaAdmin.tsx';
 import Foro from './pages/Foro.tsx';
 import DetallePost from './pages/blogpost/DetallePost.tsx';
 import NuevoBlogPost from './pages/blogpost/NuevoBlogPost.tsx';
-
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
 const NotFound = lazy(() => import('./pages/NotFound'));
