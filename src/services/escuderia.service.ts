@@ -1,24 +1,18 @@
 import { Escuderia, NewEscuderia } from "@/entities/escuderia.entity.ts";
-import axios from "axios";
-
-const URL_API = import.meta.env.VITE_API_URL;
-
-const client = axios.create({
-  baseURL: URL_API + "/escuderias",
-});
+import { apiClient } from "./httpClient.ts";
 
 export async function getEscuderia(): Promise<Escuderia[]> {
-  const response = await client.get("/");
+  const response = await apiClient.get("/escuderias/");
   return response.data.data;
 }
 
 export async function getOneEscuderia(id: number): Promise<Escuderia> {
-  const response = await client.get("/" + id.toString());
+  const response = await apiClient.get("/escuderias/" + id.toString());
   return response.data.data;
 }
 
 export async function postEscuderia(data: NewEscuderia): Promise<Escuderia> {
-  const response = await client.post("/", data);
+  const response = await apiClient.post("/escuderias/", data);
   return response.data.data;
 }
 
@@ -26,12 +20,12 @@ export async function putEscuderia(
   id: number,
   data: Escuderia,
 ): Promise<Escuderia> {
-  const response = await client.put("/" + id.toString(), data);
+  const response = await apiClient.put("/escuderias/" + id.toString(), data);
   return response.data.data;
 }
 
 export async function deleteEscuderia(id: number): Promise<Escuderia> {
-  const response = await client.delete("/" + id.toString());
+  const response = await apiClient.delete("/escuderias/" + id.toString());
   return response.data.data;
 }
 
@@ -49,7 +43,7 @@ export async function postEscuderiaFormData(
     formData.append("image", file);
   }
 
-  const response = await client.post("/", formData, {
+  const response = await apiClient.post("/escuderias/", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -64,7 +58,7 @@ export async function uploadEscuderiaImage(
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await client.patch(`/${id}/logo-image`, formData, {
+  const response = await apiClient.patch(`/escuderias/${id}/logo-image`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -79,7 +73,7 @@ export async function uploadEscuderiaCarImage(
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await client.patch(`/${id}/car-image`, formData, {
+  const response = await apiClient.patch(`/escuderias/${id}/car-image`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

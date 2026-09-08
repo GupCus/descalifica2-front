@@ -1,9 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button.tsx";
 import fondoPorsche from "../../assets/Porsche.jpeg";
 import { NewMarca } from "@/entities/marca.entity.ts";
 import { postMarcaFormData } from "@/services/marca.service.ts";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getNationalities, Nationality } from "@/services/nationality.service.ts";
 
 type FormState = {
   name: string;
@@ -14,12 +22,22 @@ type FormState = {
 function NuevaMarca() {
   const [form, setForm] = useState<FormState>({
     name: "",
-    nationality: "",
     foundation: "",
+    nationality: "",
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [nationalities, setNationalities] = useState<Nationality[]>([]);
+
+  useEffect(() => {
+    getNationalities()
+      .then((data) => setNationalities(data))
+      .catch((err) => {
+        setNationalities([]);
+        console.error("Error cargando nacionalidades", err);
+      });
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -97,28 +115,40 @@ function NuevaMarca() {
             />
           </InputGroup>
 
-          <InputGroup className="mb-5 w-full">
-            <InputGroupInput
-              placeholder="Nacionalidad"
-              id="nationality"
-              value={form.nationality}
-              onChange={handleChange}
-              required
-            />
-          </InputGroup>
-
-          <InputGroup className="mb-5 w-full">
-            <InputGroupInput
-              type="number"
-              placeholder="Año de fundación"
-              id="foundation"
-              value={form.foundation}
-              onChange={handleChange}
-              required
-              min="1800"
-              max={new Date().getFullYear()}
-            />
-          </InputGroup>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputGroup>
+              <InputGroupInput
+                placeholder="Año de fundación"
+                id="foundation"
+                type="number"
+                value={form.foundation}
+                onChange={handleChange}
+                required
+                min="1800"
+                max={new Date().getFullYear()}
+              />
+            </InputGroup>
+            <InputGroup>
+              <Select
+                value={form.nationality}
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, nationality: value }))
+                }
+                required
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Nacionalidad" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  {nationalities.map((n) => (
+                    <SelectItem key={n.code} value={n.code}>
+                      {n.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </InputGroup>
+          </div>
 
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-200 mb-1">

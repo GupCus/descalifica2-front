@@ -1,34 +1,28 @@
 import { NewPiloto, Piloto } from "@/entities/piloto.entity.ts";
-import axios from "axios";
-
-const URL_API = import.meta.env.VITE_API_URL;
-
-const client = axios.create({
-  baseURL: URL_API + "/pilotos",
-});
+import { apiClient } from "./httpClient.ts";
 
 export async function getPiloto(): Promise<Piloto[]> {
-  const response = await client.get("/");
+  const response = await apiClient.get("/pilotos/");
   return response.data.data;
 }
 
 export async function getOnePiloto(id: number): Promise<Piloto> {
-  const response = await client.get("/" + id.toString());
+  const response = await apiClient.get("/pilotos/" + id.toString());
   return response.data.data;
 }
 
 export async function postPiloto(data: NewPiloto): Promise<Piloto> {
-  const response = await client.post("/", data);
+  const response = await apiClient.post("/pilotos/", data);
   return response.data.data;
 }
 
 export async function putPiloto(id: number, data: Piloto): Promise<Piloto> {
-  const response = await client.put("/" + id.toString(), data);
+  const response = await apiClient.put("/pilotos/" + id.toString(), data);
   return response.data.data;
 }
 
 export async function deletePiloto(id: number): Promise<Piloto> {
-  const response = await client.delete("/" + id.toString());
+  const response = await apiClient.delete("/pilotos/" + id.toString());
   return response.data.data;
 }
 
@@ -46,7 +40,7 @@ export async function postPilotoFormData(
     formData.append("image", file);
   }
 
-  const response = await client.post("/", formData, {
+  const response = await apiClient.post("/pilotos/", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -54,23 +48,11 @@ export async function postPilotoFormData(
   return response.data.data;
 }
 
-// export async function getPilotoImage(id: number, file: File): Promise<any> {
-//   const formData = new FormData();
-//   formData.append("image", file);
-
-//   const response = await client.get(`/${id}/portrait-image`, formData, {
-//     headers: {
-//       "Content-Type": "multipart/form-data",
-//     },
-//   });
-//   return response.data;
-// }
-
 export async function uploadPilotoImage(id: number, file: File): Promise<any> {
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await client.patch(`/${id}/portrait-image`, formData, {
+  const response = await apiClient.patch(`/pilotos/${id}/portrait-image`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

@@ -15,6 +15,7 @@ import { getCategoria } from "@/services/categoria.service.ts";
 import { getMarca } from "@/services/marca.service.ts";
 import { NewEscuderia } from "@/entities/escuderia.entity.ts";
 import { postEscuderiaFormData } from "@/services/escuderia.service.ts";
+import { getNationalities, Nationality } from "@/services/nationality.service.ts";
 
 type FormState = {
   name: string;
@@ -39,6 +40,7 @@ function NuevaEscuderia() {
   const [message, setMessage] = useState<string | null>(null);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [marcas, setMarcas] = useState<Marca[]>([]);
+  const [nationalities, setNationalities] = useState<Nationality[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -59,6 +61,12 @@ function NuevaEscuderia() {
       .catch((err) => {
         setMarcas([]);
         console.error("Error cargando marcas", err);
+      });
+    getNationalities()
+      .then((data) => setNationalities(data))
+      .catch((err) => {
+        setNationalities([]);
+        console.error("Error cargando nacionalidades", err);
       });
   }, []);
 
@@ -154,13 +162,24 @@ function NuevaEscuderia() {
               />
             </InputGroup>
             <InputGroup>
-              <InputGroupInput
-                placeholder="Nacionalidad"
-                id="nationality"
+              <Select
                 value={form.nationality}
-                onChange={handleChange}
+                onValueChange={(value) =>
+                  setForm((s) => ({ ...s, nationality: value }))
+                }
                 required
-              />
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Nacionalidad" />
+                </SelectTrigger>
+                <SelectContent className="border-secondary">
+                  {nationalities.map((n) => (
+                    <SelectItem key={n.code} value={n.code}>
+                      {n.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </InputGroup>
           </div>
 
