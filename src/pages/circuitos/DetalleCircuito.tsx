@@ -1,16 +1,15 @@
-import { Circuito } from "@/entities/circuito.entity.ts";
-import { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button.tsx";
-import { Trash2 } from "lucide-react";
+import { Circuito } from '@/entities/circuito.entity.ts';
+import { useState, useEffect } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button.tsx';
+import { Trash2 } from 'lucide-react';
 import {
   deleteCircuito,
   uploadCircuitoImage,
   uploadTrackImage,
-} from "@/services/circuito.service.ts";
-import { AuthService } from "@/services/auth.service.ts";
-import { getAssetUrl } from "@/utils/asset.util.ts";
-
+} from '@/services/circuito.service.ts';
+import { AuthService } from '@/services/auth.service.ts';
+import { getAssetUrl } from '@/utils/asset.util.ts';
 
 function DetalleCircuito() {
   const { id } = useParams<{ id: string }>();
@@ -37,11 +36,11 @@ function DetalleCircuito() {
     setUploadingImage(true);
     try {
       await uploadCircuitoImage(circuito.id, selectedFile);
-      alert("Imagen actualizada correctamente");
+      alert('Imagen actualizada correctamente');
       // Opcional: Recargar el circuito actualizando el componente
       window.location.reload();
     } catch (error) {
-      alert("Error al actualizar la imagen");
+      alert('Error al actualizar la imagen');
     } finally {
       setUploadingImage(false);
       setSelectedFile(null);
@@ -53,18 +52,18 @@ function DetalleCircuito() {
     setUploadingImage(true);
     try {
       await uploadTrackImage(circuito.id, selectedFile);
-      alert("Imagen actualizada correctamente");
+      alert('Imagen actualizada correctamente');
       // Opcional: Recargar el circuito actualizando el componente
       window.location.reload();
     } catch (error) {
-      alert("Error al actualizar la imagen");
+      alert('Error al actualizar la imagen');
     } finally {
       setUploadingImage(false);
       setSelectedFile(null);
     }
   };
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
   useEffect(() => {
     if (!id) return;
@@ -90,10 +89,10 @@ function DetalleCircuito() {
     if (confirm(`¿Estás seguro de eliminar "${circuito.name}"?`)) {
       try {
         await deleteCircuito(circuito.id);
-        navigate("/circuitos");
+        navigate('/circuitos');
       } catch (err) {
-        console.error("Error eliminando circuito", err);
-        alert("Error al eliminar el circuito");
+        console.error('Error eliminando circuito', err);
+        alert('Error al eliminar el circuito');
       }
     }
   };
@@ -129,10 +128,10 @@ function DetalleCircuito() {
       <div
         className="absolute inset-0 w-full h-full blur-sm opacity-50 -z-10"
         style={{
-          backgroundImage: `url(${new URL("../../assets/Spa-fondo.jpg", import.meta.url).href})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "blur(50px) brightness(0.35)",
+          backgroundImage: `url(${new URL('../../assets/Spa-fondo.jpg', import.meta.url).href})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(50px) brightness(0.35)',
         }}
       />
 
@@ -161,17 +160,17 @@ function DetalleCircuito() {
           <div className="lg:col-span-6">
             <div className="bg-slate-900/70 backdrop-blur-md rounded-xl overflow-hidden shadow-xl border border-slate-700/50 flex items-center justify-center p-3 sm:p-5 h-64 sm:h-80 lg:h-[400px]">
               <img
-                src={getAssetUrl(circuito.track_map_image)}
+                src={getAssetUrl(circuito.track_map_url)}
                 alt={circuito.name}
                 className="max-h-full max-w-full object-contain"
                 onError={(e) => {
                   const target = e.currentTarget as HTMLImageElement;
                   target.onerror = null;
                   target.src = new URL(
-                    "../../assets/descalifica2logo.png",
+                    '../../assets/descalifica2logo.png',
                     import.meta.url,
                   ).href;
-                  target.classList.add("object-contain", "p-4");
+                  target.classList.add('object-contain', 'p-4');
                 }}
               />
             </div>
@@ -199,7 +198,7 @@ function DetalleCircuito() {
                       alt={`Bandera de ${circuito.country}`}
                       className="w-6 h-4 sm:w-8 sm:h-5 object-cover rounded shadow border border-white/10 shrink-0"
                       onError={(e) => {
-                        e.currentTarget.style.display = "none";
+                        e.currentTarget.style.display = 'none';
                       }}
                     />
                   )}
@@ -214,7 +213,7 @@ function DetalleCircuito() {
                   Inauguración
                 </h3>
                 <p className="text-xs sm:text-base font-semibold text-white truncate">
-                  {circuito.year || "—"}
+                  {circuito.year || '—'}
                 </p>
               </div>
 
@@ -251,7 +250,7 @@ function DetalleCircuito() {
                       disabled={!selectedFile || uploadingImage}
                       className="px-4 py-1.5 bg-emerald-900 hover:bg-green-800 text-white rounded-md text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0 shrink-0 cursor-pointer"
                     >
-                      {uploadingImage ? "Subiendo..." : "Subir Imagen"}
+                      {uploadingImage ? 'Subiendo...' : 'Subir Imagen'}
                     </button>
                   </div>
                 </div>
@@ -277,7 +276,7 @@ function DetalleCircuito() {
                       disabled={!selectedFile || uploadingImage}
                       className="px-4 py-1.5 bg-emerald-900 hover:bg-green-800 text-white rounded-md text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0 shrink-0 cursor-pointer"
                     >
-                      {uploadingImage ? "Subiendo..." : "Subir Imagen"}
+                      {uploadingImage ? 'Subiendo...' : 'Subir Imagen'}
                     </button>
                   </div>
                 </div>

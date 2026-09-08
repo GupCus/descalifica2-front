@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { ChromaGrid } from "@/components/ui/Chroma-grid";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Circuito } from "@/entities/circuito.entity.ts";
-import { getCircuito } from "@/services/circuito.service.ts";
-import { Link } from "react-router-dom";
-import { getAssetUrl } from "@/utils/asset.util.ts";
+import { useEffect, useState } from 'react';
+import { ChromaGrid } from '@/components/ui/Chroma-grid';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Circuito } from '@/entities/circuito.entity.ts';
+import { getCircuito } from '@/services/circuito.service.ts';
+import { Link } from 'react-router-dom';
+import { getAssetUrl } from '@/utils/asset.util.ts';
 
 function ListadoCircuitos() {
   const [circuitos, setCircuitos] = useState<Circuito[]>([]);
@@ -17,7 +17,7 @@ function ListadoCircuitos() {
       .then((data) => setCircuitos(data))
       .catch((err) => {
         setError(err.message);
-        console.error("Error cargando circuitos", err);
+        console.error('Error cargando circuitos', err);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -64,10 +64,10 @@ function ListadoCircuitos() {
         className="absolute inset-0 w-full h-full blur-sm opacity-70"
         style={{
           backgroundImage: `url(${
-            new URL("../../assets/circuitosFondo.jpg", import.meta.url).href
+            new URL('../../assets/circuitosFondo.jpg', import.meta.url).href
           })`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       ></div>
       <ChromaGrid />
@@ -100,17 +100,17 @@ function ListadoCircuitos() {
                   >
                     <div className="relative w-full h-44 sm:h-56 overflow-hidden">
                       <img
-                        src={getAssetUrl(circuito.track_map_image)}
+                        src={getAssetUrl(circuito.track_map_url)}
                         alt={circuito.name}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src = new URL(
-                            "../../assets/descalifica2logo.png",
+                            '../../assets/descalifica2logo.png',
                             import.meta.url,
                           ).href;
                           target.className =
-                            "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
+                            'absolute inset-0 w-full h-full object-contain bg-slate-900/50';
                         }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
