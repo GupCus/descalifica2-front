@@ -4,13 +4,13 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import TextType from "@/components/ui/TextType.tsx";
-import { Carrera } from "@/entities/carrera.entity.ts";
-import PostRecomendados from "@/components/PostsRecomendados.tsx";
-import { getCarrera } from "@/services/carrera.service.ts";
-import { getAssetUrl } from "@/utils/asset.util.ts";
-import { useEffect, useState } from "react";
+} from '@/components/ui/accordion';
+import TextType from '@/components/ui/TextType.tsx';
+import { Carrera } from '@/entities/carrera.entity.ts';
+import PostRecomendados from '@/components/PostsRecomendados.tsx';
+import { getCarrera } from '@/services/carrera.service.ts';
+import { useEffect, useState } from 'react';
+import { Spinner } from '@/components/ui/spinner.tsx';
 
 function Home() {
   const [carreras, setCarreras] = useState<Carrera[]>([]);
@@ -25,10 +25,61 @@ function Home() {
   }, []);
 
   if (loading) {
-    return <div> Cargando carreras... </div>;
+    return (
+      <div>
+        <div className="relative pt-20 pb-20 text-center flex flex-col justify-center items-center overflow-hidden">
+          <div
+            className="absolute inset-0 w-full h-full z-0 blur-[3px]"
+            style={{
+              backgroundImage: "url('./src/assets/ferrari-lluvia-sainz.jpg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          />
+
+          <div className="relative z-10 px-4 w-full max-w-5xl mx-auto">
+            <div className="min-h-[130px] md:min-h-[160px] flex flex-col justify-center">
+              <TextType
+                className="text-3xl md:text-5xl font-extrabold tracking-tight text-primary-foreground"
+                text={[
+                  'Bienvenido al mejor foro sobre automovilismo.',
+                  'Welcome to the best motorsport forum.',
+                  'Willkommen im berühmtesten Motorsportforum.',
+                  'Bem-vindo ao mais mejor fórum do automobilismo',
+                  'モータースポーツに関する最高のフォーラムへようこそ',
+                ]}
+                typingSpeed={75}
+                pauseDuration={3500}
+                showCursor={true}
+                cursorCharacter="_"
+              />
+            </div>
+            <h3 className="text-primary-foreground mt-5 scroll-m-20 text-lg md:text-xl font-semibold tracking-tight text-center">
+              En descalifica2 vas a encontrar toda la información que necesitás
+              para tu deporte motor favorito.
+            </h3>
+          </div>
+        </div>
+
+        <div>
+          <h4 className="text-xl font-semibold tracking-tight mt-5 mb-5 text-center">
+            Últimos grandes premios:{' '}
+          </h4>
+          <div className="min-h-[50vh] flex items-center justify-center">
+            <Spinner className="size-8" />
+          </div>
+        </div>
+      </div>
+    );
   }
   if (error) {
-    return <div> Error cargando carreras... </div>;
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <p className="text-red-400 text-lg">
+          Error cargando carreras, recargá la página
+        </p>
+      </div>
+    );
   }
 
   const carrerasAnteriores =
@@ -102,17 +153,11 @@ function Home() {
                       </div>
 
                       <img
-                        src={gp.track?.track_map_image}
+                        src={gp.track?.track_map_url}
                         alt={gp.track?.name}
                         className="max-w-full md:max-w-[40%] mx-auto max-h-48 w-auto h-auto object-contain"
                       />
                     </div>
-
-                    <img
-                      src={getAssetUrl(gp.track?.track_map_image)}
-                      alt={gp.track?.name}
-                      className="max-w-[40%] max-h-48 w-auto h-auto object-contain"
-                    />
                   </AccordionContent>
                 </AccordionItem>
               ),
@@ -124,10 +169,9 @@ function Home() {
           )}
         </Accordion>
       </div>
-      <PostRecomendados/>
+      <PostRecomendados />
     </>
   );
-    
 }
 
 export default Home;

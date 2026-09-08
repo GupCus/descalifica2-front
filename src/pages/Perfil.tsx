@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Shield, Pencil, ArrowLeft, Trophy, Flag, MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AuthService } from "@/services/auth.service.ts";
-import { apiClient } from "@/services/httpClient";
-import { getAssetUrl } from "@/utils/asset.util.ts";
-import fondoPerfil from "../assets/garageRB.jpg";
+import { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Shield, Pencil, ArrowLeft, Trophy, Flag, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { AuthService } from '@/services/auth.service.ts';
+import { apiClient } from '@/services/httpClient';
+import { getAssetUrl } from '@/utils/asset.util.ts';
+import fondoPerfil from '../assets/garageRB.jpg';
 
 interface ProfileData {
   id: number;
@@ -21,6 +21,7 @@ interface ProfileData {
   fav_circuit: string | null;
   bio: string | null;
   telegram_username: string | null;
+  telegram_id?: string | null;
   avatar_url?: string | null;
   avatar?: string | null;
   user_type?: string;
@@ -30,19 +31,19 @@ function formatDate(dateStr?: string | null) {
   if (!dateStr) return null;
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return dateStr;
-  return d.toLocaleDateString("es-ES", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
+  return d.toLocaleDateString('es-ES', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
   });
 }
 
 function Perfil() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string>("");
-  const [userRole, setUserRole] = useState<string>("user");
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
+  const [userRole, setUserRole] = useState<string>('user');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,10 +52,10 @@ function Perfil() {
       try {
         const me = await AuthService.getCurrentUser();
         if (!me) {
-          navigate("/login");
+          navigate('/login');
           return;
         }
-        setUserRole(me.user_type || "user");
+        setUserRole(me.user_type || 'user');
 
         if (me.avatar) {
           setAvatarUrl(getAssetUrl(me.avatar));
@@ -70,11 +71,11 @@ function Perfil() {
         if (avatarPath) {
           setAvatarUrl(getAssetUrl(avatarPath));
         } else if (!me.avatar) {
-          setAvatarUrl("");
+          setAvatarUrl('');
         }
       } catch (err: any) {
-        console.error("Error al cargar perfil:", err);
-        setError("Error al cargar los datos del perfil.");
+        console.error('Error al cargar perfil:', err);
+        setError('Error al cargar los datos del perfil.');
       } finally {
         setLoading(false);
       }
@@ -95,7 +96,7 @@ function Perfil() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 gap-4">
         <p className="text-red-400 text-lg">
-          {error || "No se pudo encontrar el usuario."}
+          {error || 'No se pudo encontrar el usuario.'}
         </p>
         <Link
           to="/"
@@ -107,7 +108,7 @@ function Perfil() {
     );
   }
 
-  const isAdmin = userRole === "admin" || profile.user_type === "admin";
+  const isAdmin = userRole === 'admin' || profile.user_type === 'admin';
   const formattedBirthDate = formatDate(profile.date_of_birth);
 
   return (
@@ -116,9 +117,9 @@ function Perfil() {
         className="absolute inset-0 w-full h-full z-0"
         style={{
           backgroundImage: `url(${fondoPerfil})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "blur(6px) brightness(0.35)",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(6px) brightness(0.35)',
         }}
       />
 
@@ -148,13 +149,13 @@ function Perfil() {
               className="text-gray-200 text-lg sm:text-2xl font-bold tracking-wider uppercase"
               style={{
                 fontFamily: "'Orbitron', 'Rajdhani', sans-serif",
-                letterSpacing: "0.08em",
+                letterSpacing: '0.08em',
               }}
             >
               Mi Perfil
             </h1>
             <Button
-              onClick={() => navigate("/perfil/editar")}
+              onClick={() => navigate('/perfil/editar')}
               className="bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-1.5 px-3 py-1.5 h-8 rounded-lg text-xs font-medium cursor-pointer shadow-md"
             >
               <Pencil size={13} />
@@ -172,7 +173,7 @@ function Perfil() {
                 />
               )}
               <AvatarFallback className="text-xl sm:text-2xl font-bold bg-gray-900 text-gray-400">
-                {(profile.name || profile.username || "U")
+                {(profile.name || profile.username || 'U')
                   .charAt(0)
                   .toUpperCase()}
               </AvatarFallback>
@@ -202,7 +203,7 @@ function Perfil() {
                     Nombre
                   </span>
                   <span className="text-xs sm:text-sm text-gray-200 font-medium truncate block mt-0.5">
-                    {profile.name || "—"}
+                    {profile.name || '—'}
                   </span>
                 </div>
 
@@ -211,7 +212,7 @@ function Perfil() {
                     Apellido
                   </span>
                   <span className="text-xs sm:text-sm text-gray-200 font-medium truncate block mt-0.5">
-                    {profile.surname || "—"}
+                    {profile.surname || '—'}
                   </span>
                 </div>
 
@@ -241,15 +242,31 @@ function Perfil() {
                   <span className="text-[9px] sm:text-[10px] text-gray-400 uppercase font-semibold tracking-wider block">
                     Telegram
                   </span>
-                  <span className="text-xs sm:text-sm text-gray-200 font-medium truncate block mt-0.5">
-                    {profile.telegram_username ? (
-                      `@${profile.telegram_username}`
-                    ) : (
-                      <span className="text-gray-500 italic text-[11px]">
-                        No configurado
-                      </span>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="text-xs sm:text-sm text-gray-200 font-medium truncate block">
+                      {profile.telegram_username ? (
+                        `@${profile.telegram_username}`
+                      ) : (
+                        <span className="text-gray-500 italic text-[11px]">
+                          No configurado
+                        </span>
+                      )}
+                    </span>
+                    {profile.telegram_id?.includes('otp') && (
+                      <Button
+                        size="sm"
+                        className="h-6 px-2 text-[10px] bg-blue-600 hover:bg-blue-700 text-white rounded shrink-0"
+                        onClick={() =>
+                          window.open(
+                            `https://t.me/descalifica2bot?start=${profile.telegram_id}`,
+                            '_blank',
+                          )
+                        }
+                      >
+                        Validar telegram
+                      </Button>
                     )}
-                  </span>
+                  </div>
                 </div>
               </div>
             </div>
