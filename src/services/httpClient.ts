@@ -1,18 +1,14 @@
-import axios from "axios";
+import axios from 'axios';
 
-const DEFAULT_API_BASE_URL = "http://localhost:3000/api";
-
-export const API_BASE_URL =
-  (import.meta.env?.VITE_API_BASE_URL as string | undefined) ??
-  DEFAULT_API_BASE_URL;
+const URL_API = import.meta.env.VITE_API_URL;
 
 export const apiClient = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: URL_API,
 });
 
 apiClient.interceptors.request.use((config) => {
   const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
+    localStorage.getItem('token') || sessionStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

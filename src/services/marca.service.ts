@@ -1,34 +1,28 @@
 import { Marca } from "@/entities/marca.entity.ts";
-import axios from "axios";
-
-const URL_API = import.meta.env.VITE_API_URL;
-
-const client = axios.create({
-  baseURL: URL_API + "/marcas",
-});
+import { apiClient } from "./httpClient.ts";
 
 export async function getMarca(): Promise<Marca[]> {
-  const response = await client.get("/");
+  const response = await apiClient.get("/marcas/");
   return response.data.data;
 }
 
 export async function getOneMarca(id: number): Promise<Marca> {
-  const response = await client.get("/" + id.toString());
+  const response = await apiClient.get("/marcas/" + id.toString());
   return response.data.data;
 }
 
 export async function postMarca(data: Marca): Promise<Marca> {
-  const response = await client.post("/", data);
+  const response = await apiClient.post("/marcas/", data);
   return response.data.data;
 }
 
 export async function putMarca(id: number, data: Marca): Promise<Marca> {
-  const response = await client.put("/" + id.toString(), data);
+  const response = await apiClient.put("/marcas/" + id.toString(), data);
   return response.data.data;
 }
 
 export async function deleteMarca(id: number): Promise<Marca> {
-  const response = await client.delete("/" + id.toString());
+  const response = await apiClient.delete("/marcas/" + id.toString());
   return response.data.data;
 }
 
@@ -46,7 +40,7 @@ export async function postMarcaFormData(
     formData.append("image", file);
   }
 
-  const response = await client.post("/", formData, {
+  const response = await apiClient.post("/marcas/", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -58,7 +52,7 @@ export async function uploadMarcaImage(id: number, file: File): Promise<any> {
   const formData = new FormData();
   formData.append("image", file);
 
-  const response = await client.patch(`/${id}/logo-image`, formData, {
+  const response = await apiClient.patch(`/marcas/${id}/logo-image`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

@@ -1,4 +1,4 @@
-import { baseEntity } from "./baseEntity.entity.ts";
+import { baseEntity } from './baseEntity.entity.ts';
 
 export class Usuario extends baseEntity {
   name!: string;
@@ -12,6 +12,7 @@ export class Usuario extends baseEntity {
   fav_circuit?: string;
   bio?: string;
   telegram_username?: string;
+  telegram_id?: string;
   avatar_url?: string;
   user_type?: string;
 }

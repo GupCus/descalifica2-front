@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Calendar as ChevronDownIcon } from "lucide-react";
+import { getNationalities, Nationality } from "@/services/nationality.service.ts";
 
 //DEFINICIONES DE CLASES
 type FormState = {
@@ -52,6 +53,7 @@ function NuevoPiloto() {
   const [message, setMessage] = useState<string | null>(null);
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [nationalities, setNationalities] = useState<Nationality[]>([]);
   const [, setError] = useState<string | null>();
   const [openBirthDate, setOpenBirthDate] = useState(false);
 
@@ -68,6 +70,9 @@ function NuevoPiloto() {
       .catch((err) => setError(err));
     getCategoria()
       .then((data) => setCategorias(data))
+      .catch((err) => setError(err));
+    getNationalities()
+      .then((data) => setNationalities(data))
       .catch((err) => setError(err));
   }, []);
 
@@ -193,13 +198,24 @@ function NuevoPiloto() {
           </div>
 
           <InputGroup className="mb-5 w-full">
-            <InputGroupInput
-              placeholder="Nacionalidad"
-              id="nationality"
+            <Select
               value={form.nationality}
-              onChange={handleChange}
+              onValueChange={(value) =>
+                setForm((s) => ({ ...s, nationality: value }))
+              }
               required
-            />
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Nacionalidad" />
+              </SelectTrigger>
+              <SelectContent className="border-secondary">
+                {nationalities.map((n) => (
+                  <SelectItem key={n.code} value={n.code}>
+                    {n.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </InputGroup>
 
           <Popover open={openBirthDate} onOpenChange={setOpenBirthDate}>
