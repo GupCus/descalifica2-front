@@ -12,6 +12,7 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const ListadoEscuderias = lazy(
   () => import('./pages/escuderias/ListadoEscuderias.tsx'),
 );
+const Politicas = lazy(() => import('./pages/Politicas.tsx'));
 const ListadoMarcas = lazy(() => import('./pages/marcas/ListadoMarcas.tsx'));
 const ListadoCircuitos = lazy(
   () => import('./pages/circuitos/ListadoCircuitos.tsx'),
@@ -57,6 +58,7 @@ function App() {
       <Route path="/" element={<RootLayout />}>
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
+        <Route path="politicas" element={<Politicas />} />
         <Route path="calendario" element={<Calendario />} />
         <Route path="pilotos" element={<ListadoPilotos />} />
         <Route path="escuderias" element={<ListadoEscuderias />} />

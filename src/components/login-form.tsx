@@ -157,7 +157,7 @@ export function LoginForm({
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Contraseña</FieldLabel>
                   <a
-                    href="#"
+                    href="https://youtu.be/dQw4w9WgXcQ"
                     className="ml-auto text-sm underline-offset-4 hover:underline"
                   >
                     Te olvidaste la contraseña?
@@ -204,7 +204,7 @@ export function LoginForm({
       </Card>
       <FieldDescription className="px-6 text-center">
         Apretando continuar, significa que aceptaste nuestros{' '}
-        <a href="#">términos de servicio</a>
+        <a href="/politicas">términos de servicio</a>
       </FieldDescription>
     </div>
   );
