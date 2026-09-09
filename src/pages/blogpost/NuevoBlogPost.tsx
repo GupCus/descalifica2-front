@@ -146,16 +146,16 @@ function NuevoBlogPost() {
           </InputGroup>
 
           <InputGroup className="w-full">
-              <Textarea
-                placeholder="¿Que estas pensando?"
-                id="content"
-                rows={8}
-                value={form.content}
-                onChange={handleChange}
-                required
-                className="bg-gray-900 border-gray-700 text-gray-200 resize-none shadow-none w-full"
-              />
-            </InputGroup>
+            <Textarea
+              placeholder="¿Que estas pensando?"
+              id="content"
+              rows={8}
+              value={form.content}
+              onChange={handleChange}
+              required
+              className="bg-gray-900 border-gray-700 text-gray-200 resize-none shadow-none w-full"
+            />
+          </InputGroup>
 
           {/* Sección de Tags */}
           <div className="mt-4">
@@ -163,7 +163,8 @@ function NuevoBlogPost() {
               Tags (Opcional)
             </label>
             <p className="text-xs text-gray-400 mb-2">
-              Agregá hasta {MAX_TAGS} tags para categorizar tu post. Presioná Enter o coma para agregar.
+              Agregá hasta {MAX_TAGS} tags para categorizar tu post. Presioná
+              Enter o coma para agregar.
             </p>
             <div
               className="flex flex-wrap items-center gap-2 bg-gray-900 rounded-md border border-gray-700 px-3 py-2 min-h-[42px] cursor-text"
@@ -195,8 +196,16 @@ function NuevoBlogPost() {
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagKeyDown}
-                onBlur={() => { if (tagInput.trim()) addTag(tagInput); }}
-                placeholder={tags.length === 0 ? 'Ej: f1, ferrari, carrera...' : tags.length >= MAX_TAGS ? `Máximo ${MAX_TAGS} tags` : 'Agregar tag...'}
+                onBlur={() => {
+                  if (tagInput.trim()) addTag(tagInput);
+                }}
+                placeholder={
+                  tags.length === 0
+                    ? 'Ej: f1, ferrari, carrera...'
+                    : tags.length >= MAX_TAGS
+                      ? `Máximo ${MAX_TAGS} tags`
+                      : 'Agregar tag...'
+                }
                 disabled={tags.length >= MAX_TAGS}
                 className="flex-1 min-w-[120px] bg-transparent text-gray-200 text-sm outline-none placeholder:text-gray-500 disabled:opacity-50"
               />

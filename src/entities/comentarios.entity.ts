@@ -9,6 +9,5 @@ export class Comentario extends baseEntity {
 
 export class NewComentario {
   content!: string;
-  author!: number;
   blogpost!: number;
 }

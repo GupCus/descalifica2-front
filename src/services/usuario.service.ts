@@ -1,20 +1,12 @@
-import { Usuario, NewUsuario } from "@/entities/usuario.entity.ts";
-import axios from "axios";
-
-const URL_API = import.meta.env.VITE_API_URL;
-
-const client = axios.create({
-  baseURL: URL_API + "/usuarios",
-});
-
-//creo lo necesario para testear el registro de un usuario, hay que agregar las demás funciones.
+import { Usuario, NewUsuario } from '@/entities/usuario.entity.ts';
+import { apiClient } from './httpClient.ts';
 
 export async function getUsuarios(): Promise<Usuario[]> {
-  const response = await client.get("/");
-  return response.data.data;
+  const response = await apiClient.get<{ data: Usuario[] }>('/usuarios/public');
+  return response.data.data ?? [];
 }
 
 export async function postUsuario(data: NewUsuario): Promise<Usuario> {
-  const response = await client.post("/", data);
+  const response = await apiClient.post<{ data: Usuario }>('/usuarios', data);
   return response.data.data;
 }

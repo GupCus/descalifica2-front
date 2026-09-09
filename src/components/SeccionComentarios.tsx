@@ -50,16 +50,14 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
   }, [postId]);
 
   useEffect(() => {
-    Promise.all([
-      cargarComentarios(),
-      getUsuarios(),
-      AuthService.getCurrentUser(),
-    ])
-      .then(([, usuariosData, currentUser]) => {
-        setUsuarios(usuariosData);
-        setUser(currentUser);
-      })
-      .finally(() => setLoading(false));
+    cargarComentarios().catch(console.error);
+    getUsuarios()
+      .then(setUsuarios)
+      .catch(() => setUsuarios([]));
+    AuthService.getCurrentUser()
+      .then(setUser)
+      .catch(() => setUser(null));
+    setLoading(false);
   }, [cargarComentarios]);
 
   const usernameDe = (authorId: number): string => {
@@ -79,7 +77,6 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
     try {
       await addComentario({
         content: nuevoComentario.trim(),
-        author: user.id,
         blogpost: postId,
       });
       setNuevoComentario('');
@@ -93,7 +90,9 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
   };
 
   const handleEliminar = async (id: number) => {
-    if (!window.confirm('¿Estás seguro de que querés eliminar este comentario?'))
+    if (
+      !window.confirm('¿Estás seguro de que querés eliminar este comentario?')
+    )
       return;
     try {
       await deleteComentario(id);
@@ -140,7 +139,10 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
         !loading && (
           <Card className="bg-slate-900/60 backdrop-blur-md border-slate-700/40 mb-8">
             <CardContent className="p-4 text-center text-gray-400">
-              <Link to="/login" className="text-sky-400 hover:text-sky-300 font-medium">
+              <Link
+                to="/login"
+                className="text-sky-400 hover:text-sky-300 font-medium"
+              >
                 Iniciá sesión
               </Link>{' '}
               para poder comentar

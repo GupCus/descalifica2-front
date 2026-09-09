@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { BlogPost } from '@/entities/blogPost.entity';
 import { Usuario } from '@/entities/usuario.entity';
 import { getBlogPost, deleteBlogPost } from '@/services/blogpost.service';
-import { getComentarioByBlogPost } from '@/services/comentario.service';
+import { getComentariosCount } from '@/services/comentario.service';
 import { getUsuarios } from '@/services/usuario.service';
 import { getAssetUrl } from '@/utils/asset.util';
 import fondoMonza from '../assets/Monza.jpg';
@@ -20,30 +20,22 @@ function Foro() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<VerifyTokenResponse['user'] | null>(null);
-  const [commentCounts, setCommentCounts] = useState<Record<number, number>>({});
+  const [commentCounts, setCommentCounts] = useState<Record<number, number>>(
+    {},
+  );
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
   useEffect(() => {
     getBlogPost()
-      .then(async (data) => {
+      .then((data) => {
         const sorted = [...(data ?? [])].sort(
           (a, b) =>
-            new Date(b.created_at).getTime() -
-            new Date(a.created_at).getTime(),
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
         );
         setPosts(sorted);
-        const counts: Record<number, number> = {};
-        await Promise.all(
-          data.map(async (post) => {
-            try {
-              const comentarios = await getComentarioByBlogPost(post.id);
-              counts[post.id] = comentarios.length;
-            } catch {
-              counts[post.id] = 0;
-            }
-          }),
-        );
-        setCommentCounts(counts);
+        getComentariosCount(data.map((post) => post.id))
+          .then(setCommentCounts)
+          .catch(() => setCommentCounts({}));
       })
       .catch((err) => {
         setError('Error cargando las publicaciones: ' + err);
@@ -62,6 +54,7 @@ function Foro() {
   };
 
   const usernameDe = (authorId: number): string => {
+    console.log('Usuarios:', usuarios);
     const usuario = usuarios.find((u) => u.id === authorId);
     return usuario?.username ?? usuario?.name ?? 'Usuario eliminado';
   };
@@ -75,7 +68,9 @@ function Foro() {
   const handleEliminarPost = async (e: React.MouseEvent, post: BlogPost) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!window.confirm(`¿Estás seguro de que querés eliminar "${post.title}"?`))
+    if (
+      !window.confirm(`¿Estás seguro de que querés eliminar "${post.title}"?`)
+    )
       return;
     try {
       await deleteBlogPost(post.id);
@@ -146,14 +141,12 @@ function Foro() {
           filter: 'blur(6px) brightness(0.5)',
         }}
       />
-      
+
       <ChromaGrid />
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-1">FORO</h1>
-          <p className="text-gray-300">
-            Las publicaciones de la comunidad
-          </p>
+          <p className="text-gray-300">Las publicaciones de la comunidad</p>
         </div>
       </div>
 
@@ -207,7 +200,22 @@ function Foro() {
                         title="Eliminar publicación"
                         className="shrink-0 p-1.5 rounded-md bg-red-900/70 text-red-300 hover:bg-red-800 hover:text-red-100 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                          <line x1="10" y1="11" x2="10" y2="17" />
+                          <line x1="14" y1="11" x2="14" y2="17" />
+                        </svg>
                       </button>
                     )}
                   </div>
@@ -216,7 +224,8 @@ function Foro() {
                     <span>{usernameDe(getAuthorId(post))}</span>
                     {post.created_at && (
                       <span className="text-xs text-gray-500 ml-1">
-                        · {formatDistanceToNow(new Date(post.created_at), {
+                        ·{' '}
+                        {formatDistanceToNow(new Date(post.created_at), {
                           addSuffix: true,
                           locale: es,
                         })}
