@@ -11,6 +11,7 @@ import PostRecomendados from '@/components/PostsRecomendados.tsx';
 import { getCarrera } from '@/services/carrera.service.ts';
 import { useEffect, useState } from 'react';
 import { Spinner } from '@/components/ui/spinner.tsx';
+import bgFerrari from '@/assets/ferrari-lluvia-sainz.jpg';
 
 function Home() {
   const [carreras, setCarreras] = useState<Carrera[]>([]);
@@ -31,7 +32,7 @@ function Home() {
           <div
             className="absolute inset-0 w-full h-full z-0 blur-[3px]"
             style={{
-              backgroundImage: "url('./src/assets/ferrari-lluvia-sainz.jpg')",
+              backgroundImage: `url(${bgFerrari})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
@@ -99,7 +100,7 @@ function Home() {
         <div
           className="absolute inset-0 w-full h-full z-0 blur-[3px]"
           style={{
-            backgroundImage: "url('./src/assets/ferrari-lluvia-sainz.jpg')",
+            backgroundImage: `url(${bgFerrari})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
