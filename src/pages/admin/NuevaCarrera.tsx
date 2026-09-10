@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -24,10 +23,9 @@ import { Temporada } from "@/entities/temporada.entity.ts";
 import { Categoria } from "@/entities/categoria.entity.ts";
 import { getTemporada } from "@/services/temporada.service.ts";
 import { getCircuito } from "@/services/circuito.service.ts";
-import { postCarrera } from "@/services/carrera.service.ts";
-import { NewCarrera } from "@/entities/carrera.entity.ts";
+import { postCarrera, getCarrera, putCarrera, deleteCarrera } from "@/services/carrera.service.ts";
+import { Carrera } from "@/entities/carrera.entity.ts";
 
-//Definicion del form
 type FormState = {
   name: string;
   start_date: Date | null;
@@ -36,14 +34,16 @@ type FormState = {
   season: string;
 };
 
+const initialState: FormState = {
+  name: "",
+  start_date: null,
+  end_date: null,
+  track: "",
+  season: "",
+};
+
 function NuevaCarrera() {
-  const [form, setForm] = useState<FormState>({
-    name: "",
-    start_date: null,
-    end_date: null,
-    track: "",
-    season: "",
-  });
+  const [form, setForm] = useState<FormState>(initialState);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [openStart, setOpenStart] = React.useState(false);
@@ -51,30 +51,46 @@ function NuevaCarrera() {
   const [circuitos, setCircuitos] = useState<Circuito[]>([]);
   const [temporadas, setTemporadas] = useState<Temporada[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
+  
+  const [carreras, setCarreras] = useState<Carrera[]>([]);
+  const [selectedEntityId, setSelectedEntityId] = useState<string>("new");
 
-  //get para todo lo necesario
+  const isEditing = selectedEntityId !== "new";
+
   useEffect(() => {
     getCircuito()
       .then((data) => setCircuitos(data))
-      .catch((err) => {
-        setCategorias([]);
-        console.error("Error cargando circuitos", err);
-      });
+      .catch((err) => console.error("Error cargando circuitos", err));
     getTemporada()
       .then((data) => setTemporadas(data))
-      .catch((err) => {
-        setCategorias([]);
-        console.error("Error cargando temporadas", err);
-      });
+      .catch((err) => console.error("Error cargando temporadas", err));
     getCategoria()
       .then((data) => setCategorias(data))
-      .catch((err) => {
-        setCategorias([]);
-        console.error("Error cargando categorías", err);
-      });
+      .catch((err) => console.error("Error cargando categorías", err));
+    getCarrera()
+      .then((data) => setCarreras(data))
+      .catch((err) => console.error("Error cargando carreras", err));
   }, []);
 
-  //handlers
+  const handleEntitySelect = (value: string) => {
+    setSelectedEntityId(value);
+    setMessage(null);
+    if (value === "new") {
+      setForm(initialState);
+    } else {
+      const selected = carreras.find(c => String(c.id) === value);
+      if (selected) {
+        setForm({
+          name: selected.name,
+          start_date: selected.start_date ? new Date(selected.start_date) : null,
+          end_date: selected.end_date ? new Date(selected.end_date) : null,
+          track: selected.track ? String(selected.track.id) : "",
+          season: selected.season ? String(selected.season.id) : "",
+        });
+      }
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -84,31 +100,58 @@ function NuevaCarrera() {
     setForm((s) => ({ ...s, [id]: value }));
   };
 
+  const handleDelete = async () => {
+    if (!isEditing || !window.confirm("¿Estás seguro de que deseas eliminar esta carrera?")) return;
+    
+    setSubmitting(true);
+    try {
+      await deleteCarrera(Number(selectedEntityId));
+      setMessage("Carrera eliminada con éxito.");
+      setForm(initialState);
+      setSelectedEntityId("new");
+      setCarreras(carreras.filter(c => String(c.id) !== selectedEntityId));
+    } catch (err: any) {
+      setMessage(`Error al eliminar: ${err.message || "No se pudo eliminar la carrera"}`);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setMessage(null);
 
-    const nuevacarrera: NewCarrera = {
+    if (!form.start_date || !form.end_date) {
+      setMessage("Por favor selecciona las fechas");
+      setSubmitting(false);
+      return;
+    }
+
+    const payload = {
       name: form.name,
-      start_date: form.start_date!,
-      end_date: form.end_date!,
+      start_date: form.start_date,
+      end_date: form.end_date,
       track: form.track,
       season: form.season,
-    };
-    postCarrera(nuevacarrera)
-      .then(() => setMessage("Carrera creada con éxito."))
-      .then(() =>
-        setForm({
-          name: "",
-          start_date: null,
-          end_date: null,
-          track: "",
-          season: "",
-        })
-      )
-      .catch((err) => setMessage(`Error creando la carrera: ${err.message}`))
-      .finally(() => setSubmitting(false));
+    } as any;
+
+    try {
+      if (isEditing) {
+        const updated = await putCarrera(Number(selectedEntityId), payload);
+        setMessage("Carrera actualizada con éxito.");
+        setCarreras(carreras.map(c => c.id === updated.id ? updated : c));
+      } else {
+        const created = await postCarrera(payload);
+        setMessage("Carrera creada con éxito.");
+        setForm(initialState);
+        setCarreras([...carreras, created]);
+      }
+    } catch (err: any) {
+      setMessage(`Error: ${err.message || "No se pudo procesar la solicitud"}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -123,17 +166,38 @@ function NuevaCarrera() {
         }}
       />
 
-      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
+      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10 pb-20">
         <form
           onSubmit={handleSubmit}
           className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/65 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-gray-700/40"
         >
           <h1
-            className="text-white-200 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase"
+            className="text-gray-200 mt-2 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase"
             style={{ fontFamily: "'Oswald', sans-serif" }}
           >
-            Nueva Carrera
+            Alta / Edición Carrera
           </h1>
+
+          <div className="mb-6 pt-4 border-b border-gray-700 pb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Seleccionar carrera existente
+            </label>
+            <Select value={selectedEntityId} onValueChange={handleEntitySelect}>
+              <SelectTrigger className="w-full bg-gray-900 border-gray-700 text-white">
+                <SelectValue placeholder="-- Crear nueva carrera --" />
+              </SelectTrigger>
+              <SelectContent className="border-secondary max-h-60">
+                <SelectItem value="new" className="font-bold text-slate-400">
+                  -- Crear nueva carrera --
+                </SelectItem>
+                {carreras.map((c) => (
+                  <SelectItem key={c.id} value={String(c.id)}>
+                    {c.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           <InputGroup className="mt-5 mb-5 w-full">
             <InputGroupInput
@@ -142,17 +206,17 @@ function NuevaCarrera() {
               value={form.name}
               onChange={handleChange}
               required
-              className="focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600"
+              className="focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600 text-white"
             />
           </InputGroup>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Popover open={openStart} onOpenChange={setOpenStart}>
-              <PopoverTrigger>
+              <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   id="date"
-                  className="w-full justify-between font-normal focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600"
+                  className="w-full justify-between font-normal focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600 bg-transparent text-white border-gray-600"
                   type="button"
                 >
                   {form.start_date
@@ -162,7 +226,7 @@ function NuevaCarrera() {
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-auto overflow-hidden p-0 border-none"
+                className="w-auto overflow-hidden p-0 border-none z-50"
                 align="start"
               >
                 <Calendar
@@ -179,11 +243,11 @@ function NuevaCarrera() {
             </Popover>
 
             <Popover open={openEnd} onOpenChange={setOpenEnd}>
-              <PopoverTrigger>
+              <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   id="date"
-                  className="w-full justify-between font-normal focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600"
+                  className="w-full justify-between font-normal focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600 bg-transparent text-white border-gray-600"
                   type="button"
                 >
                   {form.end_date
@@ -193,7 +257,7 @@ function NuevaCarrera() {
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-auto overflow-hidden p-0 border-none"
+                className="w-auto overflow-hidden p-0 border-none z-50"
                 align="start"
               >
                 <Calendar
@@ -209,7 +273,7 @@ function NuevaCarrera() {
             </Popover>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
             <InputGroup>
               <Select
                 value={form.track}
@@ -218,7 +282,7 @@ function NuevaCarrera() {
                 }
                 required
               >
-                <SelectTrigger className="w-full focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600">
+                <SelectTrigger className="w-full focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600 bg-transparent text-white border-gray-600">
                   <SelectValue placeholder="Circuito" />
                 </SelectTrigger>
                 <SelectContent className="border-secondary">
@@ -239,13 +303,13 @@ function NuevaCarrera() {
                 }
                 required
               >
-                <SelectTrigger className="w-full focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600">
+                <SelectTrigger className="w-full focus-visible:ring-slate-500 focus-visible:border-slate-500 hover:border-slate-600 bg-transparent text-white border-gray-600">
                   <SelectValue placeholder="Temporada" />
                 </SelectTrigger>
                 <SelectContent className="border-secondary">
                   {temporadas.map((t) => {
                     const categoria = categorias.find(
-                      (c) => String(c.id) === String(t.racing_series)
+                      (c) => String(c.id) === String(t.racing_series) || (t.racing_series && String(c.id) === String((t.racing_series as any).id))
                     );
                     return (
                       <SelectItem key={t.id} value={String(t.id)}>
@@ -259,21 +323,33 @@ function NuevaCarrera() {
             </InputGroup>
           </div>
 
-          <div className="flex w-full justify-between pt-4">
-            <Link to="/menuadmin">
+          <div className="flex w-full justify-between pt-6">
+            <div className="flex gap-2">
               <Button
-                className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
                 type="button"
+                className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
+                onClick={() => window.history.back()}
               >
-                Cancelar
+                Volver
               </Button>
-            </Link>
+              {isEditing && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={submitting}
+                >
+                  Eliminar
+                </Button>
+              )}
+            </div>
+            
             <Button
               type="submit"
               disabled={submitting}
               className="bg-slate-600 hover:bg-slate-700 text-white font-semibold shadow-lg shadow-slate-900/50 border-0"
             >
-              {submitting ? "Enviando..." : "Crear nueva carrera"}
+              {submitting ? "Enviando..." : (isEditing ? "Guardar cambios" : "Crear nueva carrera")}
             </Button>
           </div>
 

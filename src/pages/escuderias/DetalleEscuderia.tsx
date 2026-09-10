@@ -92,9 +92,10 @@ function DetalleEscuderia() {
       try {
         await deleteEscuderia(escuderia.id);
         navigate("/escuderias");
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error eliminando escudería", err);
-        alert("Error al eliminar la escudería");
+        const errorMessage = err.response?.data?.message || "Error al eliminar la escudería";
+        alert(errorMessage);
       }
     }
   };

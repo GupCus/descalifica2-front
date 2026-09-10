@@ -48,6 +48,31 @@ export async function postMarcaFormData(
   return response.data.data;
 }
 
+export async function putMarcaFormData(
+  id: number,
+  data: Partial<Omit<Marca, "id">>,
+  file?: File,
+): Promise<Marca> {
+  const formData = new FormData();
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(key, value as string);
+    }
+  });
+
+  if (file) {
+    formData.append("image", file);
+  }
+
+  const response = await apiClient.put(`/marcas/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data.data;
+}
+
 export async function uploadMarcaImage(id: number, file: File): Promise<any> {
   const formData = new FormData();
   formData.append("image", file);
