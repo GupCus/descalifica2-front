@@ -13,8 +13,8 @@ import { Categoria } from "@/entities/categoria.entity.ts";
 import { Marca } from "@/entities/marca.entity.ts";
 import { getCategoria } from "@/services/categoria.service.ts";
 import { getMarca } from "@/services/marca.service.ts";
-import { NewEscuderia } from "@/entities/escuderia.entity.ts";
-import { postEscuderiaFormData } from "@/services/escuderia.service.ts";
+import { NewEscuderia, Escuderia } from "@/entities/escuderia.entity.ts";
+import { postEscuderiaFormData, getEscuderia, putEscuderiaFormData, deleteEscuderia } from "@/services/escuderia.service.ts";
 import { getNationalities, Nationality } from "@/services/nationality.service.ts";
 
 type FormState = {
@@ -26,21 +26,28 @@ type FormState = {
   racing_series: string;
 };
 
+const initialState: FormState = {
+  name: "",
+  foundation: "",
+  engine: "",
+  nationality: "",
+  brand: "",
+  racing_series: "",
+};
+
 function NuevaEscuderia() {
-  const [form, setForm] = useState<FormState>({
-    name: "",
-    foundation: "",
-    engine: "",
-    nationality: "",
-    brand: "",
-    racing_series: "",
-  });
+  const [form, setForm] = useState<FormState>(initialState);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [marcas, setMarcas] = useState<Marca[]>([]);
   const [nationalities, setNationalities] = useState<Nationality[]>([]);
+  
+  const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
+  const [selectedEntityId, setSelectedEntityId] = useState<string>("new");
+  
+  const isEditing = selectedEntityId !== "new";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -68,9 +75,52 @@ function NuevaEscuderia() {
         setNationalities([]);
         console.error("Error cargando nacionalidades", err);
       });
+    getEscuderia()
+      .then((data) => setEscuderias(data))
+      .catch((err) => {
+        setEscuderias([]);
+        console.error("Error cargando escuderias", err);
+      });
   }, []);
 
-  //handlers
+  const handleEntitySelect = (value: string) => {
+    setSelectedEntityId(value);
+    setMessage(null);
+    setSelectedFile(null);
+    if (value === "new") {
+      setForm(initialState);
+    } else {
+      const selected = escuderias.find(e => String(e.id) === value);
+      if (selected) {
+        setForm({
+          name: selected.name,
+          foundation: String(selected.fundation),
+          engine: selected.engine,
+          nationality: selected.nationality,
+          brand: selected.brand ? String(selected.brand.id) : "Ninguna",
+          racing_series: selected.racing_series ? String(selected.racing_series.id) : "",
+        });
+      }
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!isEditing || !window.confirm("¿Estás seguro de que deseas eliminar esta escudería?")) return;
+    
+    setSubmitting(true);
+    try {
+      await deleteEscuderia(Number(selectedEntityId));
+      setMessage("Escudería eliminada con éxito.");
+      setForm(initialState);
+      setSelectedEntityId("new");
+      setEscuderias(escuderias.filter(e => String(e.id) !== selectedEntityId));
+    } catch (err: any) {
+      setMessage(`Error al eliminar: ${err.message || "No se pudo eliminar la escudería"}`);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -83,9 +133,9 @@ function NuevaEscuderia() {
     setSubmitting(true);
     setMessage(null);
 
-    const valorBrand = form.brand === "Ninguna" ? null : form.brand;
+    const valorBrand = form.brand === "Ninguna" || !form.brand ? null : form.brand;
 
-    const nuevaescuderia: NewEscuderia = {
+    const payload: NewEscuderia = {
       name: form.name,
       fundation: form.foundation,
       engine: form.engine,
@@ -95,19 +145,19 @@ function NuevaEscuderia() {
     };
     
     try {
-      await postEscuderiaFormData(nuevaescuderia, selectedFile || undefined);
-      setMessage("Escudería creada con éxito.");
-      setForm({
-        name: "",
-        foundation: "",
-        engine: "",
-        nationality: "",
-        brand: "",
-        racing_series: "",
-      });
+      if (isEditing) {
+        const updated = await putEscuderiaFormData(Number(selectedEntityId), payload, selectedFile || undefined);
+        setMessage("Escudería actualizada con éxito.");
+        setEscuderias(escuderias.map(e => e.id === updated.id ? updated : e));
+      } else {
+        const created = await postEscuderiaFormData(payload, selectedFile || undefined);
+        setMessage("Escudería creada con éxito.");
+        setForm(initialState);
+        setEscuderias([...escuderias, created]);
+      }
       setSelectedFile(null);
     } catch (err: any) {
-      setMessage(`Error: ${err.message || "No se pudo crear la escudería"}`);
+      setMessage(`Error: ${err.message || "No se pudo procesar la solicitud"}`);
     } finally {
       setSubmitting(false);
     }
@@ -125,20 +175,41 @@ function NuevaEscuderia() {
         }}
       />
 
-      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
+      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10 pb-20">
         <form
           onSubmit={handleSubmit}
           className="space-y-4 w-full max-w-2xl mx-8 bg-red-950/90 backdrop-blur-sm rounded-lg p-8 shadow-2xl border border-red-800/50"
         >
           <h1
-            className="text-gray-200 mt-5 scroll-m-20 text-4xl font-bold tracking-wider text-center uppercase"
+            className="text-gray-200 mt-2 scroll-m-20 text-4xl font-bold tracking-wider text-center uppercase"
             style={{
               fontFamily: "'Orbitron', 'Rajdhani',sans-serif",
               letterSpacing: "0.1em",
             }}
           >
-            Alta escudería
+            Alta / Edición escudería
           </h1>
+
+          <div className="mb-6 pt-4 border-b border-red-800 pb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Seleccionar escudería existente
+            </label>
+            <Select value={selectedEntityId} onValueChange={handleEntitySelect}>
+              <SelectTrigger className="w-full bg-red-900 border-red-700 text-white">
+                <SelectValue placeholder="-- Crear nueva escudería --" />
+              </SelectTrigger>
+              <SelectContent className="border-secondary max-h-60">
+                <SelectItem value="new" className="font-bold text-red-400">
+                  -- Crear nueva escudería --
+                </SelectItem>
+                {escuderias.map((e) => (
+                  <SelectItem key={e.id} value={String(e.id)}>
+                    {e.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           <InputGroup className="mt-5 mb-5 w-full">
             <InputGroupInput
@@ -260,19 +331,32 @@ function NuevaEscuderia() {
           </div>
 
           <div className="flex w-full justify-between pt-4">
-            <Button
-              type="button"
-              className="bg-gray-700 hover:bg-gray-800 text-white border border-gray-600"
-              onClick={() => window.history.back()}
-            >
-              Cancelar
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                className="bg-gray-700 hover:bg-gray-800 text-white border border-gray-600"
+                onClick={() => window.history.back()}
+              >
+                Volver
+              </Button>
+              {isEditing && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={submitting}
+                >
+                  Eliminar
+                </Button>
+              )}
+            </div>
+            
             <Button
               type="submit"
               disabled={submitting}
               className="bg-red-700 hover:bg-red-800 text-white border border-red-600"
             >
-              {submitting ? "Enviando..." : "Crear nueva esc."}
+              {submitting ? "Enviando..." : (isEditing ? "Guardar cambios" : "Crear nueva esc.")}
             </Button>
           </div>
 

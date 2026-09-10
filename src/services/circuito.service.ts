@@ -1,24 +1,18 @@
 import { Circuito } from "@/entities/circuito.entity.ts";
-import axios from "axios";
-
-const URL_API = import.meta.env.VITE_API_URL;
-
-const client = axios.create({
-  baseURL: URL_API + "/circuitos",
-});
+import { apiClient } from "./httpClient.ts";
 
 export async function getCircuito(): Promise<Circuito[]> {
-  const response = await client.get("/");
+  const response = await apiClient.get("/circuitos/");
   return response.data.data;
 }
 
 export async function getOneCircuito(id: number): Promise<Circuito> {
-  const response = await client.get("/" + id.toString());
+  const response = await apiClient.get("/circuitos/" + id.toString());
   return response.data.data;
 }
 
 export async function postCircuito(data: Circuito): Promise<Circuito> {
-  const response = await client.post("/", data);
+  const response = await apiClient.post("/circuitos/", data);
   return response.data.data;
 }
 
@@ -26,12 +20,12 @@ export async function putCircuito(
   id: number,
   data: Circuito,
 ): Promise<Circuito> {
-  const response = await client.put("/" + id.toString(), data);
+  const response = await apiClient.put("/circuitos/" + id.toString(), data);
   return response.data.data;
 }
 
 export async function deleteCircuito(id: number): Promise<Circuito> {
-  const response = await client.delete("/" + id.toString());
+  const response = await apiClient.delete("/circuitos/" + id.toString());
   return response.data.data;
 }
 
@@ -49,7 +43,32 @@ export async function postCircuitoFormData(
     formData.append("image", file);
   }
 
-  const response = await client.post("/", formData, {
+  const response = await apiClient.post("/circuitos/", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data.data;
+}
+
+export async function putCircuitoFormData(
+  id: number,
+  data: Partial<Omit<Circuito, "id">>,
+  file?: File,
+): Promise<Circuito> {
+  const formData = new FormData();
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(key, value as string);
+    }
+  });
+
+  if (file) {
+    formData.append("image", file);
+  }
+
+  const response = await apiClient.put(`/circuitos/${id}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -64,7 +83,7 @@ export async function uploadCircuitoImage(
   const formData = new FormData();
   formData.append("image", image);
 
-  const response = await client.patch(`/${id}/upload-image`, formData, {
+  const response = await apiClient.patch(`/circuitos/${id}/upload-image`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -76,7 +95,7 @@ export async function uploadTrackImage(id: number, image: File): Promise<any> {
   const formData = new FormData();
   formData.append("image", image);
 
-  const response = await client.patch(`/${id}/track-map`, formData, {
+  const response = await apiClient.patch(`/circuitos/${id}/track-map`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

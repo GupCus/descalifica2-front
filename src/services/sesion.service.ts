@@ -1,38 +1,32 @@
 import { NewSesion, Sesion } from "@/entities/sesion.entity.ts";
-import axios from "axios";
-
-const URL_API = import.meta.env.VITE_API_URL;
-
-const client = axios.create({
-  baseURL: URL_API + "/sesion",
-});
+import { apiClient } from "./httpClient.ts";
 
 export async function getSesion(): Promise<Sesion[]> {
-  const response = await client.get("/");
+  const response = await apiClient.get("/sesion/");
   return response.data.data;
 }
 
 export async function getOneSesion(id: number): Promise<Sesion> {
-  const response = await client.get("/" + id.toString());
+  const response = await apiClient.get("/sesion/" + id.toString());
   return response.data.data;
 }
 
 export async function postSesion(data: NewSesion): Promise<Sesion> {
-  const response = await client.post("/", data);
+  const response = await apiClient.post("/sesion/", data);
   return response.data.data;
 }
 
-export async function putSesion(id: number, data: Sesion): Promise<Sesion> {
-  const response = await client.put("/" + id.toString(), data);
+export async function putSesion(id: number, data: Partial<NewSesion> | Sesion): Promise<Sesion> {
+  const response = await apiClient.put("/sesion/" + id.toString(), data);
   return response.data.data;
 }
 
-export async function patchSesion(id: number, data: Sesion): Promise<Sesion> {
-  const response = await client.patch("/" + id.toString(), data);
+export async function patchSesion(id: number, data: Partial<NewSesion> | Sesion): Promise<Sesion> {
+  const response = await apiClient.patch("/sesion/" + id.toString(), data);
   return response.data.data;
 }
 
 export async function deleteSesion(id: number): Promise<Sesion> {
-  const response = await client.delete("/" + id.toString());
+  const response = await apiClient.delete("/sesion/" + id.toString());
   return response.data.data;
 }

@@ -26,14 +26,14 @@ function MenuAdmin() {
   }
 
   const adminOptions = [
-    { to: "nuevopiloto", label: "Nuevo Piloto", icon: UserPlus },
-    { to: "nuevocircuito", label: "Nuevo Circuito", icon: MapPin },
-    { to: "nuevaescuderia", label: "Nueva Escudería", icon: Shield },
-    { to: "nuevacarrera", label: "Nueva Carrera", icon: Flag },
-    { to: "nuevasesion", label: "Nueva Sesión", icon: Timer },
-    { to: "nuevamarca", label: "Nueva Marca", icon: Tag },
-    { to: "nuevacategoria", label: "Nueva Categoría", icon: Layers },
-    { to: "nuevatemporada", label: "Nueva Temporada", icon: Calendar },
+    { to: "nuevopiloto", label: "Administrar Pilotos", icon: UserPlus },
+    { to: "nuevocircuito", label: "Administrar Circuitos", icon: MapPin },
+    { to: "nuevaescuderia", label: "Administrar Escuderías", icon: Shield },
+    { to: "nuevacarrera", label: "Administrar Carreras", icon: Flag },
+    { to: "nuevasesion", label: "Administrar Sesiones", icon: Timer },
+    { to: "nuevamarca", label: "Administrar Marcas", icon: Tag },
+    { to: "nuevacategoria", label: "Administrar Categorías", icon: Layers },
+    { to: "nuevatemporada", label: "Administrar Temporadas", icon: Calendar },
     { to: "cargarsesion", label: "Cargar Resultados", icon: FileSpreadsheet },
     { to: "adminusuarios", label: "Administrar Usuarios", icon: Users },
   ];
