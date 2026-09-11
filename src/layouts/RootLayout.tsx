@@ -280,7 +280,7 @@ function RootLayout() {
                     to={user.user_type === 'ADMIN' ? '/menuadmin' : '/perfil'}
                     className="flex items-center gap-2 text-sm font-medium text-gray-200 hover:text-white transition-all group"
                   >
-                    <span className="group-hover:text-white transition-colors">
+                    <span className="hidden sm:inline group-hover:text-white transition-colors">
                       {user.username}
                     </span>
                     <Avatar className="rounded-3xl border cursor-pointer group-hover:ring-2 group-hover:ring-accent transition-all">
