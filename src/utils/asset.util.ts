@@ -20,9 +20,14 @@ export function getAssetUrl(relativePath: string | undefined | null): string {
   const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
   // Limpiamos la ruta por si ya trae una barra inicial para evitar doble barra (//)
-  const cleanPath = relativePath.startsWith("/")
+  let cleanPath = relativePath.startsWith("/")
     ? relativePath.slice(1)
     : relativePath;
+
+  // Si incluye el prefijo 'uploads/', lo removemos ya que /assets ya apunta a esa carpeta
+  if (cleanPath.startsWith("uploads/")) {
+    cleanPath = cleanPath.replace(/^uploads\//, "");
+  }
 
   // DEBUG
   console.log("RUTA COMPLETA:" + `${baseUrl}/assets/${cleanPath}`);

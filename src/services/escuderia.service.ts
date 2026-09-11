@@ -51,6 +51,31 @@ export async function postEscuderiaFormData(
   return response.data.data;
 }
 
+export async function putEscuderiaFormData(
+  id: number,
+  data: Partial<NewEscuderia>,
+  file?: File,
+): Promise<Escuderia> {
+  const formData = new FormData();
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(key, value as string);
+    }
+  });
+
+  if (file) {
+    formData.append("image", file);
+  }
+
+  const response = await apiClient.put(`/escuderias/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data.data;
+}
+
 export async function uploadEscuderiaImage(
   id: number,
   file: File,

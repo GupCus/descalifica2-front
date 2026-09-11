@@ -16,8 +16,8 @@ import { Escuderia } from "@/entities/escuderia.entity.ts";
 import { Categoria } from "@/entities/categoria.entity.ts";
 import { getEscuderia } from "@/services/escuderia.service.ts";
 import { getCategoria } from "@/services/categoria.service.ts";
-import { postPilotoFormData } from "@/services/piloto.service.ts";
-import { NewPiloto } from "@/entities/piloto.entity.ts";
+import { postPilotoFormData, getPiloto, putPilotoFormData, deletePiloto } from "@/services/piloto.service.ts";
+import { NewPiloto, Piloto } from "@/entities/piloto.entity.ts";
 import {
   Popover,
   PopoverContent,
@@ -33,29 +33,35 @@ type FormState = {
   team: string;
   num: number | string;
   nationality: string;
-  birth_date: Date | null; // <-- Cambia de string a Date | null
+  birth_date: Date | null;
   role: string;
   racing_series: string;
 };
 
+const initialState: FormState = {
+  name: "",
+  team: "",
+  num: "",
+  nationality: "",
+  birth_date: null,
+  role: "",
+  racing_series: "",
+};
+
 function NuevoPiloto() {
-  const [form, setForm] = useState<FormState>({
-    name: "",
-    team: "",
-    num: "",
-    nationality: "",
-    birth_date: null,
-    role: "",
-    racing_series: "",
-  });
+  const [form, setForm] = useState<FormState>(initialState);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [nationalities, setNationalities] = useState<Nationality[]>([]);
+  const [pilotos, setPilotos] = useState<Piloto[]>([]);
+  const [selectedEntityId, setSelectedEntityId] = useState<string>("new");
   const [, setError] = useState<string | null>();
   const [openBirthDate, setOpenBirthDate] = useState(false);
+
+  const isEditing = selectedEntityId !== "new";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -63,7 +69,6 @@ function NuevoPiloto() {
     }
   };
 
-  //obtiene escuderías para el select
   useEffect(() => {
     getEscuderia()
       .then((data) => setEscuderias(data))
@@ -74,7 +79,32 @@ function NuevoPiloto() {
     getNationalities()
       .then((data) => setNationalities(data))
       .catch((err) => setError(err));
+    getPiloto()
+      .then((data) => setPilotos(data))
+      .catch((err) => setError(err));
   }, []);
+
+  const handleEntitySelect = (value: string) => {
+    setSelectedEntityId(value);
+    setMessage(null);
+    setSelectedFile(null);
+    if (value === "new") {
+      setForm(initialState);
+    } else {
+      const selected = pilotos.find(p => String(p.id) === value);
+      if (selected) {
+        setForm({
+          name: selected.name,
+          team: selected.team ? String(selected.team.id) : "",
+          num: selected.num,
+          nationality: selected.nationality,
+          birth_date: selected.birth_date ? new Date(selected.birth_date) : null,
+          role: selected.role,
+          racing_series: selected.racing_series ? String(selected.racing_series.id) : "",
+        });
+      }
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -85,43 +115,58 @@ function NuevoPiloto() {
     setForm((s) => ({ ...s, [id]: value }));
   };
 
+  const handleDelete = async () => {
+    if (!isEditing || !window.confirm("¿Estás seguro de que deseas eliminar este piloto?")) return;
+    
+    setSubmitting(true);
+    try {
+      await deletePiloto(Number(selectedEntityId));
+      setMessage("Piloto eliminado con éxito.");
+      setForm(initialState);
+      setSelectedEntityId("new");
+      setPilotos(pilotos.filter(p => String(p.id) !== selectedEntityId));
+    } catch (err: any) {
+      setMessage(`Error al eliminar: ${err.message || "No se pudo eliminar el piloto"}`);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setMessage(null);
 
-    // Validar que se haya seleccionado fecha
     if (!form.birth_date) {
       setMessage("Por favor selecciona una fecha de nacimiento");
       setSubmitting(false);
       return;
     }
 
-    const nuevoPiloto: NewPiloto = {
+    const payload: NewPiloto = {
       name: form.name,
       team: form.team,
       num: form.num,
       nationality: form.nationality,
-      birth_date: form.birth_date.toISOString().split("T")[0], // <-- Siempre habrá fecha por la validación
+      birth_date: form.birth_date.toISOString().split("T")[0],
       role: form.role,
       racing_series: form.racing_series,
     };
 
     try {
-      await postPilotoFormData(nuevoPiloto, selectedFile || undefined);
-      setMessage("Piloto creado con éxito.");
-      setForm({
-        name: "",
-        team: "",
-        num: "",
-        nationality: "",
-        birth_date: null,
-        role: "",
-        racing_series: "",
-      });
+      if (isEditing) {
+        const updated = await putPilotoFormData(Number(selectedEntityId), payload, selectedFile || undefined);
+        setMessage("Piloto actualizado con éxito.");
+        setPilotos(pilotos.map(p => p.id === updated.id ? updated : p));
+      } else {
+        const created = await postPilotoFormData(payload, selectedFile || undefined);
+        setMessage("Piloto creado con éxito.");
+        setPilotos([...pilotos, created]);
+        setForm(initialState);
+      }
       setSelectedFile(null);
     } catch (err: any) {
-      setMessage(`Error: ${err.message || "No se pudo crear el piloto"}`);
+      setMessage(`Error: ${err.message || "No se pudo procesar la solicitud"}`);
     } finally {
       setSubmitting(false);
     }
@@ -139,20 +184,41 @@ function NuevoPiloto() {
         }}
       />
 
-      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
+      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10 pb-20">
         <form
           onSubmit={handleSubmit}
           className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/80 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-gray-700/40"
         >
           <h1
-            className="text-gray-200 mt-5 scroll-m-20 text-4xl font-bold tracking-wider text-center uppercase"
+            className="text-gray-200 mt-2 scroll-m-20 text-4xl font-bold tracking-wider text-center uppercase"
             style={{
               fontFamily: "'Orbitron', 'Rajdhani',sans-serif",
               letterSpacing: "0.1em",
             }}
           >
-            Alta piloto
+            Alta / Edición piloto
           </h1>
+
+          <div className="mb-6 pt-4 border-b border-gray-700 pb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Seleccionar piloto existente
+            </label>
+            <Select value={selectedEntityId} onValueChange={handleEntitySelect}>
+              <SelectTrigger className="w-full bg-gray-900 border-gray-700 text-white">
+                <SelectValue placeholder="-- Crear nuevo piloto --" />
+              </SelectTrigger>
+              <SelectContent className="border-secondary max-h-60">
+                <SelectItem value="new" className="font-bold text-blue-400">
+                  -- Crear nuevo piloto --
+                </SelectItem>
+                {pilotos.map((p) => (
+                  <SelectItem key={p.id} value={String(p.id)}>
+                    {p.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
           <InputGroup className="mt-5 mb-5 w-full">
             <InputGroupInput
@@ -234,7 +300,7 @@ function NuevoPiloto() {
               </Button>
             </PopoverTrigger>
             <PopoverContent
-              className="w-auto overflow-hidden p-0 border-none"
+              className="w-auto overflow-hidden p-0 border-none z-50"
               align="start"
             >
               <Calendar
@@ -322,19 +388,32 @@ function NuevoPiloto() {
           </div>
 
           <div className="flex w-full justify-between pt-4">
-            <Button
-              type="button"
-              className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
-              onClick={() => window.history.back()}
-            >
-              Cancelar
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
+                onClick={() => window.history.back()}
+              >
+                Volver
+              </Button>
+              {isEditing && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={submitting}
+                >
+                  Eliminar
+                </Button>
+              )}
+            </div>
+            
             <Button
               type="submit"
               disabled={submitting}
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-900/50 border-0"
             >
-              {submitting ? "Enviando..." : "Crear nuevo piloto"}
+              {submitting ? "Enviando..." : (isEditing ? "Guardar cambios" : "Crear nuevo piloto")}
             </Button>
           </div>
 

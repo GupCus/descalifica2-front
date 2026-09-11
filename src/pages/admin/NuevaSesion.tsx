@@ -8,7 +8,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Link } from "react-router-dom";
 import { Carrera } from "@/entities/carrera.entity.ts";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,8 +20,8 @@ import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import fondoSesion from "../../assets/sesion.webp";
 import { getCarrera } from "@/services/carrera.service.ts";
-import { NewSesion } from "@/entities/sesion.entity.ts";
-import { postSesion } from "@/services/sesion.service.ts";
+import { NewSesion, Sesion } from "@/entities/sesion.entity.ts";
+import { postSesion, getSesion, putSesion, deleteSesion } from "@/services/sesion.service.ts";
 
 type FormState = {
   name: string;
@@ -44,34 +43,85 @@ const getTipoSesionAbreviacion = (tipoSesion: string): string => {
     "Sprint Race": "Sprint",
     Race: "GP",
   };
-
   return abreviaciones[tipoSesion] || tipoSesion;
 };
 
+const initialState: FormState = {
+  name: "",
+  type: "",
+  fecha_inicio: null,
+  hora_inicio: "00:00:00",
+  fecha_fin: null,
+  hora_fin: "00:00:00",
+  race: "",
+};
+
 function NuevaSesion() {
-  //fecha_inicio, hora_inicio, fecha_fin y hora_fin no son los datos finales, se concatenan antes de enviarse al back.
-  //Los datos finales son start_time y end_time.
-  const [form, setForm] = useState<FormState>({
-    name: "",
-    type: "",
-    fecha_inicio: null,
-    hora_inicio: "00:00:00",
-    fecha_fin: null,
-    hora_fin: "00:00:00",
-    race: "",
-  });
+  const [form, setForm] = useState<FormState>(initialState);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [carreras, setCarreras] = useState<Carrera[]>([]);
   const [openStart, setOpenStart] = useState(false);
   const [, setError] = useState<string | null>();
 
-  // Gets
+  const [sesiones, setSesiones] = useState<Sesion[]>([]);
+  const [selectedEntityId, setSelectedEntityId] = useState<string>("new");
+
+  const isEditing = selectedEntityId !== "new";
+
   useEffect(() => {
     getCarrera()
       .then((data) => setCarreras(data))
       .catch((err) => setError(err));
+    getSesion()
+      .then((data) => setSesiones(data))
+      .catch((err) => setError(err));
   }, []);
+
+  const formatTime = (date: Date) => {
+    return date.toTimeString().split(" ")[0];
+  };
+
+  const handleEntitySelect = (value: string) => {
+    setSelectedEntityId(value);
+    setMessage(null);
+    if (value === "new") {
+      setForm(initialState);
+    } else {
+      const selected = sesiones.find(s => String(s.id) === value);
+      if (selected) {
+        const start = selected.start_time ? new Date(selected.start_time) : null;
+        const end = selected.end_time ? new Date(selected.end_time) : null;
+        
+        setForm({
+          name: selected.name,
+          type: selected.type,
+          fecha_inicio: start,
+          hora_inicio: start ? formatTime(start) : "00:00:00",
+          fecha_fin: end,
+          hora_fin: end ? formatTime(end) : "00:00:00",
+          race: selected.race ? String((selected.race as any).id || selected.race) : "",
+        });
+      }
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!isEditing || !window.confirm("¿Estás seguro de que deseas eliminar esta sesión?")) return;
+    
+    setSubmitting(true);
+    try {
+      await deleteSesion(Number(selectedEntityId));
+      setMessage("Sesión eliminada con éxito.");
+      setForm(initialState);
+      setSelectedEntityId("new");
+      setSesiones(sesiones.filter(s => String(s.id) !== selectedEntityId));
+    } catch (err: any) {
+      setMessage(`Error al eliminar: ${err.message || "No se pudo eliminar la sesión"}`);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -87,16 +137,15 @@ function NuevaSesion() {
     setSubmitting(true);
     setMessage(null);
 
-    //Combinar fecha y hora
     const getDateTime = (date: Date | null, time: string) => {
-      if (!date || !time) return undefined; //si alguno de los dos no existe, retorna null
-      const [h, m, s] = time.split(":"); //divide la variable local time (que vino desde afuera) y la separa en 'h' 'm' y 's'
-      const d = new Date(date); //agarra date y guarda en d como Date
-      d.setHours(Number(h), Number(m), Number(s || 0)); //usa el arreglo de [h,m,s] y lo junta para hacer el tiempo, guarda en 'd'
+      if (!date || !time) return undefined;
+      const [h, m, s] = time.split(":");
+      const d = new Date(date);
+      d.setHours(Number(h), Number(m), Number(s || 0));
       return d;
     };
 
-    const nuevaSesion: NewSesion = {
+    const payload: NewSesion = {
       name: form.name,
       type: form.type,
       start_time: getDateTime(form.fecha_inicio, form.hora_inicio),
@@ -104,21 +153,22 @@ function NuevaSesion() {
       race: form.race,
     };
 
-    postSesion(nuevaSesion)
-      .then(() => setMessage("Sesión creada con éxito."))
-      .then(() =>
-        setForm({
-          name: "",
-          type: "",
-          fecha_inicio: null,
-          hora_inicio: "00:00:00",
-          fecha_fin: null,
-          hora_fin: "00:00:00",
-          race: "",
-        })
-      )
-      .catch((err) => setMessage(`Error al crear la sesión: ${err.message}`))
-      .finally(() => setSubmitting(false));
+    try {
+      if (isEditing) {
+        const updated = await putSesion(Number(selectedEntityId), payload as any);
+        setMessage("Sesión actualizada con éxito.");
+        setSesiones(sesiones.map(s => s.id === updated.id ? updated : s));
+      } else {
+        const created = await postSesion(payload);
+        setMessage("Sesión creada con éxito.");
+        setForm(initialState);
+        setSesiones([...sesiones, created]);
+      }
+    } catch (err: any) {
+      setMessage(`Error: ${err.message || "No se pudo procesar la solicitud"}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -133,17 +183,41 @@ function NuevaSesion() {
         }}
       />
 
-      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10">
+      <div className="relative z-10 flex justify-center items-start min-h-screen pt-10 pb-20">
         <form
           onSubmit={handleSubmit}
           className="space-y-4 w-full max-w-2xl mx-8 bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-yellow-700/40"
         >
           <h1
-            className="text-white-100 mt-5 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase"
+            className="text-white-100 mt-2 scroll-m-20 text-5xl font-extrabold tracking-wider text-center uppercase"
             style={{ fontFamily: "'Oswald', sans-serif" }}
           >
-            Alta Sesión
+            Alta / Edición Sesión
           </h1>
+
+          <div className="mb-6 pt-4 border-b border-yellow-800/50 pb-6">
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Seleccionar sesión existente
+            </label>
+            <Select value={selectedEntityId} onValueChange={handleEntitySelect}>
+              <SelectTrigger className="w-full bg-gray-900 border-gray-700 text-white">
+                <SelectValue placeholder="-- Crear nueva sesión --" />
+              </SelectTrigger>
+              <SelectContent className="border-secondary max-h-60">
+                <SelectItem value="new" className="font-bold text-yellow-400">
+                  -- Crear nueva sesión --
+                </SelectItem>
+                {sesiones.map((s) => {
+                  const r = carreras.find(c => String(c.id) === String((s.race as any)?.id || s.race));
+                  return (
+                    <SelectItem key={s.id} value={String(s.id)}>
+                      {s.name} - {r ? r.name : "..."}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
 
           <InputGroup className="w-full">
             <Select
@@ -151,7 +225,7 @@ function NuevaSesion() {
               onValueChange={(value) => setForm((s) => ({ ...s, race: value }))}
               required
             >
-              <SelectTrigger className="w-full focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600">
+              <SelectTrigger className="w-full focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600 bg-transparent text-white border-gray-600">
                 <SelectValue placeholder="Carrera" />
               </SelectTrigger>
               <SelectContent className="border-secondary">
@@ -178,7 +252,7 @@ function NuevaSesion() {
               }
               required
             >
-              <SelectTrigger className="w-full focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600">
+              <SelectTrigger className="w-full focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600 bg-transparent text-white border-gray-600">
                 <SelectValue placeholder="Tipo de sesión" />
               </SelectTrigger>
               <SelectContent className="border-secondary">
@@ -199,11 +273,11 @@ function NuevaSesion() {
             Fecha de inicio
           </Label>
           <Popover open={openStart} onOpenChange={setOpenStart}>
-            <PopoverTrigger>
+            <PopoverTrigger className="w-full">
               <Button
                 variant="outline"
                 id="fecha_inicio"
-                className="w-150 justify-between font-normal focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
+                className="w-full justify-between font-normal focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600 bg-transparent text-white border-gray-600"
                 type="button"
               >
                 {form.fecha_inicio
@@ -213,7 +287,7 @@ function NuevaSesion() {
               </Button>
             </PopoverTrigger>
             <PopoverContent
-              className="w-auto overflow-hidden p-0 border-none"
+              className="w-auto overflow-hidden p-0 border-none z-50"
               align="start"
             >
               <Calendar
@@ -242,10 +316,9 @@ function NuevaSesion() {
                 type="time"
                 id="hora_inicio"
                 step="1"
-                defaultValue="00:00:00"
                 value={form.hora_inicio}
                 onChange={handleChange}
-                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
+                className="bg-transparent text-white border-gray-600 appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -256,29 +329,40 @@ function NuevaSesion() {
                 type="time"
                 id="hora_fin"
                 step="1"
-                defaultValue="01:30:00"
                 value={form.hora_fin}
                 onChange={handleChange}
-                className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
+                className="bg-transparent text-white border-gray-600 appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none focus-visible:ring-yellow-500 focus-visible:border-yellow-500 hover:border-yellow-600"
               />
             </div>
           </div>
 
-          <div className="flex w-full justify-between pt-4">
-            <Link to="/menuadmin">
+          <div className="flex w-full justify-between pt-6">
+            <div className="flex gap-2">
               <Button
-                className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
                 type="button"
+                className="bg-transparent hover:bg-gray-800/50 text-gray-400 border border-gray-700 hover:text-gray-300"
+                onClick={() => window.history.back()}
               >
-                Cancelar
+                Volver
               </Button>
-            </Link>
+              {isEditing && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={submitting}
+                >
+                  Eliminar
+                </Button>
+              )}
+            </div>
+            
             <Button
               type="submit"
               disabled={submitting}
               className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold shadow-lg shadow-yellow-900/50 border-0"
             >
-              {submitting ? "Enviando..." : "Crear nueva sesión"}
+              {submitting ? "Enviando..." : (isEditing ? "Guardar cambios" : "Crear nueva sesión")}
             </Button>
           </div>
 

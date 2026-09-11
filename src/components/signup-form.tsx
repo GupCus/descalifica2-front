@@ -95,6 +95,8 @@ export function SignupForm({
   const navigate = useNavigate();
   const location = useLocation();
   const prefillData = location.state?.prefillData;
+  const googleAvatar = prefillData?.avatar || null;
+  const [useCustomAvatar, setUseCustomAvatar] = useState(false);
 
   // Datalists para sugerencias
   const [pilotosList, setPilotosList] = useState<string[]>([]);
@@ -121,13 +123,6 @@ export function SignupForm({
   const currentYear = new Date().getFullYear();
   const [viewYear, setViewYear] = useState<number>(2000);
   const [viewMonth, setViewMonth] = useState<number>(0);
-
-  useEffect(() => {
-    // Si venimos de un inicio de sesión de Google con foto, la mostramos en la preview
-    if (prefillData?.avatar) {
-      setPreviewUrl(prefillData.avatar);
-    }
-  }, [prefillData]);
 
   useEffect(() => {
     getPiloto()
@@ -164,7 +159,9 @@ export function SignupForm({
   const removeAvatar = () => {
     setForm((s) => ({ ...s, avatar: null }));
     if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
+      if (previewUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(previewUrl);
+      }
       setPreviewUrl(null);
     }
   };
@@ -270,6 +267,8 @@ export function SignupForm({
       }
       if (form.avatar) {
         formData.append('avatar', form.avatar);
+      } else if (googleAvatar && !useCustomAvatar) {
+        formData.append('avatar_url', googleAvatar);
       }
 
       const response = await AuthService.RegisterUser(formData);
@@ -280,8 +279,13 @@ export function SignupForm({
           '¡Usuario creado con éxito! Redirigiendo al login...',
       );
 
+      if (response?.token) {
+        AuthService.saveToken(response.token);
+        window.dispatchEvent(new Event('userLoggedIn'));
+      }
+
       setTimeout(() => {
-        navigate('/login');
+        navigate('/');
       }, 1000);
     } catch (err: any) {
       setMessageType('error');
@@ -646,22 +650,68 @@ export function SignupForm({
 
             <Field>
               <FieldLabel>Foto de Perfil (opcional)</FieldLabel>
-              {!form.avatar ? (
-                <div
-                  {...getRootProps()}
-                  className={`border border-dashed rounded-lg p-4 text-center cursor-pointer transition-all flex items-center justify-center gap-2 ${
-                    isDragActive
-                      ? 'border-primary bg-primary/10'
-                      : 'border-input hover:border-accent-foreground/50 bg-background'
-                  }`}
-                >
-                  <input {...getInputProps()} />
-                  <Upload className="h-4 w-4 text-muted-foreground shrink-0" />
-                  <p className="text-sm text-muted-foreground font-medium truncate">
-                    {isDragActive
-                      ? 'Suelta la imagen aquí...'
-                      : 'Arrastra una foto o haz clic para subirla (PNG, JPG, WEBP)'}
-                  </p>
+              {googleAvatar && !useCustomAvatar ? (
+                <div className="relative border border-border rounded-lg p-3 bg-background flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <img
+                      src={googleAvatar}
+                      alt="Foto de perfil de Google"
+                      referrerPolicy="no-referrer"
+                      className="h-11 w-11 rounded-full object-cover border-2 border-primary shadow-sm shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-foreground truncate">
+                        Foto de tu cuenta de Google
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        Se usará automáticamente como tu foto de perfil.
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setUseCustomAvatar(true)}
+                    className="text-xs h-8 shrink-0 cursor-pointer"
+                  >
+                    Cambiar foto
+                  </Button>
+                </div>
+              ) : !form.avatar ? (
+                <div className="space-y-2">
+                  <div
+                    {...getRootProps()}
+                    className={`border border-dashed rounded-lg p-4 text-center cursor-pointer transition-all flex items-center justify-center gap-2 ${
+                      isDragActive
+                        ? 'border-primary bg-primary/10'
+                        : 'border-input hover:border-accent-foreground/50 bg-background'
+                    }`}
+                  >
+                    <input {...getInputProps()} />
+                    <Upload className="h-4 w-4 text-muted-foreground shrink-0" />
+                    <p className="text-sm text-muted-foreground font-medium truncate">
+                      {isDragActive
+                        ? 'Suelta la imagen aquí...'
+                        : 'Arrastra una foto o haz clic para subirla (PNG, JPG, WEBP)'}
+                    </p>
+                  </div>
+                  {googleAvatar && (
+                    <div className="flex justify-end">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          removeAvatar();
+                          setUseCustomAvatar(false);
+                        }}
+                        className="text-xs text-muted-foreground hover:text-foreground cursor-pointer h-7"
+                      >
+                        Usar foto de Google
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="relative border border-border rounded-lg p-2 bg-background">
@@ -685,7 +735,12 @@ export function SignupForm({
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={removeAvatar}
+                      onClick={() => {
+                        removeAvatar();
+                        if (googleAvatar) {
+                          setUseCustomAvatar(false);
+                        }
+                      }}
                       className="hover:bg-destructive/10 hover:text-destructive text-muted-foreground cursor-pointer h-auto py-2"
                     >
                       <X className="h-4 w-4" />

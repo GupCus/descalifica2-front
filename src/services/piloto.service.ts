@@ -48,6 +48,31 @@ export async function postPilotoFormData(
   return response.data.data;
 }
 
+export async function putPilotoFormData(
+  id: number,
+  data: Partial<NewPiloto>,
+  file?: File,
+): Promise<Piloto> {
+  const formData = new FormData();
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      formData.append(key, value as string);
+    }
+  });
+
+  if (file) {
+    formData.append("image", file);
+  }
+
+  const response = await apiClient.put(`/pilotos/${id}`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data.data;
+}
+
 export async function uploadPilotoImage(id: number, file: File): Promise<any> {
   const formData = new FormData();
   formData.append("image", file);
