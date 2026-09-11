@@ -7,13 +7,6 @@ import { useEffect, useState } from 'react';
 import { getCarrera } from '@/services/carrera.service.ts';
 import { Spinner } from '@/components/ui/spinner.tsx';
 
-const add3Hours = (dateStr: any) => {
-  if (!dateStr) return dateStr;
-  const d = new Date(dateStr);
-  d.setHours(d.getHours() + 3);
-  return d.toISOString();
-};
-
 //Componente
 function Calendario() {
   const [carreras, setCarreras] = useState<Carrera[]>([]);
@@ -22,20 +15,7 @@ function Calendario() {
 
   useEffect(() => {
     getCarrera(new Date().getFullYear())
-      .then((data) => {
-        // Parche temporal: sumar 3 horas a todas las fechas para compensar el offset
-        const fixedData = data.map((c: Carrera) => ({
-          ...c,
-          start_date: add3Hours(c.start_date),
-          end_date: add3Hours(c.end_date),
-          sessions: c.sessions?.map((s) => ({
-            ...s,
-            start_time: add3Hours(s.start_time),
-            end_time: add3Hours(s.end_time),
-          })),
-        }));
-        setCarreras(fixedData as Carrera[]);
-      })
+      .then((data) => setCarreras(data))
       .catch((err) => setError(err.message || String(err)))
       .finally(() => setLoading(false));
   }, []);
