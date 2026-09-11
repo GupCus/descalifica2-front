@@ -6,7 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BlogPost } from '@/entities/blogPost.entity';
 import { Usuario } from '@/entities/usuario.entity';
-import { getSuggestedBlogPosts } from '@/services/blogpost.service';
+import {
+  getSuggestedBlogPosts,
+  getBlogPost,
+} from '@/services/blogpost.service';
 import { getComentarioByBlogPost } from '@/services/comentario.service';
 import { getUsuarios } from '@/services/usuario.service';
 import { AuthService } from '@/services/auth.service';
@@ -25,45 +28,73 @@ function PostsRecomendados() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
 
   useEffect(() => {
-    AuthService.getCurrentUser()
-      .then(async (user) => {
-        if (!user) {
+    const fetchPosts = async () => {
+      try {
+        const users = await getUsuarios();
+        setUsuarios(users);
+
+        const user = await AuthService.getCurrentUser().catch(() => null);
+        let postsToDisplay: BlogPost[] = [];
+
+        if (user) {
+          setIsLoggedIn(true);
+          postsToDisplay = await getSuggestedBlogPosts(user.id);
+        } else {
           setIsLoggedIn(false);
-          setLoading(false);
-          return;
         }
 
-        setIsLoggedIn(true);
+        if (postsToDisplay.length === 0) {
+          const allPosts = await getBlogPost();
 
-        try {
-          const suggested = await getSuggestedBlogPosts(user.id);
-          setPosts(suggested);
+          const adminIds = users
+            .filter((u) => u.user_type?.toLowerCase() === 'admin')
+            .map((u) => u.id);
 
-          // Obtener conteo de comentarios para cada post
-          const counts: Record<number, number> = {};
-          await Promise.all(
-            suggested.map(async (post) => {
-              try {
-                const comentarios = await getComentarioByBlogPost(post.id);
-                counts[post.id] = comentarios.length;
-              } catch {
-                counts[post.id] = 0;
-              }
-            }),
+          const getAuthorIdLocal = (post: BlogPost): number => {
+            if (typeof post.author === 'object' && post.author !== null) {
+              return (post.author as unknown as { id: number }).id;
+            }
+            return post.author as number;
+          };
+
+          const adminPosts = allPosts.filter((p) =>
+            adminIds.includes(getAuthorIdLocal(p)),
           );
-          setCommentCounts(counts);
-        } catch (err) {
-          setError('Error cargando publicaciones sugeridas: ' + err);
-        } finally {
-          setLoading(false);
-        }
-      })
-      .catch(() => {
-        setIsLoggedIn(false);
-        setLoading(false);
-      });
+          let fallbackPosts = adminPosts.slice(0, 5);
 
-    getUsuarios().then(setUsuarios).catch(console.error);
+          if (fallbackPosts.length < 5) {
+            const needed = 5 - fallbackPosts.length;
+            const otherPosts = allPosts.filter(
+              (p) => !adminIds.includes(getAuthorIdLocal(p)),
+            );
+            fallbackPosts = [...fallbackPosts, ...otherPosts.slice(0, needed)];
+          }
+
+          postsToDisplay = fallbackPosts;
+        }
+
+        setPosts(postsToDisplay);
+
+        const counts: Record<number, number> = {};
+        await Promise.all(
+          postsToDisplay.map(async (post) => {
+            try {
+              const comentarios = await getComentarioByBlogPost(post.id);
+              counts[post.id] = comentarios.length;
+            } catch {
+              counts[post.id] = 0;
+            }
+          }),
+        );
+        setCommentCounts(counts);
+      } catch (err) {
+        setError('Error cargando publicaciones: ' + err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
   }, []);
 
   const getAuthorId = (post: BlogPost): number => {
@@ -78,8 +109,7 @@ function PostsRecomendados() {
     return usuario?.username ?? usuario?.name ?? 'Usuario eliminado';
   };
 
-  // Si no está logueado, no mostramos el componente
-  if (!isLoggedIn && !loading) return null;
+  // Ahora renderizamos posts generales si no está logueado
 
   if (loading) {
     return (
@@ -126,9 +156,9 @@ function PostsRecomendados() {
   }
 
   return (
-    <div className="w-full max-w-xl mx-auto px-4 mt-8 mb-4">
-      <div className="flex items-center justify-between mb-4">
-        <h4 className="text-xl font-semibold tracking-tight">
+    <div className="w-full max-w-xl">
+      <div className="flex items-center justify-between">
+        <h4 className="text-xl font-semibold tracking-tight mt-8 lg:mt-0 mb-5">
           📰 Publicaciones que te pueden interesar
         </h4>
         <Button variant="ghost" size="sm" asChild>
@@ -143,10 +173,7 @@ function PostsRecomendados() {
       </div>
 
       {/* Feed vertical con scroll custom */}
-      <SimpleBar
-        style={{ maxHeight: 600 }}
-        className="simplebar-posts pr-4"
-      >
+      <SimpleBar style={{ maxHeight: 600 }} className="simplebar-posts pr-4">
         <div className="flex flex-col gap-4 py-2">
           {posts.map((post) => (
             <Link

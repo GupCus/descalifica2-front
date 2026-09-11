@@ -276,29 +276,13 @@ export function SignupForm({
 
       setMessageType('success');
       setMessage(
-        response?.message || '¡Usuario creado con éxito! Redirigiendo...',
+        response?.message ||
+          '¡Usuario creado con éxito! Redirigiendo al login...',
       );
 
-      setForm({
-        name: '',
-        surname: '',
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        telegram_username: '',
-        date_of_birth: null,
-        fav_driver: '',
-        fav_team: '',
-        fav_circuit: '',
-        bio: '',
-        avatar: null,
-      });
-      removeAvatar();
-
       setTimeout(() => {
-        navigate('/');
-      }, 2000);
+        navigate('/login');
+      }, 1000);
     } catch (err: any) {
       setMessageType('error');
       console.error('Error completo:', err);
