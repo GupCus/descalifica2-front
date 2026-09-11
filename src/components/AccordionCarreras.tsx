@@ -70,6 +70,7 @@ export default function AccordionCarreras({
                       sesiones={gp.sessions}
                       circuito={gp.track!}
                       escuderiasdata={escuderiasdata!}
+                      carreraId={gp.id}
                     />
                   </div>
                 </AccordionContent>

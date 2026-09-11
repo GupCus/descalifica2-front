@@ -1,5 +1,7 @@
 import { Sesion } from '@/entities/sesion.entity.ts';
 import { useEffect, useState } from 'react';
+import { AuthService } from '@/services/auth.service.ts';
+import { postCarrera } from '@/services/openf1.service.ts';
 import {
   Table,
   TableBody,
@@ -82,11 +84,18 @@ function DashboardAccordion({
   sesiones,
   circuito,
   escuderiasdata,
+  carreraId,
 }: {
   sesiones?: Sesion[];
   circuito: Circuito;
   escuderiasdata: Escuderia[];
+  carreraId?: number;
 }) {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    AuthService.isAdmin().then((res) => setIsAdmin(Boolean(res)));
+  }, []);
   const [sesionSeleccionada, setSesionSeleccionada] = useState<
     Sesion | undefined
   >(undefined);
@@ -192,6 +201,22 @@ function DashboardAccordion({
               >
                 GP
               </ToggleGroupItem>
+              {isAdmin && (
+                <ToggleGroupItem
+                  className="flex-1 md:flex-none md:w-full justify-center md:justify-start !rounded-none h-11 md:h-14 px-2 md:px-6 border-b-4 md:border-b-0 md:border-l-4 border-transparent text-destructive hover:bg-destructive/10 transition-all"
+                  value="actualizar"
+                  onClick={async () => {
+                    if (carreraId) {
+                      await postCarrera(carreraId);
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, 2000);
+                    }
+                  }}
+                >
+                  Actualizar Carrera
+                </ToggleGroupItem>
+              )}
             </ToggleGroup>
           </div>
         </div>
