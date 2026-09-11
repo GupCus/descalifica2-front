@@ -1,10 +1,10 @@
-import { Piloto } from "@/entities/piloto.entity.ts";
-import { useState, useEffect } from "react";
-import { Link, useParams, useLocation } from "react-router-dom";
-import { ArrowLeftIcon } from "lucide-react";
-import { uploadPilotoImage } from "@/services/piloto.service.ts";
-import { AuthService } from "@/services/auth.service.ts";
-import { getAssetUrl } from "@/utils/asset.util.ts";
+import { Piloto } from '@/entities/piloto.entity.ts';
+import { useState, useEffect } from 'react';
+import { Link, useParams, useLocation } from 'react-router-dom';
+import { ArrowLeftIcon } from 'lucide-react';
+import { uploadPilotoImage } from '@/services/piloto.service.ts';
+import { AuthService } from '@/services/auth.service.ts';
+import { getAssetUrl } from '@/utils/asset.util.ts';
 
 function DetallePiloto() {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +17,7 @@ function DetallePiloto() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [nationalityName, setNationalityName] = useState<string>("");
+  const [nationalityName, setNationalityName] = useState<string>('');
 
   useEffect(() => {
     AuthService.isAdmin().then((res) => setIsAdmin(Boolean(res)));
@@ -34,17 +34,17 @@ function DetallePiloto() {
     setUploadingImage(true);
     try {
       await uploadPilotoImage(piloto.id, selectedFile);
-      alert("Imagen actualizada correctamente");
+      alert('Imagen actualizada correctamente');
       window.location.reload();
     } catch (error) {
-      alert("Error al actualizar la imagen");
+      alert('Error al actualizar la imagen');
     } finally {
       setUploadingImage(false);
       setSelectedFile(null);
     }
   };
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
   useEffect(() => {
     if (location.state?.piloto) return;
@@ -77,7 +77,7 @@ function DetallePiloto() {
             setNationalityName(data.data.name);
           }
         })
-        .catch((err) => console.error("Error fetching nationality:", err));
+        .catch((err) => console.error('Error fetching nationality:', err));
     }
   }, [piloto?.nationality, api]);
 
@@ -112,9 +112,9 @@ function DetallePiloto() {
         className="absolute inset-0 z-0 opacity-10"
         style={{
           backgroundImage: `url(${getAssetUrl(piloto.profile_image)})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "blur(50px) brightness(0.4)",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(50px) brightness(0.4)',
         }}
       />
 
@@ -144,13 +144,13 @@ function DetallePiloto() {
                     const target = e.currentTarget as HTMLImageElement;
                     target.onerror = null;
                     target.src = new URL(
-                      "../../assets/descalifica2logo.png",
+                      '../../assets/descalifica2logo.png',
                       import.meta.url,
                     ).href;
                     target.classList.add(
-                      "object-contain",
-                      "p-6",
-                      "bg-slate-900/80",
+                      'object-contain',
+                      'p-6',
+                      'bg-slate-900/80',
                     );
                   }}
                 />
@@ -162,7 +162,7 @@ function DetallePiloto() {
             <div className="bg-slate-900/70 backdrop-blur-md rounded-xl p-4 sm:p-6 shadow-lg border border-slate-700/50 flex items-center justify-between">
               <div className="min-w-0 flex-1 pr-2">
                 <span className="text-[10px] sm:text-xs font-semibold text-blue-400 uppercase tracking-wider block mb-0.5">
-                  {piloto.racing_series?.name || "Piloto"}
+                  {piloto.racing_series?.name || 'Piloto'}
                 </span>
                 <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-tight leading-tight truncate">
                   {piloto.name}
@@ -185,7 +185,7 @@ function DetallePiloto() {
                       alt={`Bandera de ${piloto.nationality}`}
                       className="w-6 h-4 sm:w-8 sm:h-5 object-cover rounded shadow border border-white/10 shrink-0"
                       onError={(e) => {
-                        e.currentTarget.style.display = "none";
+                        e.currentTarget.style.display = 'none';
                       }}
                     />
                   )}
@@ -201,7 +201,9 @@ function DetallePiloto() {
                     Escudería
                   </h3>
                   <p className="text-xs sm:text-base font-semibold text-white truncate">
-                    {piloto.team.name}
+                    {typeof piloto.team === 'object' && piloto.team !== null
+                      ? piloto.team.name
+                      : piloto.team}
                   </p>
                 </div>
               )}
@@ -234,10 +236,10 @@ function DetallePiloto() {
                     Fecha de Nacimiento
                   </h3>
                   <p className="text-xs sm:text-base font-semibold text-white">
-                    {new Date(piloto.birth_date).toLocaleDateString("es-ES", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
+                    {new Date(piloto.birth_date).toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
                     })}
                   </p>
                 </div>
@@ -266,7 +268,7 @@ function DetallePiloto() {
                     disabled={!selectedFile || uploadingImage}
                     className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors border-0 shrink-0 cursor-pointer"
                   >
-                    {uploadingImage ? "Subiendo..." : "Subir Imagen"}
+                    {uploadingImage ? 'Subiendo...' : 'Subir Imagen'}
                   </button>
                 </div>
               </div>

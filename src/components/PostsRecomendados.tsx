@@ -21,7 +21,6 @@ function PostsRecomendados() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>(
     {},
   );
@@ -37,10 +36,8 @@ function PostsRecomendados() {
         let postsToDisplay: BlogPost[] = [];
 
         if (user) {
-          setIsLoggedIn(true);
           postsToDisplay = await getSuggestedBlogPosts(user.id);
         } else {
-          setIsLoggedIn(false);
         }
 
         if (postsToDisplay.length === 0) {

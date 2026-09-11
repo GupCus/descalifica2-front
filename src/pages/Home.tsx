@@ -45,7 +45,6 @@ function calcularcarrerasAnteriores(anio: number, carreras: Carrera[]) {
   return carrerasAnteriores;
 }
 function Home() {
-  const [carreras, setCarreras] = useState<Carrera[]>([]);
   const [carrerasAnteriores, setCarrerasAnteriores] = useState<Carrera[]>([]);
 
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
@@ -80,7 +79,6 @@ function Home() {
   useEffect(() => {
     getCarrera(anio)
       .then((data) => {
-        setCarreras(data);
         setCarrerasAnteriores(calcularcarrerasAnteriores(anio, data) || []);
       })
       .catch((err) => setError(err.message || String(err)))
