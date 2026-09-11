@@ -1,7 +1,7 @@
-import type React from "react";
-import { useState, useEffect } from "react";
-import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
-import { Button } from "@/components/ui/button.tsx";
+import type React from 'react';
+import { useState, useEffect } from 'react';
+import { InputGroup, InputGroupInput } from '@/components/ui/input-group';
+import { Button } from '@/components/ui/button.tsx';
 import {
   Select,
   SelectContent,
@@ -10,22 +10,30 @@ import {
   SelectValue,
   SelectGroup,
   SelectLabel,
-} from "@/components/ui/select";
-import fondoFranco from "../../assets/franco-2.jpg";
-import { Escuderia } from "@/entities/escuderia.entity.ts";
-import { Categoria } from "@/entities/categoria.entity.ts";
-import { getEscuderia } from "@/services/escuderia.service.ts";
-import { getCategoria } from "@/services/categoria.service.ts";
-import { postPilotoFormData, getPiloto, putPilotoFormData, deletePiloto } from "@/services/piloto.service.ts";
-import { NewPiloto, Piloto } from "@/entities/piloto.entity.ts";
+} from '@/components/ui/select';
+import fondoFranco from '../../assets/franco-2.jpg';
+import { Escuderia } from '@/entities/escuderia.entity.ts';
+import { Categoria } from '@/entities/categoria.entity.ts';
+import { getEscuderia } from '@/services/escuderia.service.ts';
+import { getCategoria } from '@/services/categoria.service.ts';
+import {
+  postPilotoFormData,
+  getPiloto,
+  putPilotoFormData,
+  deletePiloto,
+} from '@/services/piloto.service.ts';
+import { NewPiloto, Piloto } from '@/entities/piloto.entity.ts';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { Calendar as ChevronDownIcon } from "lucide-react";
-import { getNationalities, Nationality } from "@/services/nationality.service.ts";
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Calendar as ChevronDownIcon } from 'lucide-react';
+import {
+  getNationalities,
+  Nationality,
+} from '@/services/nationality.service.ts';
 
 //DEFINICIONES DE CLASES
 type FormState = {
@@ -39,13 +47,13 @@ type FormState = {
 };
 
 const initialState: FormState = {
-  name: "",
-  team: "",
-  num: "",
-  nationality: "",
+  name: '',
+  team: '',
+  num: '',
+  nationality: '',
   birth_date: null,
-  role: "",
-  racing_series: "",
+  role: '',
+  racing_series: '',
 };
 
 function NuevoPiloto() {
@@ -57,11 +65,11 @@ function NuevoPiloto() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [nationalities, setNationalities] = useState<Nationality[]>([]);
   const [pilotos, setPilotos] = useState<Piloto[]>([]);
-  const [selectedEntityId, setSelectedEntityId] = useState<string>("new");
+  const [selectedEntityId, setSelectedEntityId] = useState<string>('new');
   const [, setError] = useState<string | null>();
   const [openBirthDate, setOpenBirthDate] = useState(false);
 
-  const isEditing = selectedEntityId !== "new";
+  const isEditing = selectedEntityId !== 'new';
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -88,19 +96,28 @@ function NuevoPiloto() {
     setSelectedEntityId(value);
     setMessage(null);
     setSelectedFile(null);
-    if (value === "new") {
+    if (value === 'new') {
       setForm(initialState);
     } else {
-      const selected = pilotos.find(p => String(p.id) === value);
+      const selected = pilotos.find((p) => String(p.id) === value);
       if (selected) {
         setForm({
           name: selected.name,
-          team: selected.team ? String(selected.team.id) : "",
+          team:
+            selected.team !== undefined && selected.team !== null
+              ? typeof selected.team === 'object'
+                ? String(selected.team.id)
+                : String(selected.team)
+              : '',
           num: selected.num,
           nationality: selected.nationality,
-          birth_date: selected.birth_date ? new Date(selected.birth_date) : null,
+          birth_date: selected.birth_date
+            ? new Date(selected.birth_date)
+            : null,
           role: selected.role,
-          racing_series: selected.racing_series ? String(selected.racing_series.id) : "",
+          racing_series: selected.racing_series
+            ? String(selected.racing_series.id)
+            : '',
         });
       }
     }
@@ -109,24 +126,30 @@ function NuevoPiloto() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { id, value } = e.target;
     setForm((s) => ({ ...s, [id]: value }));
   };
 
   const handleDelete = async () => {
-    if (!isEditing || !window.confirm("¿Estás seguro de que deseas eliminar este piloto?")) return;
-    
+    if (
+      !isEditing ||
+      !window.confirm('¿Estás seguro de que deseas eliminar este piloto?')
+    )
+      return;
+
     setSubmitting(true);
     try {
       await deletePiloto(Number(selectedEntityId));
-      setMessage("Piloto eliminado con éxito.");
+      setMessage('Piloto eliminado con éxito.');
       setForm(initialState);
-      setSelectedEntityId("new");
-      setPilotos(pilotos.filter(p => String(p.id) !== selectedEntityId));
+      setSelectedEntityId('new');
+      setPilotos(pilotos.filter((p) => String(p.id) !== selectedEntityId));
     } catch (err: any) {
-      setMessage(`Error al eliminar: ${err.message || "No se pudo eliminar el piloto"}`);
+      setMessage(
+        `Error al eliminar: ${err.message || 'No se pudo eliminar el piloto'}`,
+      );
     } finally {
       setSubmitting(false);
     }
@@ -138,7 +161,7 @@ function NuevoPiloto() {
     setMessage(null);
 
     if (!form.birth_date) {
-      setMessage("Por favor selecciona una fecha de nacimiento");
+      setMessage('Por favor selecciona una fecha de nacimiento');
       setSubmitting(false);
       return;
     }
@@ -148,25 +171,32 @@ function NuevoPiloto() {
       team: form.team,
       num: form.num,
       nationality: form.nationality,
-      birth_date: form.birth_date.toISOString().split("T")[0],
+      birth_date: form.birth_date.toISOString().split('T')[0],
       role: form.role,
       racing_series: form.racing_series,
     };
 
     try {
       if (isEditing) {
-        const updated = await putPilotoFormData(Number(selectedEntityId), payload, selectedFile || undefined);
-        setMessage("Piloto actualizado con éxito.");
-        setPilotos(pilotos.map(p => p.id === updated.id ? updated : p));
+        const updated = await putPilotoFormData(
+          Number(selectedEntityId),
+          payload,
+          selectedFile || undefined,
+        );
+        setMessage('Piloto actualizado con éxito.');
+        setPilotos(pilotos.map((p) => (p.id === updated.id ? updated : p)));
       } else {
-        const created = await postPilotoFormData(payload, selectedFile || undefined);
-        setMessage("Piloto creado con éxito.");
+        const created = await postPilotoFormData(
+          payload,
+          selectedFile || undefined,
+        );
+        setMessage('Piloto creado con éxito.');
         setPilotos([...pilotos, created]);
         setForm(initialState);
       }
       setSelectedFile(null);
     } catch (err: any) {
-      setMessage(`Error: ${err.message || "No se pudo procesar la solicitud"}`);
+      setMessage(`Error: ${err.message || 'No se pudo procesar la solicitud'}`);
     } finally {
       setSubmitting(false);
     }
@@ -178,9 +208,9 @@ function NuevoPiloto() {
         className="absolute inset-0 w-full h-full z-0"
         style={{
           backgroundImage: `url(${fondoFranco})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "blur(6px) brightness(0.5)",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(6px) brightness(0.5)',
         }}
       />
 
@@ -193,7 +223,7 @@ function NuevoPiloto() {
             className="text-gray-200 mt-2 scroll-m-20 text-4xl font-bold tracking-wider text-center uppercase"
             style={{
               fontFamily: "'Orbitron', 'Rajdhani',sans-serif",
-              letterSpacing: "0.1em",
+              letterSpacing: '0.1em',
             }}
           >
             Alta / Edición piloto
@@ -289,13 +319,13 @@ function NuevoPiloto() {
               <Button
                 variant="outline"
                 className={`w-full justify-between font-normal h-10 ${
-                  !form.birth_date ? "text-muted-foreground" : ""
+                  !form.birth_date ? 'text-muted-foreground' : ''
                 }`}
                 type="button"
               >
                 {form.birth_date
                   ? form.birth_date.toLocaleDateString()
-                  : "Fecha de nacimiento *"}
+                  : 'Fecha de nacimiento *'}
                 <ChevronDownIcon className="h-4 w-4 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -407,13 +437,17 @@ function NuevoPiloto() {
                 </Button>
               )}
             </div>
-            
+
             <Button
               type="submit"
               disabled={submitting}
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold shadow-lg shadow-blue-900/50 border-0"
             >
-              {submitting ? "Enviando..." : (isEditing ? "Guardar cambios" : "Crear nuevo piloto")}
+              {submitting
+                ? 'Enviando...'
+                : isEditing
+                  ? 'Guardar cambios'
+                  : 'Crear nuevo piloto'}
             </Button>
           </div>
 

@@ -5,7 +5,7 @@ import { Temporada } from './temporada.entity.js';
 
 export class Piloto extends baseEntity {
   name!: string;
-  team!: Escuderia;
+  team!: Escuderia | number;
   num!: number;
   nationality!: string;
   birth_date!: Date;

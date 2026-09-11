@@ -66,11 +66,6 @@ export function LoginForm({
         window.dispatchEvent(new Event('userLoggedIn'));
       }
 
-      setForm({
-        email: '',
-        password: '',
-      });
-
       setTimeout(() => {
         navigate('/');
       }, 1000);

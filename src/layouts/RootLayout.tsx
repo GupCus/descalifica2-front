@@ -1,6 +1,6 @@
-import { Outlet, Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { LogOut, Menu } from "lucide-react";
+import { Outlet, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { LogOut, Menu, User } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -8,10 +8,10 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet";
-import { useLocation } from "react-router-dom";
-import { Suspense } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+} from '@/components/ui/sheet';
+import { useLocation } from 'react-router-dom';
+import { Suspense } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -19,12 +19,12 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import logoDescalifica2 from "../assets/descalifica2logo.png";
-import { AuthService } from "@/services/auth.service.ts";
-import HeaderSearch from "@/components/HeaderSearch";
-import { getAssetUrl } from "@/utils/asset.util.ts";
+} from '@/components/ui/navigation-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import logoDescalifica2 from '../assets/descalifica2logo.png';
+import { AuthService } from '@/services/auth.service.ts';
+import HeaderSearch from '@/components/HeaderSearch';
+import { getAssetUrl } from '@/utils/asset.util.ts';
 
 function RootLayout() {
   const location = useLocation();
@@ -34,7 +34,7 @@ function RootLayout() {
     user_type: string;
     avatar?: string;
   } | null>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string>("");
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
   const loadUser = async () => {
@@ -45,12 +45,12 @@ function RootLayout() {
       if (currentUser && currentUser.avatar) {
         setAvatarUrl(getAssetUrl(currentUser.avatar));
       } else {
-        setAvatarUrl("");
+        setAvatarUrl('');
       }
     } catch (error) {
-      console.error("Error loading user:", error);
+      console.error('Error loading user:', error);
       setUser(null);
-      setAvatarUrl("");
+      setAvatarUrl('');
     } finally {
       setLoading(false);
     }
@@ -63,21 +63,21 @@ function RootLayout() {
       loadUser();
     };
 
-    window.addEventListener("userLoggedIn", handleLoginEvent);
+    window.addEventListener('userLoggedIn', handleLoginEvent);
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "token" && !e.newValue) {
+      if (e.key === 'token' && !e.newValue) {
         setUser(null);
-      } else if (e.key === "token" && e.newValue) {
+      } else if (e.key === 'token' && e.newValue) {
         loadUser();
       }
     };
 
-    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
 
     return () => {
-      window.removeEventListener("userLoggedIn", handleLoginEvent);
-      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener('userLoggedIn', handleLoginEvent);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
 
@@ -91,7 +91,7 @@ function RootLayout() {
       <header className="sticky top-0 z-50">
         <div
           className="flex justify-between items-center relative w-full py-2 md:pt-0.5 md:pb-0.5 px-4"
-          style={{ background: "var(--fondodescalifica2)" }}
+          style={{ background: 'var(--fondodescalifica2)' }}
         >
           <div className="md:hidden flex items-center">
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
@@ -268,44 +268,53 @@ function RootLayout() {
             </NavigationMenuList>
           </NavigationMenu>
 
-          <HeaderSearch className="hidden md:block w-60 lg:w-72" />
+          <div className="flex items-center gap-4 md:mr-6">
+            <HeaderSearch className="hidden md:block w-60 lg:w-72" />
 
-          <div className="flex items-center gap-3 md:mr-6">
-            {loading ? (
-              <div className="text-sm text-gray-400">Cargando...</div>
-            ) : user ? (
-              <>
+            <div className="flex items-center gap-3">
+              {loading ? (
+                <div className="text-sm text-gray-400">Cargando...</div>
+              ) : user ? (
+                <>
+                  <Link
+                    to={user.user_type === 'ADMIN' ? '/menuadmin' : '/perfil'}
+                    className="flex items-center gap-2 text-sm font-medium text-gray-200 hover:text-white transition-all group"
+                  >
+                    <span className="group-hover:text-white transition-colors">
+                      {user.username}
+                    </span>
+                    <Avatar className="rounded-3xl border cursor-pointer group-hover:ring-2 group-hover:ring-accent transition-all">
+                      {avatarUrl && (
+                        <AvatarImage src={avatarUrl} alt={user.username} />
+                      )}
+                      <AvatarFallback>
+                        {user.username.substring(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-700/50 rounded-lg transition-colors cursor-pointer"
+                    title="Cerrar sesión"
+                  >
+                    <LogOut size={20} />
+                  </button>
+                </>
+              ) : (
                 <Link
-                  to={user.user_type === "ADMIN" ? "/menuadmin" : "/perfil"}
-                  className="flex items-center gap-2 text-sm font-medium text-gray-200 hover:text-white transition-all group"
+                  to="/login"
+                  className="flex items-center gap-2 px-3 py-1.5  hover:bg-primary rounded-full border border-foreground/30 "
                 >
-                  <span className="group-hover:text-white transition-colors">
-                    {user.username}
+                  <User
+                    size={18}
+                    className="text-gray-300 group-hover:text-white transition-colors"
+                  />
+                  <span className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">
+                    Ingresar
                   </span>
-                  <Avatar className="rounded-3xl border cursor-pointer group-hover:ring-2 group-hover:ring-accent transition-all">
-                    {avatarUrl && (
-                      <AvatarImage src={avatarUrl} alt={user.username} />
-                    )}
-                    <AvatarFallback>
-                      {user.username.substring(0, 2).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
                 </Link>
-                <button
-                  onClick={handleLogout}
-                  className="p-2 text-gray-400 hover:text-gray-200 hover:bg-gray-700/50 rounded-lg transition-colors cursor-pointer"
-                  title="Cerrar sesión"
-                >
-                  <LogOut size={20} />
-                </button>
-              </>
-            ) : (
-              <Link to="/login">
-                <span className="text-sm font-semibold hover:text-gray-300 transition-colors">
-                  LOGIN
-                </span>
-              </Link>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -334,7 +343,7 @@ function RootLayout() {
 
       <footer>
         <p className="text-center bg-background sticky pb-2 pt-2 bottom-0 right-0 left-0 leading-5">
-          © 2025 Descalifica2
+          © {new Date().getFullYear()} Descalifica2
         </p>
       </footer>
     </>
