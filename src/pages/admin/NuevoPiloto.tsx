@@ -285,7 +285,7 @@ function NuevoPiloto() {
           </InputGroup>
 
           <Popover open={openBirthDate} onOpenChange={setOpenBirthDate}>
-            <PopoverTrigger asChild>
+            <PopoverTrigger className="w-full">
               <Button
                 variant="outline"
                 className={`w-full justify-between font-normal h-10 ${
