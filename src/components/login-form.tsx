@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/input';
 
 import { useState } from 'react';
 import { AuthService } from '@/services/auth.service.ts';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import * as React from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { BotonGoogle } from './botongoogle.tsx';
@@ -151,12 +151,12 @@ export function LoginForm({
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Contraseña</FieldLabel>
-                  <a
-                    href="https://youtu.be/dQw4w9WgXcQ"
+                  <Link
+                    to="/forgot-password"
                     className="ml-auto text-sm underline-offset-4 hover:underline"
                   >
-                    Te olvidaste la contraseña?
-                  </a>
+                    ¿Te olvidaste la contraseña?
+                  </Link>
                 </div>
                 <Input
                   id="password"
