@@ -266,6 +266,32 @@ function Perfil() {
                         Validar telegram
                       </Button>
                     )}
+                    {!profile.telegram_id && (
+                      <Button
+                        size="sm"
+                        className="h-6 px-2 text-[10px] bg-blue-600 hover:bg-blue-700 text-white rounded shrink-0"
+                        onClick={async () => {
+                          try {
+                            const res = await apiClient.post<{ codigo: string }>('/telegram/generarcodigo');
+                            const codigo = res.data.codigo;
+                            setProfile((prev) => prev ? { ...prev, telegram_id: codigo } : prev);
+                            window.open(
+                              `https://t.me/descalifica2bot?start=${codigo}`,
+                              '_blank',
+                            );
+                          } catch (err: any) {
+                            console.error('Error al generar código de Telegram:', err);
+                          }
+                        }}
+                      >
+                        Vincular Telegram
+                      </Button>
+                    )}
+                    {profile.telegram_id && !profile.telegram_id.includes('otp') && (
+                      <span className="text-[10px] text-green-400 font-medium">
+                        ✅ Vinculado
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
