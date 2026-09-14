@@ -181,9 +181,13 @@ function RootLayout() {
                   >
                     ¿Dónde Ver?
                   </Link>
-                  <span className="text-xl font-semibold opacity-50 cursor-not-allowed">
+                  <Link
+                    to="/foro"
+                    onClick={() => setSheetOpen(false)}
+                    className="text-xl font-semibold hover:text-gray-300 transition-colors"
+                  >
                     Foro
-                  </span>
+                  </Link>
                   <Link
                     to="/about"
                     onClick={() => setSheetOpen(false)}

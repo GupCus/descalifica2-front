@@ -10,6 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 import {
   Calendar,
   Trophy,
@@ -175,8 +176,8 @@ function About() {
 
       <div className="h-[2px] w-full bg-gradient-to-r from-transparent via-primary to-transparent" />
 
-      <section className="relative py-20 md:py-28 px-4 flex flex-col items-center justify-center text-center overflow-hidden">
-        <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center space-y-6">
+      <section className="relative py-12 sm:py-20 md:py-28 px-4 flex flex-col items-center justify-center text-center overflow-hidden">
+        <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center space-y-4 sm:space-y-6">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -184,9 +185,9 @@ function About() {
           >
             <Badge
               variant="outline"
-              className="px-4 py-1.5 text-xs md:text-sm font-medium border-primary/50 bg-primary/10 text-primary-foreground flex items-center gap-2 rounded-full backdrop-blur-sm"
+              className="px-3 sm:px-4 py-1 sm:py-1.5 text-[11px] sm:text-xs md:text-sm font-medium border-primary/50 bg-primary/10 text-primary-foreground flex items-center gap-1.5 sm:gap-2 rounded-full backdrop-blur-sm"
             >
-              <GraduationCap className="size-4 text-primary" />
+              <GraduationCap className="size-3.5 sm:size-4 text-primary" />
               UTN FRRo • Cátedra DSW • ISI 303 2025
             </Badge>
           </motion.div>
@@ -200,7 +201,7 @@ function About() {
             <img
               src={logoDescalifica2}
               alt="Logo Descalifica2"
-              className="h-16 md:h-20 w-auto drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+              className="h-12 sm:h-16 md:h-20 w-auto drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]"
             />
           </motion.div>
 
@@ -208,7 +209,7 @@ function About() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-balance"
+            className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-balance"
           >
             El epicentro digital de la{" "}
             <span className="bg-gradient-to-r from-red-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
@@ -220,7 +221,7 @@ function About() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-base md:text-xl text-muted-foreground max-w-2xl text-balance leading-relaxed"
+            className="text-sm sm:text-base md:text-xl text-muted-foreground max-w-2xl text-balance leading-relaxed"
           >
             Una plataforma para la comunidad apasionada por las carreras:
             calendarios en tiempo real, telemetría y datos de escuderías, datos
@@ -230,21 +231,21 @@ function About() {
         </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-4 py-16 space-y-20 relative z-10">
-        <section className="grid md:grid-cols-2 gap-8 items-stretch">
-          <Card className="border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/50 transition-all duration-300">
-            <CardHeader>
-              <div className="size-11 rounded-lg bg-primary/20 text-primary flex items-center justify-center mb-2">
-                <Sparkles className="size-6" />
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-8 sm:py-16 space-y-12 sm:space-y-20 relative z-10">
+        <section className="grid grid-cols-2 gap-3 sm:gap-8 items-stretch">
+          <Card className="border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/50 transition-all duration-300 py-3.5 sm:py-6 gap-2 sm:gap-6">
+            <CardHeader className="px-3 sm:px-6 pb-0">
+              <div className="size-8 sm:size-11 rounded-lg bg-primary/20 text-primary flex items-center justify-center mb-1.5 sm:mb-2">
+                <Sparkles className="size-4 sm:size-6" />
               </div>
-              <CardTitle className="text-2xl font-bold">
+              <CardTitle className="text-base sm:text-2xl font-bold">
                 Nuestra Misión
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 Pasión y precisión para los fanáticos del automovilismo
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3 text-muted-foreground leading-relaxed">
+            <CardContent className="px-3 sm:px-6 pt-2 sm:pt-0 space-y-2 sm:space-y-3 text-xs sm:text-base text-muted-foreground leading-relaxed">
               <p>
                 <strong className="text-foreground">Descalifica2</strong> nació
                 con el fin de resolver la dispersión de datos en el mundo del
@@ -260,19 +261,19 @@ function About() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/50 transition-all duration-300">
-            <CardHeader>
-              <div className="size-11 rounded-lg bg-primary/20 text-primary flex items-center justify-center mb-2">
-                <Activity className="size-6" />
+          <Card className="border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/50 transition-all duration-300 py-3.5 sm:py-6 gap-2 sm:gap-6">
+            <CardHeader className="px-3 sm:px-6 pb-0">
+              <div className="size-8 sm:size-11 rounded-lg bg-primary/20 text-primary flex items-center justify-center mb-1.5 sm:mb-2">
+                <Activity className="size-4 sm:size-6" />
               </div>
-              <CardTitle className="text-2xl font-bold">
+              <CardTitle className="text-base sm:text-2xl font-bold">
                 Ecosistema & Comunidad
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-xs sm:text-sm">
                 Una experiencia adaptada a tus preferencias
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-3 text-muted-foreground leading-relaxed">
+            <CardContent className="px-3 sm:px-6 pt-2 sm:pt-0 space-y-2 sm:space-y-3 text-xs sm:text-base text-muted-foreground leading-relaxed">
               <p>
                 Los usuarios registrados pueden personalizar su perfil eligiendo
                 sus constructores, circuitos y pilotos preferidos, recibiendo
@@ -287,24 +288,24 @@ function About() {
           </Card>
         </section>
 
-        <section className="space-y-8">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
+        <section className="space-y-6 sm:space-y-8">
+          <div className="text-center max-w-2xl mx-auto space-y-2 sm:space-y-3">
             <Badge
               variant="secondary"
-              className="px-3 py-1 font-semibold uppercase tracking-wider text-xs"
+              className="px-3 py-1 font-semibold uppercase tracking-wider text-[11px] sm:text-xs"
             >
               Módulos del Sistema
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
               ¿Qué podés hacer en Descalifica2?
             </h2>
-            <p className="text-muted-foreground text-sm md:text-base">
+            <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
               Accedé de forma directa a cada uno de los módulos que componen la
               plataforma.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {features.map((feature, idx) => {
               const Icon = feature.icon;
               return (
@@ -315,28 +316,31 @@ function About() {
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: idx * 0.08 }}
                 >
-                  <Card className="h-full border-border/60 bg-card/50 hover:bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col justify-between group">
-                    <CardHeader>
-                      <div className="size-10 rounded-md bg-primary/20 text-primary flex items-center justify-center group-hover:scale-110 transition-transform mb-2">
-                        <Icon className="size-5" />
+                  <Card className="h-full border-border/60 bg-card/50 hover:bg-card hover:border-primary/50 transition-all duration-300 hover:shadow-lg flex flex-col justify-between group py-3 sm:py-6 gap-2 sm:gap-6">
+                    <CardHeader className="px-3 sm:px-6 pb-0">
+                      <div className="size-8 sm:size-10 rounded-md bg-primary/20 text-primary flex items-center justify-center group-hover:scale-110 transition-transform mb-1.5 sm:mb-2">
+                        <Icon className="size-4 sm:size-5" />
                       </div>
-                      <CardTitle className="text-xl group-hover:text-primary transition-colors">
+                      <CardTitle className="text-sm sm:text-xl font-bold group-hover:text-primary transition-colors leading-snug">
                         {feature.title}
                       </CardTitle>
-                      <CardDescription className="text-sm leading-normal">
+                      <CardDescription className="text-xs sm:text-sm leading-relaxed mt-1">
                         {feature.description}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="pt-0">
+                    <CardContent className="px-3 sm:px-6 pt-2 sm:pt-0">
                       <Button
                         asChild
                         variant="ghost"
                         size="sm"
-                        className="w-full justify-between text-muted-foreground group-hover:text-primary hover:bg-primary/10 transition-all"
+                        className="w-full justify-between text-muted-foreground group-hover:text-primary hover:bg-primary/10 transition-all px-2 sm:px-3 h-8 sm:h-9 text-xs sm:text-sm"
                       >
                         <Link to={feature.to}>
-                          <span>Ingresar al módulo</span>
-                          <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
+                          <span className="truncate">
+                            Ingresar
+                            <span className="hidden sm:inline"> al módulo</span>
+                          </span>
+                          <ArrowRight className="size-3.5 sm:size-4 shrink-0 group-hover:translate-x-1 transition-transform ml-1" />
                         </Link>
                       </Button>
                     </CardContent>
@@ -347,25 +351,25 @@ function About() {
           </div>
         </section>
 
-        <section className="space-y-8">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
+        <section className="space-y-6 sm:space-y-8">
+          <div className="text-center max-w-2xl mx-auto space-y-2 sm:space-y-3">
             <Badge
               variant="secondary"
-              className="px-3 py-1 font-semibold uppercase tracking-wider text-xs"
+              className="px-3 py-1 font-semibold uppercase tracking-wider text-[11px] sm:text-xs"
             >
               Autores & Colaboradores
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
               Equipo de Desarrollo
             </h2>
-            <p className="text-muted-foreground text-sm md:text-base">
+            <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
               Estudiantes de Ingeniería en Sistemas de Información de la{" "}
               <strong className="text-foreground">UTN FRRo</strong> para la
               cátedra Desarrollo de Software (DSW - ISI 303).
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {team.map((member, idx) => (
               <motion.div
                 key={member.name}
@@ -375,32 +379,39 @@ function About() {
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
                 className="h-full flex flex-col"
               >
-                <Card className="h-full flex flex-col justify-between text-center border-border/60 bg-card/50 hover:border-primary/50 hover:shadow-md transition-all duration-300">
-                  <CardHeader className="flex flex-col items-center justify-between h-full pb-6">
-                    <div className="flex flex-col items-center">
-                      <Avatar className="size-16 border-2 border-primary/40 bg-muted/60 mb-3 shadow-inner">
+                <Card className="h-full flex flex-col justify-between text-center border-border/60 bg-card/50 hover:border-primary/50 hover:shadow-md transition-all duration-300 py-3 sm:py-6">
+                  <CardHeader className="flex flex-col items-center justify-between h-full px-2 sm:px-6 pb-2 sm:pb-6 gap-2">
+                    <div className="flex flex-col items-center w-full">
+                      <Avatar className="size-12 sm:size-16 border-2 border-primary/40 bg-muted/60 mb-2 sm:mb-3 shadow-inner">
                         <AvatarImage
                           src={member.avatar}
                           alt={member.name}
                           referrerPolicy="no-referrer"
                         />
-                        <AvatarFallback className="text-lg font-bold text-primary">
+                        <AvatarFallback className="text-sm sm:text-lg font-bold text-primary">
                           {member.initials}
                         </AvatarFallback>
                       </Avatar>
-                      <CardTitle className="text-lg font-bold leading-tight min-h-[3rem] flex items-center justify-center text-center">
+                      <CardTitle className="text-xs sm:text-lg font-bold leading-tight min-h-[2.5rem] sm:min-h-[3rem] flex items-center justify-center text-center px-1">
                         {member.name}
                       </CardTitle>
                     </div>
-                    <a
-                      href={`https://github.com/${member.github}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-mono px-3 py-1 rounded-full border border-border/80 bg-background/50 hover:border-primary/50"
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="mt-2 sm:mt-3 h-7 text-[11px] sm:text-xs font-mono px-2 sm:px-3 rounded-full border-border/80 bg-background/50 hover:border-primary/50 text-muted-foreground hover:text-primary max-w-full"
                     >
-                      <Github className="size-3.5" />
-                      <span>@{member.github}</span>
-                    </a>
+                      <a
+                        href={`https://github.com/${member.github}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 sm:gap-1.5"
+                      >
+                        <Github className="size-3 sm:size-3.5 shrink-0" />
+                        <span className="truncate">@{member.github}</span>
+                      </a>
+                    </Button>
                   </CardHeader>
                 </Card>
               </motion.div>
@@ -408,44 +419,46 @@ function About() {
           </div>
         </section>
 
-        <section className="space-y-8">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
+        <section className="space-y-6 sm:space-y-8">
+          <div className="text-center max-w-2xl mx-auto space-y-2 sm:space-y-3">
             <Badge
               variant="secondary"
-              className="px-3 py-1 font-semibold uppercase tracking-wider text-xs"
+              className="px-3 py-1 font-semibold uppercase tracking-wider text-[11px] sm:text-xs"
             >
               Arquitectura
             </Badge>
-            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
               Tecnologías Utilizadas
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {techStack.map((tech) => {
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6">
+            {techStack.map((tech, idx) => {
               const Icon = tech.icon;
               return (
                 <Card
                   key={tech.category}
-                  className="border-border/60 bg-card/50"
+                  className={`border-border/60 bg-card/50 py-3 sm:py-6 gap-2 sm:gap-6 ${
+                    idx === 2 ? "col-span-2 md:col-span-1" : ""
+                  }`}
                 >
-                  <CardHeader>
-                    <div className="flex items-center gap-3">
-                      <div className="size-9 rounded-md bg-primary/20 text-primary flex items-center justify-center">
-                        <Icon className="size-5" />
+                  <CardHeader className="px-3 sm:px-6 pb-0">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="size-7 sm:size-9 rounded-md bg-primary/20 text-primary flex items-center justify-center shrink-0">
+                        <Icon className="size-3.5 sm:size-5" />
                       </div>
-                      <CardTitle className="text-lg font-bold">
+                      <CardTitle className="text-xs sm:text-lg font-bold leading-tight">
                         {tech.category}
                       </CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
+                  <CardContent className="px-3 sm:px-6 pt-2 sm:pt-0">
+                    <div className="flex flex-wrap gap-1 sm:gap-2">
                       {tech.items.map((item) => (
                         <Badge
                           key={item}
                           variant="secondary"
-                          className="px-3 py-1 text-xs font-medium bg-muted/80 hover:bg-muted transition-colors"
+                          className="px-2 py-0.5 sm:px-3 sm:py-1 text-[10px] sm:text-xs font-medium bg-muted/80 hover:bg-muted transition-colors"
                         >
                           {item}
                         </Badge>
@@ -458,99 +471,108 @@ function About() {
           </div>
         </section>
 
-        <section className="p-8 rounded-2xl border border-primary/30 bg-gradient-to-br from-card via-card/90 to-primary/10 shadow-xl space-y-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <section className="p-4 sm:p-8 rounded-2xl border border-primary/30 bg-gradient-to-br from-card via-card/90 to-primary/10 shadow-xl space-y-4 sm:space-y-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4">
             <div>
-              <h3 className="text-2xl font-bold flex items-center gap-2">
-                <Layers className="size-6 text-primary" />
-                Código Fuente y Documentación
+              <h3 className="text-lg sm:text-2xl font-bold flex items-center gap-2">
+                <Layers className="size-5 sm:size-6 text-primary shrink-0" />
+                <span>Código Fuente y Documentación</span>
               </h3>
-              <p className="text-muted-foreground text-sm mt-1">
+              <p className="text-muted-foreground text-xs sm:text-sm mt-1">
                 Explorá los repositorios del proyecto y la propuesta académica
                 presentada.
               </p>
             </div>
             <Badge
               variant="outline"
-              className="border-primary text-primary font-semibold"
+              className="border-primary text-primary font-semibold text-xs sm:text-sm"
             >
               Open Source
             </Badge>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-4 pt-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4 pt-2">
             <a
               href="https://github.com/GupCus/descalifica2-front"
               target="_blank"
               rel="noreferrer"
-              className="p-4 rounded-xl border border-border/80 bg-background/60 hover:border-primary/80 hover:bg-background/90 transition-all flex items-center justify-between group"
+              className="p-3 sm:p-4 rounded-xl border border-border/80 bg-background/60 hover:border-primary/80 hover:bg-background/90 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between group gap-2 sm:gap-3"
             >
-              <div className="flex items-center gap-3">
-                <div className="size-9 rounded-lg bg-muted flex items-center justify-center group-hover:text-primary transition-colors">
-                  <Code2 className="size-5" />
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0 w-full sm:w-auto">
+                <div className="size-8 sm:size-9 rounded-lg bg-muted flex items-center justify-center group-hover:text-primary transition-colors shrink-0">
+                  <Code2 className="size-4 sm:size-5" />
                 </div>
-                <div>
-                  <p className="font-semibold text-sm">Repo del Frontend</p>
-                  <p className="text-xs text-muted-foreground">
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-xs sm:text-sm truncate">
+                    Repo Frontend
+                  </p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                     React + TypeScript
                   </p>
                 </div>
               </div>
-              <ExternalLink className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <ExternalLink className="size-3.5 sm:size-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 self-end sm:self-center" />
             </a>
 
             <a
               href="https://github.com/GupCus/descalifica2-back"
               target="_blank"
               rel="noreferrer"
-              className="p-4 rounded-xl border border-border/80 bg-background/60 hover:border-primary/80 hover:bg-background/90 transition-all flex items-center justify-between group"
+              className="p-3 sm:p-4 rounded-xl border border-border/80 bg-background/60 hover:border-primary/80 hover:bg-background/90 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between group gap-2 sm:gap-3"
             >
-              <div className="flex items-center gap-3">
-                <div className="size-9 rounded-lg bg-muted flex items-center justify-center group-hover:text-primary transition-colors">
-                  <Server className="size-5" />
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0 w-full sm:w-auto">
+                <div className="size-8 sm:size-9 rounded-lg bg-muted flex items-center justify-center group-hover:text-primary transition-colors shrink-0">
+                  <Server className="size-4 sm:size-5" />
                 </div>
-                <div>
-                  <p className="font-semibold text-sm">Repo del Backend</p>
-                  <p className="text-xs text-muted-foreground">
-                    Express + TypeScript + MikroORM
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-xs sm:text-sm truncate">
+                    Repo Backend
+                  </p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
+                    Express + TS + ORM
                   </p>
                 </div>
               </div>
-              <ExternalLink className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <ExternalLink className="size-3.5 sm:size-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 self-end sm:self-center" />
             </a>
 
             <a
               href="https://github.com/GupCus/tp/blob/main/proposal.md"
               target="_blank"
               rel="noreferrer"
-              className="p-4 rounded-xl border border-border/80 bg-background/60 hover:border-primary/80 hover:bg-background/90 transition-all flex items-center justify-between group"
+              className="col-span-2 sm:col-span-1 p-3 sm:p-4 rounded-xl border border-border/80 bg-background/60 hover:border-primary/80 hover:bg-background/90 transition-all flex items-center justify-between group gap-2 sm:gap-3"
             >
-              <div className="flex items-center gap-3">
-                <div className="size-9 rounded-lg bg-muted flex items-center justify-center group-hover:text-primary transition-colors">
-                  <FileText className="size-5" />
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div className="size-8 sm:size-9 rounded-lg bg-muted flex items-center justify-center group-hover:text-primary transition-colors shrink-0">
+                  <FileText className="size-4 sm:size-5" />
                 </div>
-                <div>
-                  <p className="font-semibold text-sm">Proposal</p>
-                  <p className="text-xs text-muted-foreground">
+                <div className="min-w-0">
+                  <p className="font-semibold text-xs sm:text-sm truncate">
+                    Proposal
+                  </p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                     Documento de Cátedra
                   </p>
                 </div>
               </div>
-              <ExternalLink className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              <ExternalLink className="size-3.5 sm:size-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
             </a>
           </div>
         </section>
 
-        <div className="text-center text-muted-foreground pt-10 border-t border-border/40 space-y-2">
-          <p className="text-sm md:text-base flex items-center justify-center gap-1.5 font-medium">
-            Desarrollado con{" "}
-            <Heart className="size-4 text-red-500 fill-red-500 inline" /> en UTN
-            Facultad Regional Rosario
-          </p>
-          <p className="text-xs text-muted-foreground/80">
-            Ingeniería en Sistemas de Información • Cátedra Desarrollo de
-            Software (ISI 303) • 2025
-          </p>
+        <div className="pt-6 sm:pt-10 space-y-4">
+          <Separator className="border-border/40" />
+          <div className="text-center text-muted-foreground space-y-1.5 sm:space-y-2">
+            <p className="text-xs sm:text-sm md:text-base flex items-center justify-center gap-1.5 font-medium">
+              Desarrollado con{" "}
+              <Heart className="size-3.5 sm:size-4 text-red-500 fill-red-500 inline" /> en UTN
+              Facultad Regional Rosario
+            </p>
+            <p className="text-[11px] sm:text-xs text-muted-foreground/80">
+              Ingeniería en Sistemas de Información • Cátedra Desarrollo de
+              Software (ISI 303) • 2025
+            </p>
+          </div>
         </div>
       </div>
     </div>
