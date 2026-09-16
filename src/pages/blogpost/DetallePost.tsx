@@ -97,7 +97,7 @@ function DetallePost() {
               <div className="mt-4">
                 <Button asChild variant="outline">
                   <Link to="/foro">
-                    <ArrowLeft className="h-4 w-4 mr-2" /> Volver al Foro
+                    <ArrowLeft size={18} className="mr-2" /> Volver al Foro
                   </Link>
                 </Button>
               </div>
@@ -125,7 +125,7 @@ function DetallePost() {
         <div className="flex items-center justify-between mb-6">
           <Button asChild variant="ghost" className="text-gray-300 hover:text-white">
             <Link to="/foro">
-              <ArrowLeft className="h-4 w-4 mr-2" /> Volver al Foro
+              <ArrowLeft size={18} className="mr-2" /> Volver al Foro
             </Link>
           </Button>
           {puedeEliminarPost() && (
