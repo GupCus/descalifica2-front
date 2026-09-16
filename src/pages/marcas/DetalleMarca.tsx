@@ -1,7 +1,7 @@
 import { Marca } from "@/entities/marca.entity.ts";
 import { useState, useEffect } from "react";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeftIcon, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { deleteMarca, uploadMarcaImage } from "@/services/marca.service.ts";
 import { AuthService } from "@/services/auth.service.ts";
@@ -131,9 +131,9 @@ function DetalleMarca() {
         <div className="flex justify-between items-center mb-4">
           <Link
             to="/marcas"
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-white transition-colors bg-slate-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-700/50"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm text-slate-400 hover:text-white transition-colors bg-slate-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-700/50"
           >
-            <ArrowLeftIcon className="w-3.5 h-3.5" />
+            <ArrowLeft size={18} />
             Volver al listado
           </Link>
           {isAdmin && (
@@ -214,6 +214,17 @@ function DetalleMarca() {
                   </h3>
                   <p className="text-xs sm:text-base font-semibold text-white truncate">
                     {marca.foundation}
+                  </p>
+                </div>
+              )}
+
+              {marca.description && (
+                <div className="bg-slate-900/60 backdrop-blur-md rounded-xl p-3 sm:p-4 shadow border border-slate-700/40 hover:bg-slate-900/80 transition-all col-span-2">
+                  <h3 className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                    Descripción
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-300 whitespace-pre-line leading-relaxed">
+                    {marca.description}
                   </p>
                 </div>
               )}

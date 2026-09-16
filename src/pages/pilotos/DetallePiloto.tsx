@@ -1,7 +1,7 @@
 import { Piloto } from '@/entities/piloto.entity.ts';
 import { useState, useEffect } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
-import { ArrowLeftIcon } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { uploadPilotoImage } from '@/services/piloto.service.ts';
 import { AuthService } from '@/services/auth.service.ts';
 import { getAssetUrl } from '@/utils/asset.util.ts';
@@ -126,9 +126,9 @@ function DetallePiloto() {
       <div className="relative z-10 container mx-auto px-3 sm:px-4 max-w-5xl">
         <Link
           to="/pilotos"
-          className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-white transition-colors bg-slate-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-700/50 mb-4"
+          className="inline-flex items-center gap-2 text-xs sm:text-sm text-slate-400 hover:text-white transition-colors bg-slate-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-700/50 mb-4"
         >
-          <ArrowLeftIcon className="w-3.5 h-3.5" />
+          <ArrowLeft size={18} />
           Volver al listado
         </Link>
 

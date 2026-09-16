@@ -1,6 +1,7 @@
 import { Temporada } from "@/entities/temporada.entity.ts";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 function DetalleTemporada() {
   const { id } = useParams<{ id: string }>();
@@ -66,9 +67,10 @@ function DetalleTemporada() {
         <div className="bg-gray-950/70 backdrop-blur-md rounded-lg p-8 shadow-2xl border border-gray-700/40">
           <Link
             to="/temporadas"
-            className="inline-block mb-6 text-gray-300 hover:text-white transition-all bg-gray-900/50 backdrop-blur-sm px-4 py-2 rounded-lg border border-gray-700 hover:border-red-500"
+            className="inline-flex items-center gap-2 mb-6 text-xs sm:text-sm text-gray-300 hover:text-white transition-all bg-gray-900/50 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-gray-700 hover:border-red-500"
           >
-            ← Volver al listado
+            <ArrowLeft size={18} />
+            Volver al listado
           </Link>
           <h1
             className="text-white-100 mt-5 scroll-m-20 text-4xl font-extrabold tracking-wider text-center uppercase mb-8"
