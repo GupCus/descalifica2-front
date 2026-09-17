@@ -11,11 +11,16 @@ import {
   Trophy,
   Flag,
   MapPin,
+  CheckCircle,
+  Link as LinkIcon,
+  Loader2,
+  Unlink,
 } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import { getPiloto } from '@/services/piloto.service';
 import { getEscuderia } from '@/services/escuderia.service';
 import { getCircuito } from '@/services/circuito.service';
+import { apiClient } from '@/services/httpClient';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -41,7 +46,6 @@ type FormState = {
   password: string;
   confirmPassword: string;
   username: string;
-  telegram_username: string;
   date_of_birth: Date | null;
   fav_driver: string;
   fav_team: string;
@@ -110,7 +114,6 @@ export function SignupForm({
     email: prefillData?.email || '',
     password: '',
     confirmPassword: '',
-    telegram_username: '',
     date_of_birth: null,
     fav_driver: '',
     fav_team: '',
@@ -123,6 +126,97 @@ export function SignupForm({
   const currentYear = new Date().getFullYear();
   const [viewYear, setViewYear] = useState<number>(2000);
   const [viewMonth, setViewMonth] = useState<number>(0);
+
+  // Estado para vinculación de Telegram
+  const [telegramLinked, setTelegramLinked] = useState(false);
+  const [telegramPending, setTelegramPending] = useState(false);
+  const [telegramOtp, setTelegramOtp] = useState<string | null>(null);
+  const [telegramUsername, setTelegramUsername] = useState<string | null>(null);
+  const [linkingTelegram, setLinkingTelegram] = useState(false);
+
+  // Polling para verificar vinculación de Telegram en tiempo real
+  useEffect(() => {
+    if (!telegramPending || !telegramOtp) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await apiClient.get<{
+          vinculado: boolean;
+          pendiente: boolean;
+          telegram_username?: string;
+          error?: string;
+          expirado?: boolean;
+        }>(`/telegram/verificar-registro/${telegramOtp}`);
+        const data = res.data;
+        if (data.vinculado) {
+          setTelegramLinked(true);
+          setTelegramPending(false);
+          if (data.telegram_username) {
+            setTelegramUsername(data.telegram_username);
+          }
+          setMessage('¡Cuenta de Telegram vinculada con éxito!');
+          setMessageType('success');
+        } else if (data.error) {
+          setTelegramPending(false);
+          setTelegramOtp(null);
+          setMessage(data.error);
+          setMessageType('error');
+        } else if (data.expirado) {
+          setTelegramPending(false);
+          setTelegramOtp(null);
+          setMessage('El código de Telegram expiró. Vuelve a intentarlo.');
+          setMessageType('error');
+        }
+      } catch {
+        // Silenciar errores de polling
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [telegramPending, telegramOtp]);
+
+  const handleLinkTelegram = async () => {
+    setLinkingTelegram(true);
+    setMessage(null);
+    setMessageType(null);
+
+    // Abrir ventana inmediatamente en el evento click para evitar bloqueo de popups en Brave/Chrome
+    const telegramWindow = window.open('about:blank', '_blank');
+
+    try {
+      const res = await apiClient.post<{ codigo: string; message: string }>(
+        '/telegram/generarcodigo-registro',
+      );
+      const codigo = res.data.codigo;
+      setTelegramOtp(codigo);
+      setTelegramPending(true);
+
+      const targetUrl = `https://t.me/descalifica2bot?start=${codigo}`;
+      if (telegramWindow && !telegramWindow.closed) {
+        telegramWindow.location.href = targetUrl;
+      } else {
+        window.open(targetUrl, '_blank');
+      }
+    } catch (err: any) {
+      if (telegramWindow && !telegramWindow.closed) {
+        telegramWindow.close();
+      }
+      console.error('Error al generar código de Telegram:', err);
+      setMessage(
+        err.response?.data?.message || 'Error al iniciar vinculación con Telegram.',
+      );
+      setMessageType('error');
+    } finally {
+      setLinkingTelegram(false);
+    }
+  };
+
+  const handleUnlinkTelegram = () => {
+    setTelegramLinked(false);
+    setTelegramPending(false);
+    setTelegramOtp(null);
+    setTelegramUsername(null);
+  };
 
   useEffect(() => {
     getPiloto()
@@ -246,13 +340,6 @@ export function SignupForm({
       if (form.surname.trim()) {
         formData.append('surname', form.surname.trim());
       }
-      const trimmedTelegram = form.telegram_username.trim().replace(/^@/, '');
-      if (trimmedTelegram.length > 0) {
-        if (/\s/.test(trimmedTelegram)) {
-          throw new Error('El usuario de Telegram no debe contener espacios.');
-        }
-        formData.append('telegram_username', trimmedTelegram);
-      }
       if (form.fav_driver.trim()) {
         formData.append('fav_driver', form.fav_driver.trim());
       }
@@ -269,6 +356,13 @@ export function SignupForm({
         formData.append('avatar', form.avatar);
       } else if (googleAvatar && !useCustomAvatar) {
         formData.append('avatar_url', googleAvatar);
+      }
+
+      if (telegramLinked && telegramOtp) {
+        formData.append('telegram_code', telegramOtp);
+        if (telegramUsername) {
+          formData.append('telegram_username', telegramUsername);
+        }
       }
 
       const response = await AuthService.RegisterUser(formData);
@@ -290,7 +384,6 @@ export function SignupForm({
         email: '',
         password: '',
         confirmPassword: '',
-        telegram_username: '',
         date_of_birth: null,
         fav_driver: '',
         fav_team: '',
@@ -299,6 +392,7 @@ export function SignupForm({
         avatar: null,
       });
       removeAvatar();
+      handleUnlinkTelegram();
 
       setTimeout(() => {
         navigate('/');
@@ -581,15 +675,84 @@ export function SignupForm({
               </Field>
 
               <Field>
-                <FieldLabel htmlFor="telegram_username">
+                <FieldLabel>
                   Telegram (opcional)
                 </FieldLabel>
-                <Input
-                  placeholder="Sin @"
-                  id="telegram_username"
-                  value={form.telegram_username}
-                  onChange={handleChange}
-                />
+
+                {/* Estado: Vinculado */}
+                {telegramLinked && (
+                  <div className="flex items-center gap-2 h-9 px-2.5 bg-green-950/40 border border-green-700/50 rounded-md">
+                    <CheckCircle size={14} className="text-green-400 shrink-0" />
+                    <span className="text-xs sm:text-sm text-green-300 font-medium truncate">
+                      {telegramUsername ? `@${telegramUsername}` : 'Cuenta vinculada'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleUnlinkTelegram}
+                      className="ml-auto text-[10px] text-red-400 hover:text-red-300 flex items-center gap-0.5 cursor-pointer shrink-0"
+                    >
+                      <Unlink size={10} />
+                      Desvincular
+                    </button>
+                  </div>
+                )}
+
+                {/* Estado: Pendiente de vinculación */}
+                {telegramPending && !telegramLinked && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between h-9 px-2.5 bg-amber-950/40 border border-amber-700/50 rounded-md">
+                      <div className="flex items-center gap-2 truncate">
+                        <Loader2 size={14} className="text-amber-400 animate-spin shrink-0" />
+                        <span className="text-[11px] text-amber-300 font-medium truncate">
+                          Esperando vinculación...
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleUnlinkTelegram}
+                        className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-0.5 cursor-pointer shrink-0 ml-2"
+                        title="Cancelar vinculación"
+                      >
+                        <X size={12} />
+                        Cancelar
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        window.open(
+                          `https://t.me/descalifica2bot?start=${telegramOtp}`,
+                          '_blank',
+                        )
+                      }
+                      className="text-[10px] text-blue-400 hover:text-blue-300 cursor-pointer underline"
+                    >
+                      ¿No se abrió? Hacé clic acá para ir al bot
+                    </button>
+                  </div>
+                )}
+
+                {/* Estado: No vinculado */}
+                {!telegramLinked && !telegramPending && (
+                  <Button
+                    type="button"
+                    onClick={handleLinkTelegram}
+                    disabled={linkingTelegram}
+                    className="w-full h-9 bg-blue-600 hover:bg-blue-700 text-white border-0 text-xs sm:text-sm cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    {linkingTelegram ? (
+                      <>
+                        <Loader2 size={13} className="animate-spin" />
+                        Generando código...
+                      </>
+                    ) : (
+                      <>
+                        <LinkIcon size={13} />
+                        Vincular cuenta de Telegram
+                      </>
+                    )}
+                  </Button>
+                )}
               </Field>
             </div>
 
