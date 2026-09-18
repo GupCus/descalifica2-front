@@ -1,6 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Shield, Pencil, ArrowLeft, Trophy, Flag, MapPin } from 'lucide-react';
+import {
+  Shield,
+  Pencil,
+  ArrowLeft,
+  Trophy,
+  Flag,
+  MapPin,
+  CheckCircle,
+  Link as LinkIcon,
+  Loader2,
+  Send,
+  X,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -47,6 +59,15 @@ function Perfil() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Estados de Telegram
+  const [telegram, setTelegram] = useState('');
+  const [telegramLinked, setTelegramLinked] = useState(false);
+  const [telegramPending, setTelegramPending] = useState(false);
+  const [telegramOtp, setTelegramOtp] = useState<string | null>(null);
+  const [linkingTelegram, setLinkingTelegram] = useState(false);
+  const [telegramMessage, setTelegramMessage] = useState<string | null>(null);
+  const [telegramMessageType, setTelegramMessageType] = useState<'success' | 'error' | null>(null);
+
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -73,6 +94,32 @@ function Perfil() {
         } else if (!me.avatar) {
           setAvatarUrl('');
         }
+
+        // Verificar estado de vinculación de Telegram
+        try {
+          const tgRes = await apiClient.get<{
+            vinculado: boolean;
+            pendiente: boolean;
+            telegram_username?: string;
+          }>('/telegram/verificar');
+          const tgData = tgRes.data;
+          setTelegramLinked(tgData.vinculado);
+          setTelegramPending(tgData.pendiente);
+          if (tgData.telegram_username) {
+            setTelegram(tgData.telegram_username);
+          } else if (data.telegram_username) {
+            setTelegram(data.telegram_username);
+          }
+        } catch {
+          if (data.telegram_username) {
+            setTelegram(data.telegram_username);
+            setTelegramLinked(Boolean(data.telegram_id && !data.telegram_id.includes('otp')));
+            setTelegramPending(Boolean(data.telegram_id?.includes('otp')));
+            if (data.telegram_id?.includes('otp')) {
+              setTelegramOtp(data.telegram_id);
+            }
+          }
+        }
       } catch (err: any) {
         console.error('Error al cargar perfil:', err);
         setError('Error al cargar los datos del perfil.');
@@ -83,6 +130,85 @@ function Perfil() {
 
     loadProfile();
   }, [navigate]);
+
+  // Polling: cuando está pendiente de vinculación, verificar cada 3 segundos
+  useEffect(() => {
+    if (!telegramPending) return;
+
+    const interval = setInterval(async () => {
+      try {
+        const tgRes = await apiClient.get<{
+          vinculado: boolean;
+          pendiente: boolean;
+          telegram_username?: string;
+        }>('/telegram/verificar');
+        const tgData = tgRes.data;
+        if (tgData.vinculado) {
+          setTelegramLinked(true);
+          setTelegramPending(false);
+          setTelegramOtp(null);
+          if (tgData.telegram_username) {
+            setTelegram(tgData.telegram_username);
+            setProfile((prev) => prev ? { ...prev, telegram_username: tgData.telegram_username! } : prev);
+          }
+          setTelegramMessageType('success');
+          setTelegramMessage('¡Cuenta de Telegram vinculada con éxito!');
+        }
+      } catch {
+        // Silenciar errores de polling
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [telegramPending]);
+
+  const handleLinkTelegram = async () => {
+    setLinkingTelegram(true);
+    setTelegramMessage(null);
+    setTelegramMessageType(null);
+
+    // Abrir ventana inmediatamente en el evento click para evitar bloqueo de popups
+    const telegramWindow = window.open('about:blank', '_blank');
+
+    try {
+      const res = await apiClient.post<{ codigo: string; message: string }>(
+        '/telegram/generarcodigo',
+      );
+      const codigo = res.data.codigo;
+      setTelegramOtp(codigo);
+      setTelegramPending(true);
+
+      const targetUrl = `https://t.me/descalifica2bot?start=${codigo}`;
+      if (telegramWindow && !telegramWindow.closed) {
+        telegramWindow.location.href = targetUrl;
+      } else {
+        window.open(targetUrl, '_blank');
+      }
+    } catch (err: any) {
+      if (telegramWindow && !telegramWindow.closed) {
+        telegramWindow.close();
+      }
+      if (err.response?.status === 409) {
+        setTelegramMessageType('success');
+        setTelegramMessage('Tu cuenta de Telegram ya está vinculada.');
+        setTelegramLinked(true);
+        setTelegramPending(false);
+      } else {
+        console.error('Error al generar código de Telegram:', err);
+        setTelegramMessageType('error');
+        setTelegramMessage(
+          err.response?.data?.message || 'Error al generar código de Telegram.',
+        );
+      }
+    } finally {
+      setLinkingTelegram(false);
+    }
+  };
+
+  const handleCancelTelegramPending = () => {
+    setTelegramPending(false);
+    setTelegramOtp(null);
+  };
 
   if (loading) {
     return (
@@ -239,60 +365,89 @@ function Perfil() {
                 </div>
 
                 <div className="p-2 sm:p-2.5 bg-gray-900/60 backdrop-blur-sm rounded-lg border border-gray-700/40">
-                  <span className="text-[9px] sm:text-[10px] text-gray-400 uppercase font-semibold tracking-wider block">
+                  <span className="text-[9px] sm:text-[10px] text-gray-400 uppercase font-semibold tracking-wider flex items-center gap-1 mb-1.5">
+                    <Send size={11} className="text-blue-400" />
                     Telegram
                   </span>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs sm:text-sm text-gray-200 font-medium truncate block">
-                      {profile.telegram_username ? (
-                        `@${profile.telegram_username}`
-                      ) : (
-                        <span className="text-gray-500 italic text-[11px]">
-                          No configurado
-                        </span>
-                      )}
-                    </span>
-                    {profile.telegram_id?.includes('otp') && (
-                      <Button
-                        size="sm"
-                        className="h-6 px-2 text-[10px] bg-blue-600 hover:bg-blue-700 text-white rounded shrink-0"
+
+                  {/* Estado: Vinculado */}
+                  {telegramLinked && (
+                    <div className="flex items-center gap-2 h-9 px-2.5 bg-green-950/40 border border-green-700/50 rounded-md">
+                      <CheckCircle size={14} className="text-green-400 shrink-0" />
+                      <span className="text-xs sm:text-sm text-green-300 font-medium truncate">
+                        @{telegram || profile.telegram_username}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Estado: Pendiente de vinculación */}
+                  {telegramPending && !telegramLinked && (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between h-9 px-2.5 bg-amber-950/40 border border-amber-700/50 rounded-md">
+                        <div className="flex items-center gap-2 truncate">
+                          <Loader2 size={14} className="text-amber-400 animate-spin shrink-0" />
+                          <span className="text-[11px] text-amber-300 font-medium truncate">
+                            Esperando vinculación...
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleCancelTelegramPending}
+                          className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-0.5 cursor-pointer shrink-0 ml-2"
+                          title="Cancelar vinculación"
+                        >
+                          <X size={12} />
+                          Cancelar
+                        </button>
+                      </div>
+                      <button
+                        type="button"
                         onClick={() =>
                           window.open(
-                            `https://t.me/descalifica2bot?start=${profile.telegram_id}`,
+                            `https://t.me/descalifica2bot?start=${telegramOtp || profile.telegram_id}`,
                             '_blank',
                           )
                         }
+                        className="text-[10px] text-blue-400 hover:text-blue-300 cursor-pointer underline block text-left"
                       >
-                        Validar telegram
-                      </Button>
-                    )}
-                    {!profile.telegram_id && (
-                      <Button
-                        size="sm"
-                        className="h-6 px-2 text-[10px] bg-blue-600 hover:bg-blue-700 text-white rounded shrink-0"
-                        onClick={async () => {
-                          try {
-                            const res = await apiClient.post<{ codigo: string }>('/telegram/generarcodigo');
-                            const codigo = res.data.codigo;
-                            setProfile((prev) => prev ? { ...prev, telegram_id: codigo } : prev);
-                            window.open(
-                              `https://t.me/descalifica2bot?start=${codigo}`,
-                              '_blank',
-                            );
-                          } catch (err: any) {
-                            console.error('Error al generar código de Telegram:', err);
-                          }
-                        }}
-                      >
-                        Vincular Telegram
-                      </Button>
-                    )}
-                    {profile.telegram_id && !profile.telegram_id.includes('otp') && (
-                      <span className="text-[10px] text-green-400 font-medium">
-                        ✅ Vinculado
-                      </span>
-                    )}
-                  </div>
+                        ¿No se abrió? Hacé clic acá para ir al bot
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Estado: No vinculado */}
+                  {!telegramLinked && !telegramPending && (
+                    <Button
+                      type="button"
+                      onClick={handleLinkTelegram}
+                      disabled={linkingTelegram}
+                      className="w-full h-9 bg-blue-600 hover:bg-blue-700 text-white border-0 text-xs sm:text-sm cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      {linkingTelegram ? (
+                        <>
+                          <Loader2 size={13} className="animate-spin" />
+                          Generando código...
+                        </>
+                      ) : (
+                        <>
+                          <LinkIcon size={13} />
+                          Vincular cuenta de Telegram
+                        </>
+                      )}
+                    </Button>
+                  )}
+
+                  {telegramMessage && (
+                    <p
+                      className={`text-[10px] mt-1.5 ${
+                        telegramMessageType === 'error'
+                          ? 'text-red-400'
+                          : 'text-green-400'
+                      }`}
+                    >
+                      {telegramMessage}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

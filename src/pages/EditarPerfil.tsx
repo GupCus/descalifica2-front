@@ -225,6 +225,10 @@ function EditarPerfil() {
     setLinkingTelegram(true);
     setMessage(null);
     setMessageType(null);
+
+    // Abrir ventana inmediatamente en el evento click para evitar bloqueo de popups
+    const telegramWindow = window.open('about:blank', '_blank');
+
     try {
       const res = await apiClient.post<{ codigo: string; message: string }>(
         "/telegram/generarcodigo"
@@ -232,12 +236,17 @@ function EditarPerfil() {
       const codigo = res.data.codigo;
       setTelegramOtp(codigo);
       setTelegramPending(true);
-      // Abrir directamente el bot de Telegram con el código OTP
-      window.open(
-        `https://t.me/descalifica2bot?start=${codigo}`,
-        "_blank"
-      );
+
+      const targetUrl = `https://t.me/descalifica2bot?start=${codigo}`;
+      if (telegramWindow && !telegramWindow.closed) {
+        telegramWindow.location.href = targetUrl;
+      } else {
+        window.open(targetUrl, "_blank");
+      }
     } catch (err: any) {
+      if (telegramWindow && !telegramWindow.closed) {
+        telegramWindow.close();
+      }
       if (err.response?.status === 409) {
         setMessageType("success");
         setMessage("Tu cuenta de Telegram ya está vinculada.");
@@ -252,6 +261,11 @@ function EditarPerfil() {
     } finally {
       setLinkingTelegram(false);
     }
+  };
+
+  const handleCancelTelegramPending = () => {
+    setTelegramPending(false);
+    setTelegramOtp(null);
   };
 
   const handleUnlinkTelegram = async () => {
@@ -757,11 +771,22 @@ function EditarPerfil() {
                 {/* Estado: Pendiente de vinculación */}
                 {telegramPending && !telegramLinked && (
                   <div className="space-y-1.5">
-                    <div className="flex items-center gap-2 h-9 px-2.5 bg-amber-950/40 border border-amber-700/50 rounded-md">
-                      <Loader2 size={14} className="text-amber-400 animate-spin shrink-0" />
-                      <span className="text-[11px] text-amber-300 font-medium truncate">
-                        Esperando vinculación...
-                      </span>
+                    <div className="flex items-center justify-between h-9 px-2.5 bg-amber-950/40 border border-amber-700/50 rounded-md">
+                      <div className="flex items-center gap-2 truncate">
+                        <Loader2 size={14} className="text-amber-400 animate-spin shrink-0" />
+                        <span className="text-[11px] text-amber-300 font-medium truncate">
+                          Esperando vinculación...
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleCancelTelegramPending}
+                        className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-0.5 cursor-pointer shrink-0 ml-2"
+                        title="Cancelar vinculación"
+                      >
+                        <X size={12} />
+                        Cancelar
+                      </button>
                     </div>
                     <button
                       type="button"
