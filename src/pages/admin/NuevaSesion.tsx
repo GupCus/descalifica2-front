@@ -273,7 +273,7 @@ function NuevaSesion() {
             Fecha de inicio
           </Label>
           <Popover open={openStart} onOpenChange={setOpenStart}>
-            <PopoverTrigger asChild>
+            <PopoverTrigger className="w-full">
               <Button
                 variant="outline"
                 id="fecha_inicio"

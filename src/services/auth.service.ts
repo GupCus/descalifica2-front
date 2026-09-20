@@ -148,4 +148,33 @@ export const AuthService = {
     const user = await this.getCurrentUser();
     return user?.user_type === 'user';
   },
+
+  async forgotPassword(email: string): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.post<{ message: string }>(
+        '/auth/forgot-password',
+        { email },
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error al solicitar recuperación de contraseña:', error);
+      throw error;
+    }
+  },
+
+  async resetPassword(
+    token: string,
+    newPassword: string,
+  ): Promise<{ message: string }> {
+    try {
+      const response = await apiClient.post<{ message: string }>(
+        '/auth/reset-password',
+        { token, newPassword },
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error al restablecer contraseña:', error);
+      throw error;
+    }
+  },
 };

@@ -479,9 +479,9 @@ function EditarPerfil() {
         <div className="flex items-center justify-between mb-3 sm:mb-4">
           <Link
             to="/perfil"
-            className="inline-flex items-center gap-1.5 text-gray-300 hover:text-white transition-all bg-gray-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-gray-700/60 hover:border-gray-500 text-xs sm:text-sm"
+            className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition-all bg-gray-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-gray-700/60 hover:border-gray-500 text-xs sm:text-sm"
           >
-            <ArrowLeft size={14} />
+            <ArrowLeft size={18} />
             Volver al perfil
           </Link>
         </div>

@@ -20,9 +20,9 @@ function Registrarse() {
         <div className="flex items-center mb-1.5">
           <Link
             to="/"
-            className="inline-flex items-center gap-1.5 text-s text-gray-400 hover:text-white transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={18} />
             Volver al inicio
           </Link>
         </div>

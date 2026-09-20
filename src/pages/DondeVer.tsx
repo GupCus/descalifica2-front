@@ -21,7 +21,7 @@ function DondeVer() {
       {
         id: 1,
         nombre: "GP AUSTRALIA",
-        fecha: "14-16 de marzo",
+        fecha: "6-8 de marzo",
         pais: "Australia",
         paisCode: "AUS",
         disneyPlus: true,
@@ -30,7 +30,7 @@ function DondeVer() {
       {
         id: 2,
         nombre: "GP CHINA",
-        fecha: "21-23 de marzo",
+        fecha: "13-15 de marzo",
         pais: "China",
         paisCode: "CHN",
         disneyPlus: true,
@@ -39,7 +39,7 @@ function DondeVer() {
       {
         id: 3,
         nombre: "GP JAPÓN",
-        fecha: "4-6 de abril",
+        fecha: "27-29 de marzo",
         pais: "Japón",
         paisCode: "JPN",
         disneyPlus: true,
@@ -48,7 +48,7 @@ function DondeVer() {
       {
         id: 4,
         nombre: "GP BAHRÉIN",
-        fecha: "11-13 de abril",
+        fecha: "10-12 de abril",
         pais: "Bahréin",
         paisCode: "BRN",
         disneyPlus: true,
@@ -57,7 +57,7 @@ function DondeVer() {
       {
         id: 5,
         nombre: "GP ARABIA SAUDITA",
-        fecha: "18-20 de abril",
+        fecha: "17-19 de abril",
         pais: "Arabia Saudita",
         paisCode: "KSA",
         disneyPlus: true,
@@ -66,7 +66,7 @@ function DondeVer() {
       {
         id: 6,
         nombre: "GP MIAMI",
-        fecha: "2-4 de mayo",
+        fecha: "1-3 de mayo",
         pais: "Estados Unidos",
         paisCode: "USA",
         disneyPlus: true,
@@ -74,17 +74,17 @@ function DondeVer() {
       },
       {
         id: 7,
-        nombre: "GP EMILIA ROMAGNA",
-        fecha: "16-18 de mayo",
-        pais: "Italia",
-        paisCode: "ITA",
+        nombre: "GP CANADÁ",
+        fecha: "22-24 de mayo",
+        pais: "Canadá",
+        paisCode: "CAN",
         disneyPlus: true,
-        foxSports: false,
+        foxSports: true,
       },
       {
         id: 8,
         nombre: "GP MÓNACO",
-        fecha: "23-25 de mayo",
+        fecha: "5-7 de junio",
         pais: "Mónaco",
         paisCode: "MON",
         disneyPlus: true,
@@ -92,80 +92,80 @@ function DondeVer() {
       },
       {
         id: 9,
-        nombre: "GP ESPAÑA",
-        fecha: "30 may - 1 de junio",
+        nombre: "GP BARCELONA-CATALUNYA",
+        fecha: "12-14 de junio",
         pais: "España",
         paisCode: "ESP",
         disneyPlus: true,
-        foxSports: true,
+        foxSports: false,
       },
       {
         id: 10,
-        nombre: "GP CANADÁ",
-        fecha: "13-15 de junio",
-        pais: "Canadá",
-        paisCode: "CAN",
-        disneyPlus: true,
-        foxSports: true,
-      },
-      {
-        id: 11,
         nombre: "GP AUSTRIA",
-        fecha: "27-29 de junio",
+        fecha: "26-28 de junio",
         pais: "Austria",
         paisCode: "AUT",
         disneyPlus: true,
         foxSports: true,
       },
       {
-        id: 12,
+        id: 11,
         nombre: "GP GRAN BRETAÑA",
-        fecha: "4-6 de julio",
+        fecha: "3-5 de julio",
         pais: "Reino Unido",
         paisCode: "GBR",
         disneyPlus: true,
         foxSports: false,
       },
       {
-        id: 13,
+        id: 12,
         nombre: "GP BÉLGICA",
-        fecha: "25-27 de julio",
+        fecha: "17-19 de julio",
         pais: "Bélgica",
         paisCode: "BEL",
         disneyPlus: true,
         foxSports: true,
       },
       {
-        id: 14,
+        id: 13,
         nombre: "GP HUNGRÍA",
-        fecha: "1-3 de agosto",
+        fecha: "24-26 de julio",
         pais: "Hungría",
         paisCode: "HUN",
         disneyPlus: true,
         foxSports: true,
       },
       {
-        id: 15,
+        id: 14,
         nombre: "GP PAÍSES BAJOS",
-        fecha: "29-31 de agosto",
+        fecha: "21-23 de agosto",
         pais: "Países Bajos",
         paisCode: "NED",
         disneyPlus: true,
         foxSports: false,
       },
       {
-        id: 16,
+        id: 15,
         nombre: "GP ITALIA",
-        fecha: "5-7 de septiembre",
+        fecha: "4-6 de septiembre",
         pais: "Italia",
         paisCode: "ITA",
         disneyPlus: true,
         foxSports: false,
       },
       {
+        id: 16,
+        nombre: "GP ESPAÑA (MADRID)",
+        fecha: "11-13 de septiembre",
+        pais: "España",
+        paisCode: "ESP",
+        disneyPlus: true,
+        foxSports: true,
+      },
+      {
         id: 17,
         nombre: "GP AZERBAIYÁN",
-        fecha: "19-21 de septiembre",
+        fecha: "24-26 de septiembre",
         pais: "Azerbaiyán",
         paisCode: "AZE",
         disneyPlus: true,
@@ -174,7 +174,7 @@ function DondeVer() {
       {
         id: 18,
         nombre: "GP SINGAPUR",
-        fecha: "3-5 de octubre",
+        fecha: "9-11 de octubre",
         pais: "Singapur",
         paisCode: "SGP",
         disneyPlus: true,
@@ -183,7 +183,7 @@ function DondeVer() {
       {
         id: 19,
         nombre: "GP ESTADOS UNIDOS",
-        fecha: "17-19 de octubre",
+        fecha: "23-25 de octubre",
         pais: "Estados Unidos",
         paisCode: "USA",
         disneyPlus: true,
@@ -192,7 +192,7 @@ function DondeVer() {
       {
         id: 20,
         nombre: "GP MÉXICO",
-        fecha: "24-26 de octubre",
+        fecha: "30 oct - 1 de noviembre",
         pais: "México",
         paisCode: "MEX",
         disneyPlus: true,
@@ -201,7 +201,7 @@ function DondeVer() {
       {
         id: 21,
         nombre: "GP BRASIL",
-        fecha: "7-9 de noviembre",
+        fecha: "6-8 de noviembre",
         pais: "Brasil",
         paisCode: "BRA",
         disneyPlus: true,
@@ -210,7 +210,7 @@ function DondeVer() {
       {
         id: 22,
         nombre: "GP LAS VEGAS",
-        fecha: "20-22 de noviembre",
+        fecha: "19-21 de noviembre",
         pais: "Estados Unidos",
         paisCode: "USA",
         disneyPlus: true,
@@ -219,7 +219,7 @@ function DondeVer() {
       {
         id: 23,
         nombre: "GP QATAR",
-        fecha: "28-30 de noviembre",
+        fecha: "27-29 de noviembre",
         pais: "Qatar",
         paisCode: "QAT",
         disneyPlus: true,
@@ -228,7 +228,7 @@ function DondeVer() {
       {
         id: 24,
         nombre: "GP ABU DHABI",
-        fecha: "5-7 de diciembre",
+        fecha: "4-6 de diciembre",
         pais: "Abu Dhabi",
         paisCode: "UAE",
         disneyPlus: true,
@@ -306,6 +306,8 @@ function DondeVer() {
     </div>
   );
 
+  const mitad = Math.ceil(carreras.length / 2);
+
   return (
     <div className="relative min-h-screen py-6 sm:py-10 flex flex-col justify-start">
       <div
@@ -322,7 +324,7 @@ function DondeVer() {
       <div className="relative z-10 container mx-auto px-2 sm:px-4 max-w-6xl">
         <header className="mb-4 sm:mb-6 text-center">
           <h1 className="text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-white uppercase drop-shadow-lg mb-2">
-            Transmisión F1 Argentina 2025
+            Transmisión F1 Argentina {new Date().getFullYear()}
           </h1>
           <p className="text-xs sm:text-base text-gray-300">
             En Argentina, la Fórmula 1 se transmite a través de{" "}
@@ -331,10 +333,9 @@ function DondeVer() {
           </p>
         </header>
 
-        {/* 2 Columnas paralelas en todos los dispositivos */}
         <div className="grid grid-cols-2 gap-2 sm:gap-4 md:gap-6">
-          {renderColumna(carreras.slice(0, 12))}
-          {renderColumna(carreras.slice(12))}
+          {renderColumna(carreras.slice(0, mitad))}
+          {renderColumna(carreras.slice(mitad))}
         </div>
 
         <div className="mt-4 sm:mt-6 bg-slate-950/70 backdrop-blur-md rounded-xl p-3 sm:p-5 border border-slate-800 text-xs sm:text-sm text-gray-300 space-y-1">
@@ -346,7 +347,7 @@ function DondeVer() {
           <p>
             * <span className="font-semibold text-blue-400">DISNEY+</span>{" "}
             transmitirá EN VIVO y sin cortes todos los Grandes Premios de la
-            temporada 2025.
+            temporada {new Date().getFullYear()}.
           </p>
         </div>
       </div>

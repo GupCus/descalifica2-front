@@ -2,7 +2,7 @@ import { Escuderia } from "@/entities/escuderia.entity.ts";
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button.tsx";
-import { Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 import {
   deleteEscuderia,
   getOneEscuderia,
@@ -150,9 +150,10 @@ function DetalleEscuderia() {
         <div className="flex justify-between items-center mb-4">
           <Link
             to="/escuderias"
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-white transition-colors bg-slate-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-700/50"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm text-slate-400 hover:text-white transition-colors bg-slate-900/60 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-slate-700/50"
           >
-            ← Volver al listado
+            <ArrowLeft size={18} />
+            Volver al listado
           </Link>
           {isAdmin && (
             <Button

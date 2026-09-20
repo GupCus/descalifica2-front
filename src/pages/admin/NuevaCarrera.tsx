@@ -212,7 +212,7 @@ function NuevaCarrera() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Popover open={openStart} onOpenChange={setOpenStart}>
-              <PopoverTrigger asChild>
+              <PopoverTrigger className="w-full">
                 <Button
                   variant="outline"
                   id="date"
@@ -243,7 +243,7 @@ function NuevaCarrera() {
             </Popover>
 
             <Popover open={openEnd} onOpenChange={setOpenEnd}>
-              <PopoverTrigger asChild>
+              <PopoverTrigger className="w-full">
                 <Button
                   variant="outline"
                   id="date"

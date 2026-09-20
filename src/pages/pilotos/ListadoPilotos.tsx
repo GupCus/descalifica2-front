@@ -1,74 +1,76 @@
-import { useEffect, useState } from "react";
-import { ChromaGrid } from "@/components/ui/Chroma-grid";
+import { useEffect, useState } from 'react';
+import { ChromaGrid } from '@/components/ui/Chroma-grid';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Piloto } from "@/entities/piloto.entity.ts";
-import { getPiloto } from "@/services/piloto.service.ts";
+} from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Piloto } from '@/entities/piloto.entity.ts';
+import { getPiloto } from '@/services/piloto.service.ts';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Escuderia } from "@/entities/escuderia.entity.ts";
-import { getEscuderia } from "@/services/escuderia.service.ts";
-import { Link } from "react-router-dom";
-import { getAssetUrl } from "@/utils/asset.util.ts";
-
+} from '@/components/ui/select';
+import { Escuderia } from '@/entities/escuderia.entity.ts';
+import { getEscuderia } from '@/services/escuderia.service.ts';
+import { Link } from 'react-router-dom';
+import { getAssetUrl } from '@/utils/asset.util.ts';
 
 function ListadoPilotos() {
   const [pilotos, setPilotos] = useState<Piloto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
-  const [filtroEscuderiaF1, setFiltroEscuderiaF1] = useState<string>("null");
-  const [filtroEscuderiaF2, setFiltroEscuderiaF2] = useState<string>("null");
+  const [filtroEscuderiaF1, setFiltroEscuderiaF1] = useState<string>('null');
+  const [filtroEscuderiaF2, setFiltroEscuderiaF2] = useState<string>('null');
 
   useEffect(() => {
     getPiloto()
       .then((data) => setPilotos(data))
-      .catch((err) => setError(err.message || "Error al cargar los pilotos"))
+      .catch((err) => setError(err.message || 'Error al cargar los pilotos'))
       .finally(() => setLoading(false));
 
     getEscuderia()
       .then((data) => setEscuderias(data))
       .catch((err) => {
         setEscuderias([]);
-        console.error("Error cargando escuderías", err);
+        console.error('Error cargando escuderías', err);
       });
   }, []);
 
-  const f1Escuderias = escuderias.filter(
-    (e) => e.racing_series.name === "F1"
-  );
+  const f1Escuderias = escuderias.filter((e) => e.racing_series.name === 'F1');
 
-  const f2Escuderias = escuderias.filter(
-    (e) => e.racing_series.name === "F2"
-  );
+  const f2Escuderias = escuderias.filter((e) => e.racing_series.name === 'F2');
 
   const f2Pilotos = pilotos.filter(
-    (p) => p.racing_series.name === "F2" && p.season.year === 2026
+    (p) => p.racing_series.name === 'F2' && p.season.year === 2026,
   );
   const f1Pilotos = pilotos.filter(
-    (p) => p.racing_series.name === "F1" && p.season.year === 2026 && p.profile_image
+    (p) =>
+      p.racing_series.name === 'F1' &&
+      p.season.year === 2026 &&
+      p.profile_image,
   );
 
   const f1Filtrados = f1Pilotos.filter(
     (p) =>
-      filtroEscuderiaF1 === "null" ||
-      String(p.team?.id ?? p.team) === filtroEscuderiaF1,
+      filtroEscuderiaF1 === 'null' ||
+      String(
+        typeof p.team === 'object' && p.team !== null ? p.team.id : p.team,
+      ) === filtroEscuderiaF1,
   );
   const f2Filtrados = f2Pilotos.filter(
     (p) =>
-      filtroEscuderiaF2 === "null" ||
-      String(p.team?.id ?? p.team) === filtroEscuderiaF2,
+      filtroEscuderiaF2 === 'null' ||
+      String(
+        typeof p.team === 'object' && p.team !== null ? p.team.id : p.team,
+      ) === filtroEscuderiaF2,
   );
 
   if (loading) {
@@ -127,17 +129,17 @@ function ListadoPilotos() {
         className="absolute inset-0 w-full h-full blur-sm opacity-35"
         style={{
           backgroundImage: `url(${
-            new URL("../../assets/Pilotosfondo.png", import.meta.url).href
+            new URL('../../assets/Pilotosfondo.png', import.meta.url).href
           })`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       />
       <ChromaGrid />
       <div className="relative z-10 container mx-auto px-4 py-8">
         <div className="mb-6">
           <img
-            src={new URL("../../assets/f1-logo.png", import.meta.url).href}
+            src={new URL('../../assets/f1-logo.png', import.meta.url).href}
             alt="F1"
             className="mx-auto w-50 h-auto object-contain"
           />
@@ -191,13 +193,13 @@ function ListadoPilotos() {
                             const t = e.currentTarget as HTMLImageElement;
                             t.onerror = null;
                             t.src = new URL(
-                              "../../assets/descalifica2logo.png",
+                              '../../assets/descalifica2logo.png',
                               import.meta.url,
                             ).href;
                             t.classList.add(
-                              "object-contain",
-                              "bg-slate-900/50",
-                              "overflow-hidden",
+                              'object-contain',
+                              'bg-slate-900/50',
+                              'overflow-hidden',
                             );
                           }}
                         />
@@ -229,7 +231,7 @@ function ListadoPilotos() {
 
         <div className="mb-6">
           <img
-            src={new URL("../../assets/f2-logo.png", import.meta.url).href}
+            src={new URL('../../assets/f2-logo.png', import.meta.url).href}
             alt="F2"
             className="mx-auto w-50 h-auto object-contain"
           />
@@ -282,13 +284,13 @@ function ListadoPilotos() {
                           const t = e.currentTarget as HTMLImageElement;
                           t.onerror = null;
                           t.src = new URL(
-                            "../../assets/descalifica2logo.png",
+                            '../../assets/descalifica2logo.png',
                             import.meta.url,
                           ).href;
                           t.classList.add(
-                            "object-contain",
-                            "bg-slate-900/50",
-                            "overflow-hidden",
+                            'object-contain',
+                            'bg-slate-900/50',
+                            'overflow-hidden',
                           );
                         }}
                       />

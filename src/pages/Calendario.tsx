@@ -14,7 +14,7 @@ function Calendario() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getCarrera()
+    getCarrera(new Date().getFullYear())
       .then((data) => setCarreras(data))
       .catch((err) => setError(err.message || String(err)))
       .finally(() => setLoading(false));

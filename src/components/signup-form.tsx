@@ -369,7 +369,8 @@ export function SignupForm({
 
       setMessageType('success');
       setMessage(
-        response?.message || '¡Usuario creado con éxito! Redirigiendo...',
+        response?.message ||
+          '¡Usuario creado con éxito! Redirigiendo al login...',
       );
 
       if (response?.token) {
@@ -396,7 +397,7 @@ export function SignupForm({
 
       setTimeout(() => {
         navigate('/');
-      }, 2000);
+      }, 1000);
     } catch (err: any) {
       setMessageType('error');
       console.error('Error completo:', err);
