@@ -7,7 +7,7 @@ export async function addComentario(data: NewComentario): Promise<Comentario> {
 }
 
 export async function deleteComentario(id: number): Promise<Comentario> {
-  const response = await apiClient.delete('/comentarios' + id.toString());
+  const response = await apiClient.delete('/comentarios/' + id.toString());
   return response.data.data;
 }
 
