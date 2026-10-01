@@ -36,3 +36,6 @@ yarn.lock
 
 # OS files
 Thumbs.db
+
+# Testing 
+.vitest/
