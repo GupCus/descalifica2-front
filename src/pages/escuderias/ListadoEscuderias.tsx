@@ -104,11 +104,6 @@ function ListadoEscuderias() {
   }
 
   //Separamos por categoria
-  const f2Escuderias = escuderias.filter((e) => {
-    if (!e.racing_series) return false;
-    return e.racing_series.name === "F2";
-  });
-
   const f1Escuderias = escuderias.filter((e) => {
     if (!e.racing_series) return false;
     return e.racing_series.name === "F1";
@@ -216,72 +211,7 @@ function ListadoEscuderias() {
           </div>
         )}
 
-        <div className="mt-10 sm:mt-12">
-          <img
-            src={new URL("../../assets/f2-logo.png", import.meta.url).href}
-            alt="Logo de Formula 2"
-            className="mx-auto w-40 sm:w-50 h-auto object-contain"
-          />
-        </div>
-        <div className="mt-4">
-          {f2Escuderias.length === 0 ? (
-            <Card className="bg-slate-900/50 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white">
-                  No hay escuderías F2
-                </CardTitle>
-                <CardDescription className="text-slate-400">
-                  Aún no se han registrado escuderías en el sistema.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 mb-8">
-              {f2Escuderias.map((escuderia) => {
-                const flagUrl = getAssetUrl(
-                  `/flags/${escuderia.nationality}.svg`,
-                );
-                const logoUrl = getAssetUrl(escuderia.logo_image);
-                return (
-                  <Link to={`/escuderia/${escuderia.id}`} key={escuderia.id}>
-                    <Card
-                      className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
-                    >
-                      <div className="relative w-full h-52 sm:h-64 overflow-hidden">
-                        <img
-                          src={logoUrl}
-                          alt={`Logo de ${escuderia.name}`}
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = "/src/assets/descalifica2logo.png";
-                            target.className =
-                              "absolute inset-0 w-full h-full object-contain bg-slate-900/50";
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
-                        {flagUrl && (
-                          <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
-                            <img
-                              src={flagUrl}
-                              alt={`Bandera de ${escuderia.nationality}`}
-                              className="w-8 h-6 sm:w-14 sm:h-10 object-cover rounded shadow-2xl border border-white/20 sm:border-2"
-                            />
-                          </div>
-                        )}
-                        <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 z-10">
-                          <h3 className="text-base sm:text-2xl font-bold text-white tracking-tight leading-tight line-clamp-2">
-                            {escuderia.name}
-                          </h3>
-                        </div>
-                      </div>
-                    </Card>
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </div>
+
       </div>
     </div>
   );
