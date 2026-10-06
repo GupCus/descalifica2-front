@@ -89,12 +89,6 @@ function ListadoTemporadas() {
       t.racing_series?.name === "Formula 1" ||
       t.racing_series?.name === "Fórmula 1",
   );
-  const f2Temporadas = temporadas.filter(
-    (t) =>
-      t.racing_series?.name === "F2" ||
-      t.racing_series?.name === "Formula 2" ||
-      t.racing_series?.name === "Fórmula 2",
-  );
 
   const SelectHandler = (list: Temporada[]) => (_label: string, index: number) => {
     const selectedTemporada = list[index];
@@ -122,9 +116,9 @@ function ListadoTemporadas() {
           </h1>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        <div className="flex justify-center">
           {/* F1 Section */}
-          <div className="bg-slate-950/60 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-slate-800 shadow-xl flex flex-col">
+          <div className="w-full max-w-2xl bg-slate-950/60 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-slate-800 shadow-xl flex flex-col">
             <div className="flex justify-center mb-4">
               <img
                 src={new URL("../../assets/f1-logo.png", import.meta.url).href}
@@ -147,35 +141,9 @@ function ListadoTemporadas() {
                 />
               )}
             </div>
-          </div>
-
-          {/* F2 Section */}
-          <div className="bg-slate-950/60 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-slate-800 shadow-xl flex flex-col">
-            <div className="flex justify-center mb-4">
-              <img
-                src={new URL("../../assets/f2-logo.png", import.meta.url).href}
-                alt="Logo Formula 2"
-                className="w-36 sm:w-44 h-auto object-contain"
-              />
-            </div>
-            <div className="w-full flex-1">
-              {f2Temporadas.length === 0 ? (
-                <div className="text-slate-400 p-6 text-center text-sm">
-                  No hay temporadas F2 registradas.
-                </div>
-              ) : (
-                <AnimatedList
-                  items={f2Temporadas.map((t) => `Temporada ${t.year}`)}
-                  showGradients={false}
-                  onItemSelect={SelectHandler(f2Temporadas)}
-                  displayScrollbar={true}
-                  className="w-full"
-                />
-              )}
-            </div>
-          </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
