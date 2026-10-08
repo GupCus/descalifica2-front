@@ -28,7 +28,6 @@ function ListadoPilotos() {
   const [error, setError] = useState<string | null>(null);
   const [escuderias, setEscuderias] = useState<Escuderia[]>([]);
   const [filtroEscuderiaF1, setFiltroEscuderiaF1] = useState<string>('null');
-  const [filtroEscuderiaF2, setFiltroEscuderiaF2] = useState<string>('null');
 
   useEffect(() => {
     getPiloto()
@@ -46,11 +45,6 @@ function ListadoPilotos() {
 
   const f1Escuderias = escuderias.filter((e) => e.racing_series.name === 'F1');
 
-  const f2Escuderias = escuderias.filter((e) => e.racing_series.name === 'F2');
-
-  const f2Pilotos = pilotos.filter(
-    (p) => p.racing_series.name === 'F2' && p.season.year === 2026,
-  );
   const f1Pilotos = pilotos.filter(
     (p) =>
       p.racing_series.name === 'F1' &&
@@ -64,13 +58,6 @@ function ListadoPilotos() {
       String(
         typeof p.team === 'object' && p.team !== null ? p.team.id : p.team,
       ) === filtroEscuderiaF1,
-  );
-  const f2Filtrados = f2Pilotos.filter(
-    (p) =>
-      filtroEscuderiaF2 === 'null' ||
-      String(
-        typeof p.team === 'object' && p.team !== null ? p.team.id : p.team,
-      ) === filtroEscuderiaF2,
   );
 
   if (loading) {
@@ -227,95 +214,7 @@ function ListadoPilotos() {
           </div>
         )}
 
-        <div className="mt-12 mb-6" />
 
-        <div className="mb-6">
-          <img
-            src={new URL('../../assets/f2-logo.png', import.meta.url).href}
-            alt="F2"
-            className="mx-auto w-50 h-auto object-contain"
-          />
-        </div>
-        <div className="mb-6 max-w-md mx-auto">
-          <Select
-            value={filtroEscuderiaF2}
-            onValueChange={setFiltroEscuderiaF2}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Filtrar F2 por escudería" />
-            </SelectTrigger>
-            <SelectContent className="border-none">
-              <SelectItem value="null">Todas los pilotos F2</SelectItem>
-              {f2Escuderias.map((e) => (
-                <SelectItem key={e.id} value={String(e.id)}>
-                  {e.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        {f2Filtrados.length === 0 ? (
-          <Card className="bg-slate-900/50 border-slate-700">
-            <CardHeader>
-              <CardTitle className="text-white">No hay pilotos F2</CardTitle>
-              <CardDescription className="text-slate-400">
-                Aún no se han registrado pilotos en la categoría F2 o no hay
-                pilotos registrados para la escudería seleccionada.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 mb-8">
-            {f2Filtrados.map((piloto) => {
-              const flagUrl = getAssetUrl(`/flags/${piloto.nationality}.svg`);
-              const photoUrl = getAssetUrl(piloto.profile_image);
-              return (
-                <Link to={`/piloto/${piloto.id}`} key={piloto.id}>
-                  <Card
-                    key={piloto.id}
-                    className="relative bg-slate-900/50 border-slate-700 hover:bg-slate-800/50 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 overflow-hidden group cursor-pointer py-0 border-t-0 border-b-0"
-                  >
-                    <div className="relative w-auto h-64 sm:h-80 overflow-hidden">
-                      <img
-                        src={photoUrl}
-                        alt={`Foto de ${piloto.name}`}
-                        className="absolute inset-0 w-full h-full object-cover overflow-hidden transition-transform duration-300 group-hover:scale-105"
-                        onError={(e) => {
-                          const t = e.currentTarget as HTMLImageElement;
-                          t.onerror = null;
-                          t.src = new URL(
-                            '../../assets/descalifica2logo.png',
-                            import.meta.url,
-                          ).href;
-                          t.classList.add(
-                            'object-contain',
-                            'bg-slate-900/50',
-                            'overflow-hidden',
-                          );
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/30 to-transparent"></div>
-                      {flagUrl && (
-                        <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
-                          <img
-                            src={flagUrl}
-                            alt={`Bandera de ${piloto.nationality}`}
-                            className="w-8 h-6 sm:w-14 sm:h-10 object-cover rounded shadow-2xl border border-white/20 sm:border-2"
-                          />
-                        </div>
-                      )}
-                      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-6 z-10">
-                        <h3 className="text-base sm:text-2xl font-bold text-white tracking-tight leading-tight line-clamp-2">
-                          {piloto.name}
-                        </h3>
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
-        )}
       </div>
     </div>
   );
