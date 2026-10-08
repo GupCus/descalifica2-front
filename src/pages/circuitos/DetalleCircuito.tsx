@@ -223,7 +223,11 @@ function DetalleCircuito() {
                   Longitud
                 </h3>
                 <p className="text-xs sm:text-base font-semibold text-white">
-                  {circuito.length}
+                  {circuito.length
+                    ? circuito.length.toLowerCase().includes('km')
+                      ? circuito.length
+                      : `${circuito.length} km`
+                    : '—'}
                 </p>
               </div>
             </div>

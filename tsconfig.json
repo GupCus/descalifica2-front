@@ -24,7 +24,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["vitest/globals"]
   },
   "include": ["src", "../descalifica2-front/src/pages"],
   "references": [{ "path": "./tsconfig.node.json" }],

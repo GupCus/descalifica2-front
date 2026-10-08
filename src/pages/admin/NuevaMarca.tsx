@@ -19,7 +19,6 @@ type FormState = {
   foundation: string;
   nationality: string;
   description: string;
-  website: string;
 };
 
 const initialState: FormState = {
@@ -27,7 +26,6 @@ const initialState: FormState = {
   foundation: "",
   nationality: "",
   description: "",
-  website: "",
 };
 
 function NuevaMarca() {
@@ -65,7 +63,6 @@ function NuevaMarca() {
           foundation: String(selected.foundation),
           nationality: selected.nationality,
           description: (selected as any).description || "",
-          website: (selected as any).website || "",
         });
       }
     }
@@ -111,7 +108,6 @@ function NuevaMarca() {
       foundation: Number(form.foundation),
       nationality: form.nationality,
       description: form.description,
-      website: form.website,
     };
 
     try {
@@ -232,18 +228,6 @@ function NuevaMarca() {
               className="bg-transparent border-gray-600 text-white placeholder-gray-400 resize-none"
               rows={4}
             />
-          </div>
-
-          <div className="mt-4">
-            <InputGroup className="w-full">
-              <InputGroupInput
-                placeholder="Sitio Web (opcional)"
-                id="website"
-                type="url"
-                value={form.website}
-                onChange={handleChange}
-              />
-            </InputGroup>
           </div>
 
           <div className="mt-4">
