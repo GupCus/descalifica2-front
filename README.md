@@ -15,6 +15,7 @@ Descalifica2 es un sitio web dedicado principalmente a la Fórmula 1, donde podr
 
 ## ℹ️ Más información del proyecto
 
+- Toda la documentación técnica e instalación se encuentra en [ Documentación del Proyecto ](https://github.com/GupCus/tpDSW/blob/main/docs/README.md)
 - 🛠️ **Tecnologías:** React + Vite + Typecript + shadcn.
 - **Nuestro proposal:** [tp/proposal.md](https://github.com/GupCus/tp/blob/main/proposal.md)
 - **Repo back:** [descalifica2-back](https://github.com/GupCus/descalifica2-back)
