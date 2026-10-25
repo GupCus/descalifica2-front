@@ -1,21 +1,21 @@
-import TextType from '@/components/ui/TextType.tsx';
-import { Carrera } from '@/entities/carrera.entity.ts';
-import PostRecomendados from '@/components/PostsRecomendados.tsx';
-import { getCarrera } from '@/services/carrera.service.ts';
-import { useEffect, useState } from 'react';
-import { Spinner } from '@/components/ui/spinner.tsx';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group.tsx';
-import bgFerrari from '@/assets/ferrari-lluvia-sainz.jpg';
-import { Driver_Championship } from '@/entities/driver_championship.entity.ts';
-import { Team_Championship } from '@/entities/team_championship.entity.ts';
+import TextType from "@/components/ui/TextType.tsx";
+import { Carrera } from "@/entities/carrera.entity.ts";
+import PostRecomendados from "@/components/PostsRecomendados.tsx";
+import { getCarrera } from "@/services/carrera.service.ts";
+import { useEffect, useState } from "react";
+import { Spinner } from "@/components/ui/spinner.tsx";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx";
+import bgFerrari from "@/assets/ferrari-lluvia-sainz.jpg";
+import { Driver_Championship } from "@/entities/driver_championship.entity.ts";
+import { Team_Championship } from "@/entities/team_championship.entity.ts";
 import {
   getdrivers_championship,
   getteam_championship,
-} from '@/services/championship.service.ts';
-import TableChampionship from '@/components/tablechampionship.tsx';
-import AccordionCarreras from '@/components/AccordionCarreras.tsx';
-import { Escuderia } from '@/entities/escuderia.entity.ts';
-import { getEscuderia } from '@/services/escuderia.service.ts';
+} from "@/services/championship.service.ts";
+import TableChampionship from "@/components/tablechampionship.tsx";
+import AccordionCarreras from "@/components/AccordionCarreras.tsx";
+import { Escuderia } from "@/entities/escuderia.entity.ts";
+import { getEscuderia } from "@/services/escuderia.service.ts";
 
 function calcularcarrerasAnteriores(anio: number, carreras: Carrera[]) {
   let carrerasAnteriores;
@@ -27,7 +27,7 @@ function calcularcarrerasAnteriores(anio: number, carreras: Carrera[]) {
             .filter(
               (c) =>
                 new Date(c.start_date) <= new Date() &&
-                !c.name.includes('Testing'),
+                !c.name.includes("Testing"),
             )
             .sort(
               (a, b) =>
@@ -36,7 +36,7 @@ function calcularcarrerasAnteriores(anio: number, carreras: Carrera[]) {
             );
   } else {
     return carreras
-      .filter((c) => !c.name.includes('Testing'))
+      .filter((c) => !c.name.includes("Testing"))
       .sort(
         (a, b) =>
           new Date(b.start_date).getTime() - new Date(a.start_date).getTime(),
@@ -57,8 +57,8 @@ function Home() {
   );
   const [anio, setanio] = useState<number>(new Date().getFullYear());
   const [activeSection, setActiveSection] = useState<
-    'torneo' | 'carreras' | 'posts'
-  >('carreras');
+    "torneo" | "carreras" | "posts"
+  >("carreras");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
@@ -91,7 +91,7 @@ function Home() {
         <Inicio />
         <div>
           <h4 className="text-xl font-semibold tracking-tight mt-5 mb-5 text-center">
-            Últimos grandes premios:{' '}
+            Últimos grandes premios:{" "}
           </h4>
           <div className="min-h-[50vh] flex items-center justify-center">
             <Spinner className="size-8" />
@@ -123,7 +123,7 @@ function Home() {
             type="single"
             value={activeSection}
             onValueChange={(val) => {
-              if (val) setActiveSection(val as 'torneo' | 'carreras' | 'posts');
+              if (val) setActiveSection(val as "torneo" | "carreras" | "posts");
             }}
             className="bg-muted rounded-md overflow-hidden"
           >
@@ -133,9 +133,9 @@ function Home() {
           </ToggleGroup>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_5fr_2fr] gap-8 items-start w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,4fr)_minmax(0,2fr)] gap-8 items-start w-full">
           <div
-            className={`w-full ${activeSection === 'torneo' ? 'block' : 'hidden'} lg:block`}
+            className={`w-full min-w-0 ${activeSection === "torneo" ? "block" : "hidden"} lg:block`}
           >
             <TableChampionship
               drivers={driverschampionship}
@@ -144,7 +144,7 @@ function Home() {
             />
           </div>
           <div
-            className={`w-full ${activeSection === 'carreras' ? 'block' : 'hidden'} lg:block`}
+            className={`w-full min-w-0 ${activeSection === "carreras" ? "block" : "hidden"} lg:block`}
           >
             <AccordionCarreras
               carrerasAnteriores={carrerasAnteriores}
@@ -154,9 +154,11 @@ function Home() {
             />
           </div>
           <div
-            className={`w-full ${activeSection === 'posts' ? 'block' : 'hidden'} lg:block`}
+            className={`w-full min-w-0 lg:self-stretch lg:relative ${activeSection === "posts" ? "block" : "hidden"} lg:block`}
           >
-            <PostRecomendados />
+            <div className="lg:absolute lg:inset-0">
+              <PostRecomendados />
+            </div>
           </div>
         </div>
       </div>
@@ -173,8 +175,8 @@ function Inicio() {
         className="absolute inset-0 w-full h-full z-0 blur-[3px]"
         style={{
           backgroundImage: `url(${bgFerrari})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       />
 
@@ -183,11 +185,11 @@ function Inicio() {
           <TextType
             className="text-3xl md:text-5xl font-extrabold tracking-tight text-primary-foreground"
             text={[
-              'Bienvenido al mejor foro sobre automovilismo.',
-              'Welcome to the best motorsport forum.',
-              'Willkommen im berühmtesten Motorsportforum.',
-              'Bem-vindo ao mais mejor fórum do automobilismo',
-              'モータースポーツに関する最高のフォーラムへようこそ',
+              "Bienvenido al mejor foro sobre automovilismo.",
+              "Welcome to the best motorsport forum.",
+              "Willkommen im berühmtesten Motorsportforum.",
+              "Bem-vindo ao mais mejor fórum do automobilismo",
+              "モータースポーツに関する最高のフォーラムへようこそ",
             ]}
             typingSpeed={75}
             pauseDuration={3500}

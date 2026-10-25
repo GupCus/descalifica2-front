@@ -5,14 +5,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Driver_Championship } from '@/entities/driver_championship.entity.ts';
-import { Team_Championship } from '@/entities/team_championship.entity.ts';
-import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group.tsx';
-import { useState } from 'react';
-import { Escuderia } from '@/entities/escuderia.entity.ts';
-import { Drill, Flag, Medal, Trophy, User } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+} from "@/components/ui/table";
+import { Driver_Championship } from "@/entities/driver_championship.entity.ts";
+import { Team_Championship } from "@/entities/team_championship.entity.ts";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group.tsx";
+import { useState } from "react";
+import { Escuderia } from "@/entities/escuderia.entity.ts";
+import { Drill, Flag, Medal, Trophy, User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const TableChampionship = ({
   drivers,
@@ -23,14 +23,14 @@ const TableChampionship = ({
   teams: Team_Championship[];
   escuderiasdata: Escuderia[];
 }) => {
-  const [seleccion, setSeleccion] = useState<'Pilotos' | 'Escuderias'>(
-    'Pilotos',
+  const [seleccion, setSeleccion] = useState<"Pilotos" | "Escuderias">(
+    "Pilotos",
   );
 
   return (
     <>
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 w-full">
-        <h4 className="text-xl md:text-2xl font-bold tracking-tight whitespace-nowrap m-0">
+      <div className="flex flex-wrap items-center justify-center sm:justify-between gap-x-4 gap-y-3 mb-6 w-full">
+        <h4 className="text-xl md:text-2xl font-bold tracking-tight m-0">
           🏆 ¿Cómo va el torneo?
         </h4>
         <ToggleGroup
@@ -38,7 +38,7 @@ const TableChampionship = ({
           type="single"
           value={seleccion}
           onValueChange={(val) => {
-            if (val) setSeleccion(val as 'Pilotos' | 'Escuderias');
+            if (val) setSeleccion(val as "Pilotos" | "Escuderias");
           }}
           spacing={0}
         >
@@ -48,7 +48,7 @@ const TableChampionship = ({
       </div>
 
       <div className="w-full overflow-hidden rounded-xl border bg-card shadow-sm">
-        {seleccion === 'Pilotos' ? (
+        {seleccion === "Pilotos" ? (
           <div className="w-full overflow-x-auto">
             <Table>
               <TableHeader>
@@ -94,17 +94,17 @@ const TableChampionship = ({
                           : undefined,
                         borderLeft: e?.color
                           ? `4px solid #${e.color}`
-                          : '4px solid transparent',
+                          : "4px solid transparent",
                       }}
                     >
                       <TableCell className="font-medium">
                         <Badge
                           variant={
                             row.position === 1
-                              ? 'default'
+                              ? "default"
                               : row.position < 4
-                                ? 'secondary'
-                                : 'outline'
+                                ? "secondary"
+                                : "outline"
                           }
                           className="w-10 justify-center h-6"
                         >
@@ -154,7 +154,7 @@ const TableChampionship = ({
                       <Medal className="h-4 w-4 text-muted-foreground " />
                       Torneos
                     </div>
-                    {'  '}
+                    {"  "}
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -173,17 +173,17 @@ const TableChampionship = ({
                           : undefined,
                         borderLeft: row.escuderia.color
                           ? `4px solid #${row.escuderia.color}`
-                          : '4px solid transparent',
+                          : "4px solid transparent",
                       }}
                     >
                       <TableCell className="font-medium">
                         <Badge
                           variant={
                             row.position === 1
-                              ? 'default'
+                              ? "default"
                               : row.position < 4
-                                ? 'secondary'
-                                : 'outline'
+                                ? "secondary"
+                                : "outline"
                           }
                           className="w-10 justify-center h-6"
                         >

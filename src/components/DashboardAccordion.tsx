@@ -1,7 +1,7 @@
-import { Sesion } from '@/entities/sesion.entity.ts';
-import { useEffect, useState } from 'react';
-import { AuthService } from '@/services/auth.service.ts';
-import { postCarrera } from '@/services/openf1.service.ts';
+import { Sesion } from "@/entities/sesion.entity.ts";
+import { useEffect, useState } from "react";
+import { AuthService } from "@/services/auth.service.ts";
+import { postCarrera } from "@/services/openf1.service.ts";
 import {
   Table,
   TableBody,
@@ -9,16 +9,26 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Trophy, User, Hash, Building2, Timer } from 'lucide-react';
-import { Session_Result } from '@/entities/session_result.entity.ts';
-import { Circuito } from '@/entities/circuito.entity.ts';
-import { Escuderia } from '@/entities/escuderia.entity.ts';
-import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group.tsx';
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Trophy, User, Hash, Building2, Timer } from "lucide-react";
+import { Session_Result } from "@/entities/session_result.entity.ts";
+import { Circuito } from "@/entities/circuito.entity.ts";
+import { Escuderia } from "@/entities/escuderia.entity.ts";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group.tsx";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 
 function formateartiempo(resultado: string) {
-  let [segundos, ms] = resultado.split('.');
+  let [segundos, ms] = resultado.split(".");
   const horas = Math.floor(Number.parseInt(segundos) / 3600);
   const minutos = Math.floor((Number.parseInt(segundos) % 3600) / 60);
   segundos = (
@@ -29,23 +39,23 @@ function formateartiempo(resultado: string) {
     if (minutos === 0) {
       return resultado;
     } else {
-      return minutos.toString() + ':' + segundos + '.' + ms;
+      return minutos.toString() + ":" + segundos + "." + ms;
     }
   } else {
     return (
-      horas.toString() + ':' + minutos.toString() + ':' + segundos + '.' + ms
+      horas.toString() + ":" + minutos.toString() + ":" + segundos + "." + ms
     );
   }
 }
 function formatResultTime(resultado: Session_Result): string {
-  if (resultado.dsq) return 'DSQ';
-  if (resultado.dns) return 'DNS';
-  if (resultado.dnf) return 'DNF';
+  if (resultado.dsq) return "DSQ";
+  if (resultado.dns) return "DNS";
+  if (resultado.dnf) return "DNF";
 
-  if (resultado.duration && resultado.duration !== 'null')
-    if (resultado.duration.includes(',')) {
+  if (resultado.duration && resultado.duration !== "null")
+    if (resultado.duration.includes(",")) {
       const duraciones = resultado.duration
-        .split(',')
+        .split(",")
         .filter((s) => s.length !== 0);
       let nuevoresultado: string;
       switch (duraciones.length) {
@@ -55,15 +65,15 @@ function formatResultTime(resultado: Session_Result): string {
         case 2:
           nuevoresultado =
             formateartiempo(duraciones[0]) +
-            ' - ' +
+            " - " +
             formateartiempo(duraciones[1]);
           break;
         case 3:
           nuevoresultado =
             formateartiempo(duraciones[0]) +
-            ' - ' +
+            " - " +
             formateartiempo(duraciones[1]) +
-            ' - ' +
+            " - " +
             formateartiempo(duraciones[2]);
           break;
         default:
@@ -74,10 +84,10 @@ function formatResultTime(resultado: Session_Result): string {
     } else {
       return formateartiempo(resultado.duration);
     }
-  if (resultado.gap_to_leader && resultado.gap_to_leader !== 'null')
+  if (resultado.gap_to_leader && resultado.gap_to_leader !== "null")
     return resultado.gap_to_leader;
 
-  return '-';
+  return "-";
 }
 
 function DashboardAccordion({
@@ -103,13 +113,63 @@ function DashboardAccordion({
   useEffect(() => {
     //Selecciona fp1 siempre al abrir el dashboard
     if (sesiones && !sesionSeleccionada) {
-      setSesionSeleccionada(sesiones.find((s) => s.type === 'FP1'));
+      setSesionSeleccionada(sesiones.find((s) => s.type === "FP1"));
     }
   }, [sesiones, sesionSeleccionada]);
+
+  const [actualizacion, setActualizacion] = useState<
+    null | "cargando" | { ok: boolean; mensaje: string }
+  >(null);
+  const cargando = actualizacion === "cargando";
+  const resultado = actualizacion !== "cargando" ? actualizacion : null;
+
+  async function actualizarCarrera() {
+    if (!carreraId) return;
+    setActualizacion("cargando");
+    try {
+      const mensaje = await postCarrera(carreraId);
+      setActualizacion({ ok: true, mensaje });
+    } catch (err) {
+      const mensaje = String(err);
+      setActualizacion({ ok: false, mensaje });
+    }
+  }
+
+  function cerrarDialogo() {
+    if (cargando) return;
+    if (resultado?.ok) window.location.reload();
+    setActualizacion(null);
+  }
 
   if (sesiones) {
     return (
       <main className="flex flex-col md:flex-row w-full bg-card overflow-hidden">
+        <Dialog open={actualizacion !== null} onOpenChange={cerrarDialogo}>
+          <DialogContent showCloseButton={!cargando}>
+            <DialogHeader>
+              <DialogTitle>
+                {cargando
+                  ? "Actualizando carrera..."
+                  : resultado?.ok
+                    ? "Carrera actualizada"
+                    : "Error al actualizar"}
+              </DialogTitle>
+              <DialogDescription>
+                {cargando
+                  ? "No cierres ni recargues la página."
+                  : resultado?.mensaje}
+              </DialogDescription>
+            </DialogHeader>
+            {cargando ? (
+              <Spinner className="size-8 mx-auto" />
+            ) : (
+              <DialogFooter>
+                <Button onClick={cerrarDialogo}>Aceptar</Button>
+              </DialogFooter>
+            )}
+          </DialogContent>
+        </Dialog>
+
         <div className="w-full md:w-[30%] flex flex-col border-b md:border-b-0 md:border-r bg-muted/10">
           <div className="w-full h-48 p-4 flex items-center justify-center bg-background border-b relative">
             <div className="absolute inset-0 bg-gradient-to-tr from-muted/50 to-transparent opacity-50" />
@@ -127,14 +187,14 @@ function DashboardAccordion({
               </span>
               <span className="text-sm font-medium text-muted-foreground capitalize mt-1">
                 {new Date(sesionSeleccionada.start_time).toLocaleString(
-                  'es-ES',
+                  "es-ES",
                   {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
                   },
                 )}
               </span>
@@ -158,7 +218,7 @@ function DashboardAccordion({
               >
                 FP1
               </ToggleGroupItem>
-              {sesiones.find((s) => s.type === 'FP2') ? (
+              {sesiones.find((s) => s.type === "FP2") ? (
                 <>
                   <ToggleGroupItem
                     className="flex-1 md:flex-none md:w-full justify-center md:justify-start !rounded-none h-11 md:h-14 px-2 md:px-6 border-b-4 md:border-b-0 md:border-l-4 border-transparent data-[state=on]:bg-primary/50 data-[state=on]:text-foreground data-[state=on]:border-primary data-[state=on]:font-bold hover:bg-muted/50 transition-all"
@@ -205,14 +265,7 @@ function DashboardAccordion({
                 <ToggleGroupItem
                   className="flex-1 md:flex-none md:w-full justify-center md:justify-start !rounded-none h-11 md:h-14 px-2 md:px-6 border-b-4 md:border-b-0 md:border-l-4 border-transparent text-destructive hover:bg-destructive/10 transition-all"
                   value="actualizar"
-                  onClick={async () => {
-                    if (carreraId) {
-                      await postCarrera(carreraId);
-                      setTimeout(() => {
-                        window.location.reload();
-                      }, 2000);
-                    }
-                  }}
+                  onClick={actualizarCarrera}
                 >
                   Actualizar Carrera
                 </ToggleGroupItem>
@@ -277,10 +330,10 @@ function DashboardAccordion({
                             <Badge
                               variant={
                                 i === 0
-                                  ? 'default'
+                                  ? "default"
                                   : i < 3
-                                    ? 'secondary'
-                                    : 'outline'
+                                    ? "secondary"
+                                    : "outline"
                               }
                               className="w-10 justify-center h-6"
                             >
@@ -289,17 +342,17 @@ function DashboardAccordion({
                           </TableCell>
 
                           <TableCell className="font-semibold">
-                            {resultado.piloto?.name ?? 'Desconocido'}
+                            {resultado.piloto?.name ?? "Desconocido"}
                           </TableCell>
                           <TableCell className="font-medium text-muted-foreground tabular-nums">
                             {formatResultTime(resultado)}
                           </TableCell>
                           <TableCell className="text-muted-foreground">
-                            #{resultado.piloto?.num ?? '-'}
+                            #{resultado.piloto?.num ?? "-"}
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2 font-medium">
-                              {e?.name ?? '-'}
+                              {e?.name ?? "-"}
                             </div>
                           </TableCell>
                         </TableRow>

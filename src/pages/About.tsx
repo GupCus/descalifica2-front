@@ -24,11 +24,9 @@ import {
   Sparkles,
   Layers,
   ArrowRight,
-  Activity,
   GraduationCap,
   Heart,
   Server,
-  ShieldCheck,
   Github,
 } from "lucide-react";
 import logoDescalifica2 from "@/assets/descalifica2logo.png";
@@ -37,14 +35,14 @@ import bgGrilla from "@/assets/grilla-cola-2021.jpg";
 // Datos de funcionalidades del sitio
 const features = [
   {
-    title: "Calendario Oficial",
+    title: "Calendario",
     description:
-      "Fechas, cronogramas de prácticas, clasificación y carrera de cada Gran Premio de la temporada.",
+      "Fechas de Practicas, Qualys y Carreras de los fines de semana",
     icon: Calendar,
     to: "/calendario",
   },
   {
-    title: "Wiki & Estadísticas",
+    title: "Wiki",
     description:
       "Información sobre pilotos, escuderías, marcas y trazados históricos del mundial.",
     icon: Trophy,
@@ -53,28 +51,27 @@ const features = [
   {
     title: "¿Dónde Ver?",
     description:
-      "Guía completa con señales televisivas y plataformas oficiales de streaming para no perderte nada.",
+      "¿Lo vemos por flow o por disney? Entrá a esta sección para no marearte.",
     icon: Tv,
     to: "/dondever",
   },
   {
     title: "Foro de la Comunidad",
-    description:
-      "Debatí sobre decisiones de comisarios, rendimientos, rumores de fichajes y compartí tu opinión.",
+    description: "Compartí tu opinión y discutí, pero ganá o borrá la cuenta",
     icon: MessageSquare,
     to: "/foro",
   },
   {
-    title: "Perfil Personalizado",
+    title: "Perfil",
     description:
-      "Elegí tus pilotos, escuderías y circuitos favoritos para personalizar tu experiencia de usuario.",
+      "Intentamos que puedas personalizar todos tus gustos, agregá tu telegram para recibir notificaciones!",
     icon: UserCheck,
     to: "/perfil",
   },
   {
-    title: "Campeonato & Tiempos",
+    title: "Campeonato y Resultados",
     description:
-      "Posiciones actualizadas de pilotos y constructores para seguir la batalla fecha tras fecha.",
+      "Descubrí como terminó la qualy seleccionando la carrera en el inicio!, también podés consultar como va el torneo.",
     icon: Timer,
     to: "/",
   },
@@ -113,36 +110,18 @@ const techStack = [
   {
     category: "Frontend & UI",
     icon: Code2,
-    items: [
-      "React",
-      "TypeScript",
-      "Vite",
-      "Tailwind CSS",
-      "shadcn/ui",
-      "Framer Motion",
-    ],
+    items: ["React", "TypeScript", "Vite", "shadcn/ui"],
   },
   {
     category: "Backend & Datos",
     icon: Server,
     items: [
-      "Node.js & Express",
+      "Node.js",
       "TypeScript",
       "MikroORM",
       "MySQL",
-      "OpenF1 Live API",
-      "Axios Client",
-    ],
-  },
-  {
-    category: "Seguridad & Servicios",
-    icon: ShieldCheck,
-    items: [
-      "JWT Auth",
+      "OpenF1 API",
       "Google OAuth 2.0",
-      "Multer",
-      "Bcrypt",
-      "Protected Routes",
     ],
   },
 ];
@@ -211,9 +190,8 @@ function About() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-balance"
           >
-            El epicentro digital de la{" "}
             <span className="bg-gradient-to-r from-red-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
-              Fórmula 1 y Motorsport
+              Descalifica2
             </span>
           </motion.h1>
 
@@ -223,70 +201,39 @@ function About() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-sm sm:text-base md:text-xl text-muted-foreground max-w-2xl text-balance leading-relaxed"
           >
-            Una plataforma para la comunidad apasionada por las carreras:
-            calendarios en tiempo real, telemetría y datos de escuderías, datos
-            sobre las transmisiones en vivo y un foro de debate entre toda la
-            comunidad.
+            Tantas vueltas y anuncios para solo saber cuando son las carreras o
+            como terminaron. Nosotros también estabamos cansados, así que
+            intentamos resolver por nuestra cuenta: Calendario, Resultados y
+            Donde verlo, todo en descalifica2.
           </motion.p>
         </div>
       </section>
 
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-8 sm:py-16 space-y-12 sm:space-y-20 relative z-10">
-        <section className="grid grid-cols-2 gap-3 sm:gap-8 items-stretch">
-          <Card className="border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/50 transition-all duration-300 py-3.5 sm:py-6 gap-2 sm:gap-6">
-            <CardHeader className="px-3 sm:px-6 pb-0">
-              <div className="size-8 sm:size-11 rounded-lg bg-primary/20 text-primary flex items-center justify-center mb-1.5 sm:mb-2">
-                <Sparkles className="size-4 sm:size-6" />
-              </div>
-              <CardTitle className="text-base sm:text-2xl font-bold">
-                Nuestra Misión
-              </CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
-                Pasión y precisión para los fanáticos del automovilismo
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="px-3 sm:px-6 pt-2 sm:pt-0 space-y-2 sm:space-y-3 text-xs sm:text-base text-muted-foreground leading-relaxed">
-              <p>
-                <strong className="text-foreground">Descalifica2</strong> nació
-                con el fin de resolver la dispersión de datos en el mundo del
-                deporte motor. Centralizamos fechas, horarios ajustados a tu
-                zona horaria local, canales oficiales de transmisión y la ficha
-                técnica de cada protagonista de la grilla.
-              </p>
-              <p>
-                Buscamos que tanto el aficionado recién llegado como el seguidor
-                experto encuentren información confiable y un entorno
-                estimulante para el intercambio de puntos de vista.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/50 transition-all duration-300 py-3.5 sm:py-6 gap-2 sm:gap-6">
-            <CardHeader className="px-3 sm:px-6 pb-0">
-              <div className="size-8 sm:size-11 rounded-lg bg-primary/20 text-primary flex items-center justify-center mb-1.5 sm:mb-2">
-                <Activity className="size-4 sm:size-6" />
-              </div>
-              <CardTitle className="text-base sm:text-2xl font-bold">
-                Ecosistema & Comunidad
-              </CardTitle>
-              <CardDescription className="text-xs sm:text-sm">
-                Una experiencia adaptada a tus preferencias
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="px-3 sm:px-6 pt-2 sm:pt-0 space-y-2 sm:space-y-3 text-xs sm:text-base text-muted-foreground leading-relaxed">
-              <p>
-                Los usuarios registrados pueden personalizar su perfil eligiendo
-                sus constructores, circuitos y pilotos preferidos, recibiendo
-                recomendaciones y filtrando el contenido a su medida.
-              </p>
-              <p>
-                El foro integrado permite debatir fallos de carrera, estrategias
-                de neumáticos y novedades técnicas de cada monoplaza,
-                fortaleciendo el lazo entre miembros de la comunidad.
-              </p>
-            </CardContent>
-          </Card>
-        </section>
+        <Card className="border-border/60 bg-card/60 backdrop-blur-md hover:border-primary/50 transition-all duration-300 py-3.5 sm:py-6 gap-2 sm:gap-6">
+          <CardHeader className="px-3 sm:px-6 pb-0">
+            <div className="size-8 sm:size-11 rounded-lg bg-primary/20 text-primary flex items-center justify-center mb-1.5 sm:mb-2">
+              <Sparkles className="size-4 sm:size-6" />
+            </div>
+            <CardTitle className="text-base sm:text-2xl font-bold">
+              Nuestro objetivo
+            </CardTitle>
+            <CardDescription className="text-xs sm:text-sm">
+              Tener un lugar para encontrar toda la información
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="px-3 sm:px-6 pt-2 sm:pt-0 space-y-2 sm:space-y-3 text-xs sm:text-base text-muted-foreground leading-relaxed">
+            <p>
+              <strong className="text-foreground">Descalifica2</strong> nació
+              Siempre nos molestó que los datos fórmula 1 están en cualquier lado o separados en distintos sitios.
+              Entonces centralizamos fechas y horarios ajustados a tu zona horaria local e investigamos donde lo podés ver.
+            </p>
+            <p>
+              Buscamos que tanto el recién llegado como el experto encuentren
+              información confiable y fácil.
+            </p>
+          </CardContent>
+        </Card>
 
         <section className="space-y-6 sm:space-y-8">
           <div className="text-center max-w-2xl mx-auto space-y-2 sm:space-y-3">
@@ -294,15 +241,11 @@ function About() {
               variant="secondary"
               className="px-3 py-1 font-semibold uppercase tracking-wider text-[11px] sm:text-xs"
             >
-              Módulos del Sistema
+              Guía de la página
             </Badge>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
               ¿Qué podés hacer en Descalifica2?
             </h2>
-            <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
-              Accedé de forma directa a cada uno de los módulos que componen la
-              plataforma.
-            </p>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
@@ -336,10 +279,7 @@ function About() {
                         className="w-full justify-between text-muted-foreground group-hover:text-primary hover:bg-primary/10 transition-all px-2 sm:px-3 h-8 sm:h-9 text-xs sm:text-sm"
                       >
                         <Link to={feature.to}>
-                          <span className="truncate">
-                            Ingresar
-                            <span className="hidden sm:inline"> al módulo</span>
-                          </span>
+                          <span className="truncate">Ingresar</span>
                           <ArrowRight className="size-3.5 sm:size-4 shrink-0 group-hover:translate-x-1 transition-transform ml-1" />
                         </Link>
                       </Button>
@@ -357,15 +297,16 @@ function About() {
               variant="secondary"
               className="px-3 py-1 font-semibold uppercase tracking-wider text-[11px] sm:text-xs"
             >
-              Autores & Colaboradores
+              Integrantes
             </Badge>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
-              Equipo de Desarrollo
+              Nuestro equipo
             </h2>
             <p className="text-muted-foreground text-xs sm:text-sm md:text-base">
-              Estudiantes de Ingeniería en Sistemas de Información de la{" "}
-              <strong className="text-foreground">UTN FRRo</strong> para la
-              cátedra Desarrollo de Software (DSW - ISI 303).
+              Estudiantes de Ingeniería en Sistemas de Información en{" "}
+              <strong className="text-foreground">UTN FRRo</strong>, proyecto
+              realizado para la cátedra Desarrollo de Software (DSW - ISI 303 -
+              2025).
             </p>
           </div>
 
@@ -425,10 +366,10 @@ function About() {
               variant="secondary"
               className="px-3 py-1 font-semibold uppercase tracking-wider text-[11px] sm:text-xs"
             >
-              Arquitectura
+              Información del proyecto
             </Badge>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
-              Tecnologías Utilizadas
+              Algunas de las tecnologías que utilizamos
             </h2>
           </div>
 
@@ -476,19 +417,13 @@ function About() {
             <div>
               <h3 className="text-lg sm:text-2xl font-bold flex items-center gap-2">
                 <Layers className="size-5 sm:size-6 text-primary shrink-0" />
-                <span>Código Fuente y Documentación</span>
+                <span>Código y documentación</span>
               </h3>
               <p className="text-muted-foreground text-xs sm:text-sm mt-1">
-                Explorá los repositorios del proyecto y la propuesta académica
-                presentada.
+                Pegale un ojo a nuestros repos, o a nuestra propuesta. Lo querés
+                levantar vos? Es codigo abierto!
               </p>
             </div>
-            <Badge
-              variant="outline"
-              className="border-primary text-primary font-semibold text-xs sm:text-sm"
-            >
-              Open Source
-            </Badge>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4 pt-2">
@@ -505,9 +440,6 @@ function About() {
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-xs sm:text-sm truncate">
                     Repo Frontend
-                  </p>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
-                    React + TypeScript
                   </p>
                 </div>
               </div>
@@ -528,9 +460,6 @@ function About() {
                   <p className="font-semibold text-xs sm:text-sm truncate">
                     Repo Backend
                   </p>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
-                    Express + TS + ORM
-                  </p>
                 </div>
               </div>
               <ExternalLink className="size-3.5 sm:size-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 self-end sm:self-center" />
@@ -550,9 +479,6 @@ function About() {
                   <p className="font-semibold text-xs sm:text-sm truncate">
                     Proposal
                   </p>
-                  <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
-                    Documento de Cátedra
-                  </p>
                 </div>
               </div>
               <ExternalLink className="size-3.5 sm:size-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
@@ -565,8 +491,8 @@ function About() {
           <div className="text-center text-muted-foreground space-y-1.5 sm:space-y-2">
             <p className="text-xs sm:text-sm md:text-base flex items-center justify-center gap-1.5 font-medium">
               Desarrollado con{" "}
-              <Heart className="size-3.5 sm:size-4 text-red-500 fill-red-500 inline" /> en UTN
-              Facultad Regional Rosario
+              <Heart className="size-3.5 sm:size-4 text-red-500 fill-red-500 inline" />{" "}
+              en UTN Facultad Regional Rosario
             </p>
             <p className="text-[11px] sm:text-xs text-muted-foreground/80">
               Ingeniería en Sistemas de Información • Cátedra Desarrollo de

@@ -1,13 +1,13 @@
-import { Carrera } from '@/entities/carrera.entity.ts';
+import { Carrera } from "@/entities/carrera.entity.ts";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import DashboardAccordion from './DashboardAccordion.tsx';
-import { Escuderia } from '@/entities/escuderia.entity.ts';
-import { ToggleGroup, ToggleGroupItem } from './ui/toggle-group.tsx';
+} from "@/components/ui/accordion";
+import DashboardAccordion from "./DashboardAccordion.tsx";
+import { Escuderia } from "@/entities/escuderia.entity.ts";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group.tsx";
 
 export default function AccordionCarreras({
   carrerasAnteriores,
@@ -20,14 +20,14 @@ export default function AccordionCarreras({
   setanio: (anio: number) => void;
   anio: number;
 }) {
-  const anios = ['2026', '2025', '2024', '2023'];
+  const anios = ["2026", "2025", "2024", "2023"];
   return (
     <>
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4">
+      <div className="flex flex-wrap items-center justify-center lg:justify-between mb-6 gap-x-4 gap-y-3">
         <h4 className="text-xl lg:text-xl text-center lg:text-left font-semibold tracking-tight lg:mt-0">
           🏁 Grandes premios:
         </h4>
-        <div className="flex flex-col sm:flex-row items-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-3">
           <p className="text-sm font-medium text-muted-foreground text-center sm:text-left">
             ¿Querés ver más? Elegí un año:
           </p>

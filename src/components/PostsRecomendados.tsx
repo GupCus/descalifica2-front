@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, MessageCircle, User } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { BlogPost } from '@/entities/blogPost.entity';
-import { Usuario } from '@/entities/usuario.entity';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight, MessageCircle, User } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { BlogPost } from "@/entities/blogPost.entity";
+import { Usuario } from "@/entities/usuario.entity";
 import {
   getSuggestedBlogPosts,
   getBlogPost,
-} from '@/services/blogpost.service';
-import { getComentarioByBlogPost } from '@/services/comentario.service';
-import { getUsuarios } from '@/services/usuario.service';
-import { AuthService } from '@/services/auth.service';
-import { getAssetUrl } from '@/utils/asset.util';
-import SimpleBar from 'simplebar-react';
-import 'simplebar-react/dist/simplebar.min.css';
+} from "@/services/blogpost.service";
+import { getComentarioByBlogPost } from "@/services/comentario.service";
+import { getUsuarios } from "@/services/usuario.service";
+import { AuthService } from "@/services/auth.service";
+import { getAssetUrl } from "@/utils/asset.util";
+import SimpleBar from "simplebar-react";
+import "simplebar-react/dist/simplebar.min.css";
 
 function PostsRecomendados() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -44,11 +44,11 @@ function PostsRecomendados() {
           const allPosts = await getBlogPost();
 
           const adminIds = users
-            .filter((u) => u.user_type?.toLowerCase() === 'admin')
+            .filter((u) => u.user_type?.toLowerCase() === "admin")
             .map((u) => u.id);
 
           const getAuthorIdLocal = (post: BlogPost): number => {
-            if (typeof post.author === 'object' && post.author !== null) {
+            if (typeof post.author === "object" && post.author !== null) {
               return (post.author as unknown as { id: number }).id;
             }
             return post.author as number;
@@ -85,7 +85,7 @@ function PostsRecomendados() {
         );
         setCommentCounts(counts);
       } catch (err) {
-        setError('Error cargando publicaciones: ' + err);
+        setError("Error cargando publicaciones: " + err);
       } finally {
         setLoading(false);
       }
@@ -95,7 +95,7 @@ function PostsRecomendados() {
   }, []);
 
   const getAuthorId = (post: BlogPost): number => {
-    if (typeof post.author === 'object' && post.author !== null) {
+    if (typeof post.author === "object" && post.author !== null) {
       return (post.author as unknown as { id: number }).id;
     }
     return post.author;
@@ -103,7 +103,7 @@ function PostsRecomendados() {
 
   const usernameDe = (authorId: number): string => {
     const usuario = usuarios.find((u) => u.id === authorId);
-    return usuario?.username ?? usuario?.name ?? 'Usuario eliminado';
+    return usuario?.username ?? usuario?.name ?? "Usuario eliminado";
   };
 
   // Ahora renderizamos posts generales si no está logueado
@@ -153,8 +153,8 @@ function PostsRecomendados() {
   }
 
   return (
-    <div className="w-full max-w-xl">
-      <div className="flex items-center justify-between">
+    <div className="w-full lg:h-full flex flex-col">
+      <div className="flex items-center justify-between shrink-0">
         <h4 className="text-xl font-semibold tracking-tight mt-8 lg:mt-0 mb-5">
           📰 Publicaciones que te pueden interesar
         </h4>
@@ -170,7 +170,7 @@ function PostsRecomendados() {
       </div>
 
       {/* Feed vertical con scroll custom */}
-      <SimpleBar style={{ maxHeight: 600 }} className="simplebar-posts pr-4">
+      <SimpleBar className="simplebar-posts pr-4 max-h-[600px] lg:max-h-none lg:flex-1 lg:min-h-0">
         <div className="flex flex-col gap-4 py-2">
           {posts.map((post) => (
             <Link
@@ -208,7 +208,7 @@ function PostsRecomendados() {
                     <MessageCircle className="h-3.5 w-3.5" />
                     <span>
                       {commentCounts[post.id] ?? 0} comentario
-                      {(commentCounts[post.id] ?? 0) !== 1 ? 's' : ''}
+                      {(commentCounts[post.id] ?? 0) !== 1 ? "s" : ""}
                     </span>
                   </div>
                 </CardContent>
