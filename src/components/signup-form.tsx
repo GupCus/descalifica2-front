@@ -201,7 +201,7 @@ export function SignupForm({
       if (telegramWindow && !telegramWindow.closed) {
         telegramWindow.close();
       }
-      console.error('Error al generar código de Telegram:', err);
+      console.error('Error al generar código de Telegram');
       setMessage(
         err.response?.data?.message || 'Error al iniciar vinculación con Telegram.',
       );
@@ -400,8 +400,6 @@ export function SignupForm({
       }, 1000);
     } catch (err: any) {
       setMessageType('error');
-      console.error('Error completo:', err);
-      console.error('Respuesta del servidor:', err.response?.data);
 
       setMessage(
         `Error: ${

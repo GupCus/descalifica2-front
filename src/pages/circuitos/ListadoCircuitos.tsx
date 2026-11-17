@@ -17,7 +17,6 @@ function ListadoCircuitos() {
       .then((data) => setCircuitos(data))
       .catch((err) => {
         setError(err.message);
-        console.error('Error cargando circuitos', err);
       })
       .finally(() => setLoading(false));
   }, []);

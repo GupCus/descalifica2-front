@@ -48,7 +48,6 @@ function RootLayout() {
         setAvatarUrl('');
       }
     } catch (error) {
-      console.error('Error loading user:', error);
       setUser(null);
       setAvatarUrl('');
     } finally {

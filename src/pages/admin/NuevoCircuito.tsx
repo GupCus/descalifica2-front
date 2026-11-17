@@ -42,7 +42,7 @@ function NuevoCircuito() {
   useEffect(() => {
     getCircuito()
       .then((data) => setCircuitos(data))
-      .catch((err) => console.error("Error cargando circuitos", err));
+      .catch(() => console.error("Error cargando circuitos"));
   }, []);
 
   const handleEntitySelect = (value: string) => {

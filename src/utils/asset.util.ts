@@ -4,8 +4,6 @@
  * @returns La URL completa en formato string lista para usar en un <img src={...} />.
  */
 export function getAssetUrl(relativePath: string | undefined | null): string {
-  //DEBUG
-  console.log("RUTA: " + relativePath);
   if (!relativePath) {
     // Retornamos un string vacío si no hay asset
     return "";
@@ -17,7 +15,7 @@ export function getAssetUrl(relativePath: string | undefined | null): string {
   }
 
   // Usamos la URL de la API base definida en el entorno
-  const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+  const baseUrl = import.meta.env.VITE_API_URL;
 
   // Limpiamos la ruta por si ya trae una barra inicial para evitar doble barra (//)
   let cleanPath = relativePath.startsWith("/")
@@ -29,8 +27,6 @@ export function getAssetUrl(relativePath: string | undefined | null): string {
     cleanPath = cleanPath.replace(/^uploads\//, "");
   }
 
-  // DEBUG
-  console.log("RUTA COMPLETA:" + `${baseUrl}/assets/${cleanPath}`);
   const rutaCompleta = `${baseUrl}/assets/${cleanPath}`;
   return rutaCompleta;
 }
