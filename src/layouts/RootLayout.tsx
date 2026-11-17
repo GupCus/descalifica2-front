@@ -25,6 +25,7 @@ import logoDescalifica2 from '../assets/descalifica2logo.png';
 import { AuthService } from '@/services/auth.service.ts';
 import HeaderSearch from '@/components/HeaderSearch';
 import { getAssetUrl } from '@/utils/asset.util.ts';
+import { isAdmin } from '@/utils/role.util.ts';
 
 function RootLayout() {
   const location = useLocation();
@@ -281,7 +282,7 @@ function RootLayout() {
               ) : user ? (
                 <>
                   <Link
-                    to={user.user_type === 'ADMIN' ? '/menuadmin' : '/perfil'}
+                    to={isAdmin(user) ? '/menuadmin' : '/perfil'}
                     className="flex items-center gap-2 text-sm font-medium text-gray-200 hover:text-white transition-all group"
                   >
                     <span className="hidden sm:inline group-hover:text-white transition-colors">

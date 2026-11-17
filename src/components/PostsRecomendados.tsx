@@ -14,6 +14,7 @@ import { getComentarioByBlogPost } from "@/services/comentario.service";
 import { getUsuarios } from "@/services/usuario.service";
 import { AuthService } from "@/services/auth.service";
 import { getAssetUrl } from "@/utils/asset.util";
+import { isAdmin } from "@/utils/role.util";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 
@@ -30,11 +31,7 @@ export function selectFallbackPosts(
   limit = 5,
 ): BlogPost[] {
   const adminIds = new Set(
-    users
-      .filter(
-        (u) => u.is_admin === true || u.user_type?.toLowerCase() === "admin",
-      )
-      .map((u) => u.id),
+    users.filter((u) => isAdmin(u)).map((u) => u.id),
   );
 
   const adminPosts = allPosts.filter((p) => adminIds.has(getAuthorId(p)));

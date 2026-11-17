@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AuthService } from '@/services/auth.service.ts';
 import { apiClient } from '@/services/httpClient';
 import { getAssetUrl } from '@/utils/asset.util.ts';
+import { isAdmin as checkIsAdmin } from '@/utils/role.util.ts';
 import { useTelegramLink } from '@/hooks/useTelegramLink';
 import { TelegramLinkField } from '@/components/TelegramLinkField';
 import fondoPerfil from '../assets/garageRB.jpg';
@@ -148,7 +149,7 @@ function Perfil() {
     );
   }
 
-  const isAdmin = userRole === 'admin' || profile.user_type === 'admin';
+  const isAdmin = checkIsAdmin(userRole) || checkIsAdmin(profile);
   const formattedBirthDate = formatDate(profile.date_of_birth);
 
   return (

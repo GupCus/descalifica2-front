@@ -12,6 +12,7 @@ import { Usuario } from '@/entities/usuario.entity';
 import { getOneBlogPost, deleteBlogPost } from '@/services/blogpost.service';
 import { getUsuarios } from '@/services/usuario.service';
 import { getAssetUrl } from '@/utils/asset.util';
+import { isAdmin } from '@/utils/role.util';
 import { AuthService, VerifyTokenResponse } from '@/services/auth.service';
 import fondoMonza from '../../assets/Monza.jpg';
 
@@ -56,7 +57,7 @@ function DetallePost() {
       typeof post.author === 'object' && post.author !== null
         ? (post.author as unknown as { id: number }).id
         : post.author;
-    return user.user_type === 'admin' || Number(user.id) === Number(authorId);
+    return isAdmin(user) || Number(user.id) === Number(authorId);
   };
 
   const handleEliminarPost = async () => {

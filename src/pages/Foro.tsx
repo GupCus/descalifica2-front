@@ -13,6 +13,7 @@ import { getBlogPost, deleteBlogPost } from '@/services/blogpost.service';
 import { getComentariosCount } from '@/services/comentario.service';
 import { getUsuarios } from '@/services/usuario.service';
 import { getAssetUrl } from '@/utils/asset.util';
+import { isAdmin } from '@/utils/role.util';
 import fondoMonza from '../assets/Monza.jpg';
 
 function Foro() {
@@ -62,7 +63,7 @@ function Foro() {
   const puedeEliminarPost = (post: BlogPost): boolean => {
     if (!user) return false;
     const authorId = getAuthorId(post);
-    return user.user_type === 'admin' || Number(user.id) === Number(authorId);
+    return isAdmin(user) || Number(user.id) === Number(authorId);
   };
 
   const handleEliminarPost = async (e: React.MouseEvent, post: BlogPost) => {
