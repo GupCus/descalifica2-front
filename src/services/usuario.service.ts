@@ -1,8 +1,8 @@
-import { Usuario, NewUsuario } from '@/entities/usuario.entity.ts';
+import { Usuario, NewUsuario, PublicUsuario } from '@/entities/usuario.entity.ts';
 import { apiClient } from './httpClient.ts';
 
-export async function getUsuarios(): Promise<Usuario[]> {
-  const response = await apiClient.get<{ data: Usuario[] }>('/usuarios/public');
+export async function getUsuarios(): Promise<PublicUsuario[]> {
+  const response = await apiClient.get<{ data: PublicUsuario[] }>('/usuarios/public');
   return response.data.data ?? [];
 }
 
