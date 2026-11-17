@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BlogPost } from "@/entities/blogPost.entity";
-import { Usuario } from "@/entities/usuario.entity";
+import { PublicUsuario } from "@/entities/usuario.entity";
 import {
   getSuggestedBlogPosts,
   getBlogPost,
@@ -14,8 +14,37 @@ import { getComentarioByBlogPost } from "@/services/comentario.service";
 import { getUsuarios } from "@/services/usuario.service";
 import { AuthService } from "@/services/auth.service";
 import { getAssetUrl } from "@/utils/asset.util";
+import { isAdmin } from "@/utils/role.util";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
+
+function getAuthorId(post: BlogPost): number {
+  if (typeof post.author === "object" && post.author !== null) {
+    return (post.author as unknown as { id: number }).id;
+  }
+  return post.author;
+}
+
+export function selectFallbackPosts(
+  allPosts: BlogPost[],
+  users: PublicUsuario[],
+  limit = 5,
+): BlogPost[] {
+  const adminIds = new Set(
+    users.filter((u) => isAdmin(u)).map((u) => u.id),
+  );
+
+  const adminPosts = allPosts.filter((p) => adminIds.has(getAuthorId(p)));
+  let fallbackPosts = adminPosts.slice(0, limit);
+
+  if (fallbackPosts.length < limit) {
+    const needed = limit - fallbackPosts.length;
+    const otherPosts = allPosts.filter((p) => !adminIds.has(getAuthorId(p)));
+    fallbackPosts = [...fallbackPosts, ...otherPosts.slice(0, needed)];
+  }
+
+  return fallbackPosts;
+}
 
 function PostsRecomendados() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -24,7 +53,7 @@ function PostsRecomendados() {
   const [commentCounts, setCommentCounts] = useState<Record<number, number>>(
     {},
   );
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [usuarios, setUsuarios] = useState<PublicUsuario[]>([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -37,37 +66,11 @@ function PostsRecomendados() {
 
         if (user) {
           postsToDisplay = await getSuggestedBlogPosts(user.id);
-        } else {
         }
 
         if (postsToDisplay.length === 0) {
           const allPosts = await getBlogPost();
-
-          const adminIds = users
-            .filter((u) => u.user_type?.toLowerCase() === "admin")
-            .map((u) => u.id);
-
-          const getAuthorIdLocal = (post: BlogPost): number => {
-            if (typeof post.author === "object" && post.author !== null) {
-              return (post.author as unknown as { id: number }).id;
-            }
-            return post.author as number;
-          };
-
-          const adminPosts = allPosts.filter((p) =>
-            adminIds.includes(getAuthorIdLocal(p)),
-          );
-          let fallbackPosts = adminPosts.slice(0, 5);
-
-          if (fallbackPosts.length < 5) {
-            const needed = 5 - fallbackPosts.length;
-            const otherPosts = allPosts.filter(
-              (p) => !adminIds.includes(getAuthorIdLocal(p)),
-            );
-            fallbackPosts = [...fallbackPosts, ...otherPosts.slice(0, needed)];
-          }
-
-          postsToDisplay = fallbackPosts;
+          postsToDisplay = selectFallbackPosts(allPosts, users, 5);
         }
 
         setPosts(postsToDisplay);
@@ -93,13 +96,6 @@ function PostsRecomendados() {
 
     fetchPosts();
   }, []);
-
-  const getAuthorId = (post: BlogPost): number => {
-    if (typeof post.author === "object" && post.author !== null) {
-      return (post.author as unknown as { id: number }).id;
-    }
-    return post.author;
-  };
 
   const usernameDe = (authorId: number): string => {
     const usuario = usuarios.find((u) => u.id === authorId);

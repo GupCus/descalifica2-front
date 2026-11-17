@@ -42,6 +42,17 @@ const initialState: FormState = {
   season: "",
 };
 
+export function formatCarreraError(err: any, fallback: string): string {
+  const status = err?.response?.status;
+  if (status === 403 || status === 401) {
+    return (
+      err?.response?.data?.message ||
+      "No tienes permisos de administrador para realizar esta acción."
+    );
+  }
+  return err?.response?.data?.message || err?.message || fallback;
+}
+
 function NuevaCarrera() {
   const [form, setForm] = useState<FormState>(initialState);
   const [submitting, setSubmitting] = useState(false);
@@ -111,7 +122,9 @@ function NuevaCarrera() {
       setSelectedEntityId("new");
       setCarreras(carreras.filter(c => String(c.id) !== selectedEntityId));
     } catch (err: any) {
-      setMessage(`Error al eliminar: ${err.message || "No se pudo eliminar la carrera"}`);
+      setMessage(
+        `Error al eliminar: ${formatCarreraError(err, "No se pudo eliminar la carrera")}`,
+      );
     } finally {
       setSubmitting(false);
     }
@@ -148,7 +161,9 @@ function NuevaCarrera() {
         setCarreras([...carreras, created]);
       }
     } catch (err: any) {
-      setMessage(`Error: ${err.message || "No se pudo procesar la solicitud"}`);
+      setMessage(
+        `Error: ${formatCarreraError(err, "No se pudo procesar la solicitud")}`,
+      );
     } finally {
       setSubmitting(false);
     }

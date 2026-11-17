@@ -1,4 +1,5 @@
-import { apiClient } from "./httpClient.ts";
+import { apiClient } from './httpClient.ts';
+import { isAdmin as checkIsAdmin, USER_ROLES } from '@/utils/role.util.ts';
 
 export interface LoginRequest {
   mail: string;
@@ -144,13 +145,12 @@ export const AuthService = {
 
   async isAdmin(): Promise<Boolean> {
     const user = await this.getCurrentUser();
-    const isAdminUser = user?.user_type === "admin";
-    return isAdminUser;
+    return checkIsAdmin(user);
   },
 
   async isUser(): Promise<Boolean> {
     const user = await this.getCurrentUser();
-    return user?.user_type === "user";
+    return user?.user_type?.trim().toLowerCase() === USER_ROLES.USER;
   },
 
   async forgotPassword(email: string): Promise<{ message: string }> {

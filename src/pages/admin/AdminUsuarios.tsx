@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { apiClient } from "@/services/httpClient";
+import { isAdmin, USER_ROLES } from "@/utils/role.util";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -150,13 +151,9 @@ function AdminUsuarios() {
                   </TableCell>
                   <TableCell>
                     <Badge
-                      variant={
-                        usuario.user_type === "admin" ? "default" : "secondary"
-                      }
+                      variant={isAdmin(usuario) ? "default" : "secondary"}
                       className={
-                        usuario.user_type === "admin"
-                          ? "bg-red-600"
-                          : "bg-blue-600"
+                        isAdmin(usuario) ? "bg-red-600" : "bg-blue-600"
                       }
                     >
                       {usuario.user_type}
@@ -164,10 +161,12 @@ function AdminUsuarios() {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      {usuario.user_type === "user" ? (
+                      {!isAdmin(usuario) ? (
                         <Button
                           size="sm"
-                          onClick={() => cambiarRol(usuario.id, "admin")}
+                          onClick={() =>
+                            cambiarRol(usuario.id, USER_ROLES.ADMIN)
+                          }
                           className="bg-green-600 hover:bg-green-700"
                         >
                           Hacer Admin
@@ -175,7 +174,9 @@ function AdminUsuarios() {
                       ) : (
                         <Button
                           size="sm"
-                          onClick={() => cambiarRol(usuario.id, "user")}
+                          onClick={() =>
+                            cambiarRol(usuario.id, USER_ROLES.USER)
+                          }
                           variant="outline"
                           className="border-gray-600 text-gray-300"
                         >
