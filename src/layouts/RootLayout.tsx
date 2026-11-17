@@ -63,7 +63,13 @@ function RootLayout() {
       loadUser();
     };
 
+    const handleSessionExpired = () => {
+      setUser(null);
+      setAvatarUrl('');
+    };
+
     window.addEventListener('userLoggedIn', handleLoginEvent);
+    window.addEventListener('sessionExpired', handleSessionExpired);
 
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'token' && !e.newValue) {
@@ -77,6 +83,7 @@ function RootLayout() {
 
     return () => {
       window.removeEventListener('userLoggedIn', handleLoginEvent);
+      window.removeEventListener('sessionExpired', handleSessionExpired);
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
