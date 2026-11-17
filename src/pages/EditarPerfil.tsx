@@ -4,30 +4,23 @@ import {
   Upload,
   X,
   ArrowLeft,
-  Calendar as CalendarIcon,
-  ChevronLeft,
-  ChevronRight,
   Trophy,
   Flag,
   MapPin,
   FileText,
   Send,
-  LinkIcon,
-  Unlink,
-  CheckCircle,
-  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AuthService } from "@/services/auth.service.ts";
 import { apiClient } from "@/services/httpClient";
-import { getPiloto } from "@/services/piloto.service";
-import { getEscuderia } from "@/services/escuderia.service";
-import { getCircuito } from "@/services/circuito.service";
 import { getAssetUrl } from "@/utils/asset.util.ts";
+import { useFavoritosCatalogs } from "@/hooks/useFavoritosCatalogs";
+import { useTelegramLink } from "@/hooks/useTelegramLink";
+import { BirthDatePicker } from "@/components/BirthDatePicker";
+import { TelegramLinkField } from "@/components/TelegramLinkField";
 import fondoPerfil from "../assets/Pitwall.jpg";
 
 interface ProfileData {
@@ -46,37 +39,6 @@ interface ProfileData {
   avatar?: string | null;
 }
 
-const MONTH_NAMES = [
-  "Enero",
-  "Febrero",
-  "Marzo",
-  "Abril",
-  "Mayo",
-  "Junio",
-  "Julio",
-  "Agosto",
-  "Septiembre",
-  "Octubre",
-  "Noviembre",
-  "Diciembre",
-];
-
-const WEEKDAY_NAMES = ["Lu", "Ma", "Mi", "Ju", "Vi", "Sá", "Do"];
-
-function getUniqueNames(items: { name?: string }[]): string[] {
-  const map = new Map<string, string>();
-  items.forEach((item) => {
-    const trimmed = item.name?.trim();
-    if (trimmed) {
-      const normalized = trimmed.toLowerCase();
-      if (!map.has(normalized)) {
-        map.set(normalized, trimmed);
-      }
-    }
-  });
-  return Array.from(map.values()).sort((a, b) => a.localeCompare(b));
-}
-
 function EditarPerfil() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<number | null>(null);
@@ -85,12 +47,6 @@ function EditarPerfil() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
-  const [telegram, setTelegram] = useState("");
-  const [telegramLinked, setTelegramLinked] = useState(false);
-  const [telegramPending, setTelegramPending] = useState(false);
-  const [telegramOtp, setTelegramOtp] = useState<string | null>(null);
-  const [linkingTelegram, setLinkingTelegram] = useState(false);
-  const [unlinkingTelegram, setUnlinkingTelegram] = useState(false);
   const [favDriver, setFavDriver] = useState("");
   const [favTeam, setFavTeam] = useState("");
   const [favCircuit, setFavCircuit] = useState("");
@@ -107,16 +63,26 @@ function EditarPerfil() {
     null
   );
 
-  // Datalists para sugerencias
-  const [pilotosList, setPilotosList] = useState<string[]>([]);
-  const [escuderiasList, setEscuderiasList] = useState<string[]>([]);
-  const [circuitosList, setCircuitosList] = useState<string[]>([]);
+  const { pilotosList, escuderiasList, circuitosList } = useFavoritosCatalogs();
 
-  // Date picker state
-  const currentYear = new Date().getFullYear();
-  const [openBirthDate, setOpenBirthDate] = useState(false);
-  const [viewYear, setViewYear] = useState<number>(2000);
-  const [viewMonth, setViewMonth] = useState<number>(0);
+  const {
+    telegramLinked,
+    telegramPending,
+    telegramOtp,
+    telegramUsername,
+    linkingTelegram,
+    unlinkingTelegram,
+    verifyInitialStatus,
+    handleLinkTelegram,
+    handleCancelPending,
+    handleUnlinkTelegram,
+  } = useTelegramLink({
+    mode: "authenticated",
+    onMessage: (msg, type) => {
+      setMessage(msg);
+      setMessageType(type);
+    },
+  });
 
   useEffect(() => {
     const load = async () => {
@@ -142,11 +108,8 @@ function EditarPerfil() {
           const parsed = new Date(data.date_of_birth);
           if (!isNaN(parsed.getTime())) {
             setDateOfBirth(parsed);
-            setViewYear(parsed.getUTCFullYear());
-            setViewMonth(parsed.getUTCMonth());
           }
         }
-        setTelegram(data.telegram_username ?? "");
         setFavDriver(data.fav_driver ?? "");
         setFavTeam(data.fav_team ?? "");
         setFavCircuit(data.fav_circuit ?? "");
@@ -154,33 +117,7 @@ function EditarPerfil() {
         const avatarPath = data.avatar || data.avatar_url || me.avatar;
         setServerAvatar(avatarPath ?? null);
 
-        // Verificar estado de vinculación de Telegram
-        try {
-          const tgRes = await apiClient.get<{
-            vinculado: boolean;
-            pendiente: boolean;
-            telegram_username?: string;
-          }>("/telegram/verificar");
-          const tgData = tgRes.data;
-          setTelegramLinked(tgData.vinculado);
-          setTelegramPending(tgData.pendiente);
-          if (tgData.telegram_username) {
-            setTelegram(tgData.telegram_username);
-          }
-        } catch {
-          // Si falla, no pasa nada, se mantiene el estado por defecto
-        }
-
-        // Cargar sugerencias
-        getPiloto()
-          .then((res) => setPilotosList(getUniqueNames(res)))
-          .catch(() => {});
-        getEscuderia()
-          .then((res) => setEscuderiasList(getUniqueNames(res)))
-          .catch(() => {});
-        getCircuito()
-          .then((res) => setCircuitosList(getUniqueNames(res)))
-          .catch(() => {});
+        await verifyInitialStatus(data);
       } catch {
         setMessageType("error");
         setMessage("Error al cargar los datos del perfil.");
@@ -189,106 +126,7 @@ function EditarPerfil() {
       }
     };
     load();
-  }, [navigate]);
-
-  // Polling: cuando está pendiente de vinculación, verificar cada 3 segundos
-  useEffect(() => {
-    if (!telegramPending) return;
-
-    const interval = setInterval(async () => {
-      try {
-        const tgRes = await apiClient.get<{
-          vinculado: boolean;
-          pendiente: boolean;
-          telegram_username?: string;
-        }>("/telegram/verificar");
-        const tgData = tgRes.data;
-        if (tgData.vinculado) {
-          setTelegramLinked(true);
-          setTelegramPending(false);
-          setTelegramOtp(null);
-          if (tgData.telegram_username) {
-            setTelegram(tgData.telegram_username);
-          }
-          setMessageType("success");
-          setMessage("¡Cuenta de Telegram vinculada con éxito!");
-        }
-      } catch {
-        // Silenciar errores de polling
-      }
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [telegramPending]);
-
-  const handleLinkTelegram = async () => {
-    setLinkingTelegram(true);
-    setMessage(null);
-    setMessageType(null);
-
-    // Abrir ventana inmediatamente en el evento click para evitar bloqueo de popups
-    const telegramWindow = window.open('about:blank', '_blank');
-
-    try {
-      const res = await apiClient.post<{ codigo: string; message: string }>(
-        "/telegram/generarcodigo"
-      );
-      const codigo = res.data.codigo;
-      setTelegramOtp(codigo);
-      setTelegramPending(true);
-
-      const targetUrl = `https://t.me/descalifica2bot?start=${codigo}`;
-      if (telegramWindow && !telegramWindow.closed) {
-        telegramWindow.location.href = targetUrl;
-      } else {
-        window.open(targetUrl, "_blank");
-      }
-    } catch (err: any) {
-      if (telegramWindow && !telegramWindow.closed) {
-        telegramWindow.close();
-      }
-      if (err.response?.status === 409) {
-        setMessageType("success");
-        setMessage("Tu cuenta de Telegram ya está vinculada.");
-        setTelegramLinked(true);
-        setTelegramPending(false);
-      } else {
-        setMessageType("error");
-        setMessage(
-          err.response?.data?.message || "Error al generar código de Telegram."
-        );
-      }
-    } finally {
-      setLinkingTelegram(false);
-    }
-  };
-
-  const handleCancelTelegramPending = () => {
-    setTelegramPending(false);
-    setTelegramOtp(null);
-  };
-
-  const handleUnlinkTelegram = async () => {
-    setUnlinkingTelegram(true);
-    setMessage(null);
-    setMessageType(null);
-    try {
-      await apiClient.delete("/telegram/desvincular");
-      setTelegramLinked(false);
-      setTelegramPending(false);
-      setTelegramOtp(null);
-      setTelegram("");
-      setMessageType("success");
-      setMessage("Cuenta de Telegram desvinculada.");
-    } catch (err: any) {
-      setMessageType("error");
-      setMessage(
-        err.response?.data?.message || "Error al desvincular Telegram."
-      );
-    } finally {
-      setUnlinkingTelegram(false);
-    }
-  };
+  }, [navigate, verifyInitialStatus]);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -315,34 +153,6 @@ function EditarPerfil() {
     } catch {
       setMessageType("error");
       setMessage("Error al eliminar el avatar.");
-    }
-  };
-
-  const handleSelectDay = (day: number) => {
-    const selectedDate = new Date(Date.UTC(viewYear, viewMonth, day));
-    setDateOfBirth(selectedDate);
-    setOpenBirthDate(false);
-  };
-
-  const handlePrevMonth = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (viewMonth === 0) {
-      setViewMonth(11);
-      setViewYear((y) => y - 1);
-    } else {
-      setViewMonth((m) => m - 1);
-    }
-  };
-
-  const handleNextMonth = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (viewMonth === 11) {
-      if (viewYear < currentYear) {
-        setViewMonth(0);
-        setViewYear((y) => y + 1);
-      }
-    } else {
-      setViewMonth((m) => m + 1);
     }
   };
 
@@ -440,12 +250,6 @@ function EditarPerfil() {
 
   const resolvedAvatar =
     avatarPreview || (serverAvatar ? getAssetUrl(serverAvatar) : null);
-  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-  const firstDayIndex = (new Date(viewYear, viewMonth, 1).getDay() + 6) % 7;
-  const yearsOptions = Array.from(
-    { length: currentYear - 1920 + 1 },
-    (_, i) => currentYear - i
-  );
 
   return (
     <div className="relative min-h-screen py-4 sm:py-8 flex flex-col justify-start">
@@ -615,132 +419,12 @@ function EditarPerfil() {
                 <Label className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1 block">
                   Fecha de Nacimiento
                 </Label>
-                <Popover open={openBirthDate} onOpenChange={setOpenBirthDate}>
-                  <PopoverTrigger asChild>
-                    <button
-                      type="button"
-                      id="birth_date_edit_btn"
-                      onClick={() => {
-                        if (!openBirthDate && dateOfBirth) {
-                          setViewYear(dateOfBirth.getUTCFullYear());
-                          setViewMonth(dateOfBirth.getUTCMonth());
-                        }
-                      }}
-                      className="w-full h-9 border border-input dark:bg-input/30 rounded-md px-2.5 sm:px-3 flex items-center justify-between text-left cursor-pointer hover:border-ring/50 transition-colors select-none"
-                    >
-                      <span
-                        className={
-                          dateOfBirth
-                            ? "text-foreground font-medium text-xs sm:text-sm truncate"
-                            : "text-gray-500/50 text-xs sm:text-sm truncate"
-                        }
-                      >
-                        {dateOfBirth
-                          ? dateOfBirth.toLocaleDateString("es-ES", {
-                              day: "2-digit",
-                              month: "2-digit",
-                              year: "numeric",
-                              timeZone: "UTC",
-                            })
-                          : "Seleccionar"}
-                      </span>
-                      <CalendarIcon className="h-3.5 w-3.5 text-muted-foreground opacity-50 shrink-0" />
-                    </button>
-                  </PopoverTrigger>
-
-                  <PopoverContent
-                    className="w-72 max-w-[calc(100vw-2rem)] p-3 sm:p-4 bg-gray-900 border-gray-700 text-gray-200 shadow-2xl z-50"
-                    align="start"
-                  >
-                    <div className="flex items-center justify-between gap-1 mb-2.5">
-                      <button
-                        type="button"
-                        onClick={handlePrevMonth}
-                        className="p-1 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors"
-                        title="Mes anterior"
-                      >
-                        <ChevronLeft size={15} />
-                      </button>
-
-                      <div className="flex items-center gap-1 flex-1 justify-center">
-                        <select
-                          value={viewMonth}
-                          onChange={(e) => setViewMonth(Number(e.target.value))}
-                          className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-1.5 py-1 outline-none focus:border-blue-500 cursor-pointer"
-                        >
-                          {MONTH_NAMES.map((month, idx) => (
-                            <option key={month} value={idx} className="bg-gray-900">
-                              {month}
-                            </option>
-                          ))}
-                        </select>
-
-                        <select
-                          value={viewYear}
-                          onChange={(e) => setViewYear(Number(e.target.value))}
-                          className="bg-gray-800 border border-gray-700 text-gray-200 text-xs rounded px-1.5 py-1 outline-none focus:border-blue-500 cursor-pointer"
-                        >
-                          {yearsOptions.map((year) => (
-                            <option key={year} value={year} className="bg-gray-900">
-                              {year}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={handleNextMonth}
-                        disabled={viewYear >= currentYear && viewMonth >= new Date().getMonth()}
-                        className="p-1 text-gray-400 hover:text-white hover:bg-gray-800 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
-                        title="Mes siguiente"
-                      >
-                        <ChevronRight size={15} />
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-7 gap-1 text-center mb-1">
-                      {WEEKDAY_NAMES.map((d) => (
-                        <span
-                          key={d}
-                          className="text-[10px] font-semibold text-gray-400 select-none"
-                        >
-                          {d}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="grid grid-cols-7 gap-1">
-                      {Array.from({ length: firstDayIndex }).map((_, i) => (
-                        <div key={`empty-${i}`} className="h-7 w-7" />
-                      ))}
-
-                      {Array.from({ length: daysInMonth }).map((_, i) => {
-                        const dayNumber = i + 1;
-                        const isSelected =
-                          dateOfBirth &&
-                          dateOfBirth.getUTCFullYear() === viewYear &&
-                          dateOfBirth.getUTCMonth() === viewMonth &&
-                          dateOfBirth.getUTCDate() === dayNumber;
-
-                        return (
-                          <button
-                            key={dayNumber}
-                            type="button"
-                            onClick={() => handleSelectDay(dayNumber)}
-                            className={`h-7 w-7 text-xs rounded-md flex items-center justify-center transition-all cursor-pointer select-none ${
-                              isSelected
-                                ? "bg-blue-600 text-white font-bold shadow-md"
-                                : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                            }`}
-                          >
-                            {dayNumber}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <BirthDatePicker
+                  id="birth_date_edit_btn"
+                  value={dateOfBirth}
+                  onChange={setDateOfBirth}
+                  variant="dark"
+                />
               </div>
 
               <div>
@@ -749,81 +433,18 @@ function EditarPerfil() {
                   Telegram
                 </Label>
 
-                {/* Estado: Vinculado */}
-                {telegramLinked && (
-                  <div className="flex items-center gap-2 h-9 px-2.5 bg-green-950/40 border border-green-700/50 rounded-md">
-                    <CheckCircle size={14} className="text-green-400 shrink-0" />
-                    <span className="text-xs sm:text-sm text-green-300 font-medium truncate">
-                      @{telegram}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={handleUnlinkTelegram}
-                      disabled={unlinkingTelegram}
-                      className="ml-auto text-[10px] text-red-400 hover:text-red-300 flex items-center gap-0.5 cursor-pointer shrink-0 disabled:opacity-50"
-                    >
-                      <Unlink size={10} />
-                      {unlinkingTelegram ? "..." : "Desvincular"}
-                    </button>
-                  </div>
-                )}
-
-                {/* Estado: Pendiente de vinculación */}
-                {telegramPending && !telegramLinked && (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between h-9 px-2.5 bg-amber-950/40 border border-amber-700/50 rounded-md">
-                      <div className="flex items-center gap-2 truncate">
-                        <Loader2 size={14} className="text-amber-400 animate-spin shrink-0" />
-                        <span className="text-[11px] text-amber-300 font-medium truncate">
-                          Esperando vinculación...
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handleCancelTelegramPending}
-                        className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-0.5 cursor-pointer shrink-0 ml-2"
-                        title="Cancelar vinculación"
-                      >
-                        <X size={12} />
-                        Cancelar
-                      </button>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        window.open(
-                          `https://t.me/descalifica2bot?start=${telegramOtp}`,
-                          "_blank"
-                        )
-                      }
-                      className="text-[10px] text-blue-400 hover:text-blue-300 cursor-pointer underline"
-                    >
-                      ¿No se abrió? Hacé clic acá para ir al bot
-                    </button>
-                  </div>
-                )}
-
-                {/* Estado: No vinculado */}
-                {!telegramLinked && !telegramPending && (
-                  <Button
-                    type="button"
-                    onClick={handleLinkTelegram}
-                    disabled={linkingTelegram}
-                    className="w-full h-9 bg-blue-600 hover:bg-blue-700 text-white border-0 text-xs sm:text-sm cursor-pointer flex items-center justify-center gap-1.5"
-                  >
-                    {linkingTelegram ? (
-                      <>
-                        <Loader2 size={13} className="animate-spin" />
-                        Generando código...
-                      </>
-                    ) : (
-                      <>
-                        <LinkIcon size={13} />
-                        Vincular cuenta de Telegram
-                      </>
-                    )}
-                  </Button>
-                )}
+                <TelegramLinkField
+                  telegramLinked={telegramLinked}
+                  telegramPending={telegramPending}
+                  telegramUsername={telegramUsername}
+                  telegramOtp={telegramOtp}
+                  linkingTelegram={linkingTelegram}
+                  unlinkingTelegram={unlinkingTelegram}
+                  allowUnlink={true}
+                  onLink={handleLinkTelegram}
+                  onCancelPending={handleCancelPending}
+                  onUnlink={handleUnlinkTelegram}
+                />
               </div>
             </div>
 
