@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { apiClient } from './httpClient.ts';
 
 export interface LoginRequest {
@@ -33,6 +34,39 @@ export interface RegisterResponse {
     username: string;
     user_type: string;
   };
+}
+
+export type SessionCheckResult =
+  | { status: 'authenticated'; user: VerifyTokenResponse['user'] }
+  | { status: 'unauthenticated'; user: null }
+  | { status: 'network_error'; user: null; message: string };
+
+let inMemoryToken: string | null = null;
+
+function isJwtExpired(token: string): boolean {
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      return false;
+    }
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(atob(base64));
+    if (typeof payload?.exp === 'number') {
+      return payload.exp * 1000 <= Date.now();
+    }
+    return false;
+  } catch {
+    return true;
+  }
+}
+
+export function isAuthTokenError(error: unknown): boolean {
+  if (axios.isAxiosError(error)) {
+    const status = error.response?.status;
+    return status === 401 || status === 403;
+  }
+  const status = (error as { response?: { status?: number } })?.response?.status;
+  return status === 401 || status === 403;
 }
 
 export const AuthService = {
@@ -91,60 +125,85 @@ export const AuthService = {
   },
 
   saveToken(token: string, rememberme: boolean = false): void {
+    inMemoryToken = token;
     if (rememberme) {
-      localStorage.setItem('token', token); // persiste en el navegador
+      localStorage.setItem('token', token);
+      sessionStorage.removeItem('token');
     } else {
-      sessionStorage.setItem('token', token); // se borra al cerrar la pestaña
+      sessionStorage.setItem('token', token);
+      localStorage.removeItem('token');
     }
   },
 
-  logout(): void {
+  clearToken(): void {
+    inMemoryToken = null;
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
+  },
+
+  logout(): void {
+    this.clearToken();
     window.location.href = '/';
   },
 
   getToken(): string | null {
-    return localStorage.getItem('token') || sessionStorage.getItem('token');
+    const token =
+      inMemoryToken ||
+      sessionStorage.getItem('token') ||
+      localStorage.getItem('token');
+
+    if (!token) {
+      return null;
+    }
+
+    if (isJwtExpired(token)) {
+      this.clearToken();
+      return null;
+    }
+
+    inMemoryToken = token;
+    return token;
   },
 
-  async isAuthenticated(): Promise<Boolean> {
+  async checkSession(): Promise<SessionCheckResult> {
     const token = this.getToken();
     if (!token) {
-      return false;
+      return { status: 'unauthenticated', user: null };
     }
 
     try {
-      await this.verifyToken(token);
-      return true;
-    } catch {
-      //en caso de que el token sea inválido/esté vencido lo deslogueamos
-      this.logout();
-      return false;
+      const response = await this.verifyToken(token);
+      return { status: 'authenticated', user: response.user };
+    } catch (error) {
+      if (isAuthTokenError(error)) {
+        this.logout();
+        return { status: 'unauthenticated', user: null };
+      }
+      return {
+        status: 'network_error',
+        user: null,
+        message:
+          'No se pudo conectar con el servidor para verificar tu sesión. Tu sesión sigue guardada y podés reintentar.',
+      };
     }
+  },
+
+  async isAuthenticated(): Promise<boolean> {
+    const result = await this.checkSession();
+    return result.status === 'authenticated';
   },
 
   async getCurrentUser(): Promise<VerifyTokenResponse['user'] | null> {
-    const token = this.getToken();
-    if (!token) {
-      return null;
-    }
-    try {
-      const response = await this.verifyToken(token);
-      return response.user;
-    } catch (error) {
-      this.logout();
-      return null;
-    }
+    const result = await this.checkSession();
+    return result.user;
   },
 
-  async isAdmin(): Promise<Boolean> {
+  async isAdmin(): Promise<boolean> {
     const user = await this.getCurrentUser();
-    const isAdminUser = user?.user_type === 'admin';
-    return isAdminUser;
+    return user?.user_type === 'admin';
   },
 
-  async isUser(): Promise<Boolean> {
+  async isUser(): Promise<boolean> {
     const user = await this.getCurrentUser();
     return user?.user_type === 'user';
   },

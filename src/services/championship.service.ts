@@ -6,16 +6,10 @@ import {
   Team_Championship,
   NewTeam_Championship,
 } from '@/entities/team_championship.entity.ts';
-import axios from 'axios';
-
-const URL_API = import.meta.env.VITE_API_URL;
-
-const client = axios.create({
-  baseURL: URL_API,
-});
+import { apiClient } from './httpClient.ts';
 
 export async function getteam_championship(): Promise<Team_Championship[]> {
-  const response = await client.get('/championship?tipo=escuderias');
+  const response = await apiClient.get('/championship?tipo=escuderias');
 
   return response.data.data;
 }
@@ -23,7 +17,7 @@ export async function getteam_championship(): Promise<Team_Championship[]> {
 export async function postteam_championship(
   data: NewTeam_Championship,
 ): Promise<Team_Championship> {
-  const response = await client.post('/championship?tipo=escuderias', data);
+  const response = await apiClient.post('/championship?tipo=escuderias', data);
   return response.data.data;
 }
 
@@ -31,7 +25,7 @@ export async function putteam_championship(
   id: number,
   data: Team_Championship,
 ): Promise<Team_Championship> {
-  const response = await client.put(
+  const response = await apiClient.put(
     '/championship?tipo=escuderias/' + id.toString(),
     data,
   );
@@ -41,7 +35,7 @@ export async function putteam_championship(
 export async function deleteteam_championship(
   id: number,
 ): Promise<Team_Championship> {
-  const response = await client.delete(
+  const response = await apiClient.delete(
     '/championship?tipo=escuderias/' + id.toString(),
   );
   return response.data.data;
@@ -50,7 +44,7 @@ export async function deleteteam_championship(
 export async function getdrivers_championship(): Promise<
   Driver_Championship[]
 > {
-  const response = await client.get('/championship?tipo=pilotos');
+  const response = await apiClient.get('/championship?tipo=pilotos');
 
   return response.data.data;
 }
@@ -58,7 +52,7 @@ export async function getdrivers_championship(): Promise<
 export async function postdrivers_championship(
   data: NewDriver_Championship,
 ): Promise<Driver_Championship> {
-  const response = await client.post('/championship?tipo=pilotos', data);
+  const response = await apiClient.post('/championship?tipo=pilotos', data);
   return response.data.data;
 }
 
@@ -66,7 +60,7 @@ export async function putdrivers_championship(
   id: number,
   data: Driver_Championship,
 ): Promise<Driver_Championship> {
-  const response = await client.put(
+  const response = await apiClient.put(
     '/championship?tipo=pilotos/' + id.toString(),
     data,
   );
@@ -76,7 +70,7 @@ export async function putdrivers_championship(
 export async function deletedrivers_championship(
   id: number,
 ): Promise<Driver_Championship> {
-  const response = await client.delete(
+  const response = await apiClient.delete(
     '/championship?tipo=pilotos/' + id.toString(),
   );
   return response.data.data;

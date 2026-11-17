@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button.tsx';
 import { ArrowLeft, Trash2 } from 'lucide-react';
 import {
   deleteCircuito,
+  getOneCircuito,
   uploadCircuitoImage,
   uploadTrackImage,
 } from '@/services/circuito.service.ts';
@@ -63,25 +64,19 @@ function DetalleCircuito() {
     }
   };
 
-  const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-
   useEffect(() => {
     if (!id) return;
 
-    fetch(`${api}/circuitos/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    getOneCircuito(Number(id))
       .then((data) => {
-        setCircuito(data.data ?? data);
+        setCircuito(data);
         setLoading(false);
       })
       .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [id, api]);
+  }, [id]);
 
   const handleDelete = async () => {
     if (!circuito?.id || !isAdmin) return;

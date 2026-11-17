@@ -36,10 +36,21 @@ function RootLayout() {
   } | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [sessionNetworkError, setSessionNetworkError] = useState<string | null>(
+    null,
+  );
 
   const loadUser = async () => {
+    setLoading(true);
     try {
-      const currentUser = await AuthService.getCurrentUser();
+      const session = await AuthService.checkSession();
+      if (session.status === 'network_error') {
+        setSessionNetworkError(session.message);
+        return;
+      }
+
+      setSessionNetworkError(null);
+      const currentUser = session.user;
       setUser(currentUser);
 
       if (currentUser && currentUser.avatar) {
@@ -321,6 +332,19 @@ function RootLayout() {
             </div>
           </div>
         </div>
+        {sessionNetworkError && (
+          <div className="bg-amber-950/90 border-b border-amber-500/40 px-4 py-2 text-xs sm:text-sm text-amber-200 flex items-center justify-between gap-3">
+            <span>{sessionNetworkError}</span>
+            <button
+              type="button"
+              onClick={loadUser}
+              disabled={loading}
+              className="px-2.5 py-1 rounded bg-amber-600/80 hover:bg-amber-600 text-white font-medium shrink-0 cursor-pointer"
+            >
+              {loading ? 'Reintentando...' : 'Reintentar'}
+            </button>
+          </div>
+        )}
       </header>
 
       <main className="flex-1">

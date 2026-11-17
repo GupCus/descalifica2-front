@@ -2,7 +2,8 @@ import { Piloto } from '@/entities/piloto.entity.ts';
 import { useState, useEffect } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { uploadPilotoImage } from '@/services/piloto.service.ts';
+import { getOnePiloto, uploadPilotoImage } from '@/services/piloto.service.ts';
+import { getNationalityByCode } from '@/services/nationality.service.ts';
 import { AuthService } from '@/services/auth.service.ts';
 import { getAssetUrl } from '@/utils/asset.util.ts';
 
@@ -44,42 +45,32 @@ function DetallePiloto() {
     }
   };
 
-  const api = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-
   useEffect(() => {
     if (location.state?.piloto) return;
     if (!id) return;
 
-    fetch(`${api}/pilotos/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    getOnePiloto(Number(id))
       .then((data) => {
-        setPiloto(data.data);
+        setPiloto(data);
         setLoading(false);
       })
       .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [id, api, location.state]);
+  }, [id, location.state]);
 
   useEffect(() => {
     if (piloto?.nationality) {
-      fetch(`${api}/nationalities/${piloto.nationality}`)
-        .then((res) => {
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          return res.json();
-        })
-        .then((data) => {
-          if (data.data && data.data.name) {
-            setNationalityName(data.data.name);
+      getNationalityByCode(piloto.nationality)
+        .then((nationality) => {
+          if (nationality?.name) {
+            setNationalityName(nationality.name);
           }
         })
         .catch((err) => console.error('Error fetching nationality:', err));
     }
-  }, [piloto?.nationality, api]);
+  }, [piloto?.nationality]);
 
   if (loading) {
     return (

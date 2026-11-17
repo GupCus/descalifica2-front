@@ -15,6 +15,7 @@ dist-ssr
 # Archivos de entorno
 .env
 .env.*
+!.env.example
 
 # Lockfiles de otros gestores de paquetes (usamos pnpm)
 package-lock.json

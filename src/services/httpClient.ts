@@ -1,14 +1,13 @@
 import axios from 'axios';
-
-const URL_API = import.meta.env.VITE_API_URL;
+import { API_URL } from '@/config/env.ts';
+import { AuthService } from './auth.service.ts';
 
 export const apiClient = axios.create({
-  baseURL: URL_API,
+  baseURL: API_URL,
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token =
-    localStorage.getItem('token') || sessionStorage.getItem('token');
+  const token = AuthService.getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
