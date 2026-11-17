@@ -74,7 +74,6 @@ function DetalleMarca() {
         await deleteMarca(marca.id);
         navigate("/marcas");
       } catch (err) {
-        console.error("Error eliminando marca", err);
         alert("Error al eliminar la marca");
       }
     }

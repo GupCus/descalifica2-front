@@ -54,16 +54,6 @@ function CargarDatosSesion() {
       .catch((err) => setError(err));
   }, []);
 
-  /* DEBUGGING COMENTADO POR AHORA 
-  console.log(`CATEGORIAS`);
-  console.log(categorias);
-  console.log(`CARRERAS`);
-  console.log(carreras);
-  console.log(`PILOTOS`);
-  console.log(pilotos);
-*/
-  console.log("TEMPORADAS");
-  console.log(temporadas);
 
   //FILTROS PARA LO QUE SELECCIONE EL USUARIO
   const carrerasFiltradas = carreras.filter(
@@ -71,15 +61,10 @@ function CargarDatosSesion() {
       String(c.season?.racing_series.id) === String(categoria) &&
       String(c.season?.id) === temporada
   );
-  console.log("CARRERAS FILTRADAS");
-  console.log(carrerasFiltradas);
   const pilotosFiltrados = pilotos.filter(
     (p) => String(p.racing_series.id) === String(categoria)
   );
-  //console.log("PILOTOS FILTRADOS");
-  //console.log(pilotosFiltrados);
   const sesionesFiltradas = sesiones.filter((s) => String(s.race) === carrera);
-  //console.log(sesionesFiltradas);
 
   // Resetear selección dependiente
   useEffect(() => {
@@ -138,7 +123,6 @@ function CargarDatosSesion() {
       setMessage("Error al guardar los tiempos");
     }
 
-    console.log({ categoria, carrera, sesion, tiempos });
   };
 
   return (

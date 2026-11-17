@@ -91,7 +91,6 @@ function DetalleCircuito() {
         await deleteCircuito(circuito.id);
         navigate('/circuitos');
       } catch (err) {
-        console.error('Error eliminando circuito', err);
         alert('Error al eliminar el circuito');
       }
     }

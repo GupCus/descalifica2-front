@@ -79,8 +79,6 @@ export function LoginForm({
       }, 1000);
     } catch (err: any) {
       setMessageType('error');
-      console.error('Error:', err);
-
       setMessage(
         `Error: ${
           err.response?.data?.error ||

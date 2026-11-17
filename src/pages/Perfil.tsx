@@ -121,7 +121,6 @@ function Perfil() {
           }
         }
       } catch (err: any) {
-        console.error('Error al cargar perfil:', err);
         setError('Error al cargar los datos del perfil.');
       } finally {
         setLoading(false);
@@ -194,7 +193,6 @@ function Perfil() {
         setTelegramLinked(true);
         setTelegramPending(false);
       } else {
-        console.error('Error al generar código de Telegram:', err);
         setTelegramMessageType('error');
         setTelegramMessage(
           err.response?.data?.message || 'Error al generar código de Telegram.',

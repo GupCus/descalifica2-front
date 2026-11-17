@@ -1,4 +1,4 @@
-import { apiClient } from './httpClient.ts';
+import { apiClient } from "./httpClient.ts";
 
 export interface LoginRequest {
   mail: string;
@@ -38,24 +38,24 @@ export interface RegisterResponse {
 export const AuthService = {
   async logingoogle(accesstoken: string): Promise<LoginResponse> {
     try {
-      const response = await apiClient.post('/auth/login/google', {
+      const response = await apiClient.post("/auth/login/google", {
         token: accesstoken,
       });
       return response.data;
     } catch (error) {
-      console.error('Error al loguearse: ', error);
+      console.error("Error al loguearse");
       throw error;
     }
   },
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
       const response = await apiClient.post<LoginResponse>(
-        '/auth/login',
+        "/auth/login",
         credentials,
       );
       return response.data;
     } catch (error) {
-      console.error('Error al loguearse: ', error);
+      console.error("Error al loguearse");
       throw error;
     }
   },
@@ -63,12 +63,12 @@ export const AuthService = {
   async RegisterUser(data: FormData) {
     try {
       const response = await apiClient.post<RegisterResponse>(
-        '/auth/register',
+        "/auth/register",
         data,
       );
       return response.data;
     } catch (error) {
-      console.error('Error al registrarse: ', error);
+      console.error("Error al registrarse");
       throw error;
     }
   },
@@ -76,7 +76,7 @@ export const AuthService = {
   async verifyToken(token: string): Promise<VerifyTokenResponse> {
     try {
       const response = await apiClient.get<VerifyTokenResponse>(
-        '/auth/check-token',
+        "/auth/check-token",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -85,16 +85,16 @@ export const AuthService = {
       );
       return response.data;
     } catch (error) {
-      console.error('Error al verificar token: ', error);
+      console.error("Error al verificar token");
       throw error;
     }
   },
 
   saveToken(token: string, rememberme: boolean = false): void {
     if (rememberme) {
-      localStorage.setItem('token', token); // persiste en el navegador
+      localStorage.setItem("token", token); // persiste en el navegador
     } else {
-      sessionStorage.setItem('token', token); // se borra al cerrar la pestaña
+      sessionStorage.setItem("token", token); // se borra al cerrar la pestaña
     }
   },
 
@@ -109,7 +109,7 @@ export const AuthService = {
   },
 
   getToken(): string | null {
-    return localStorage.getItem('token') || sessionStorage.getItem('token');
+    return localStorage.getItem("token") || sessionStorage.getItem("token");
   },
 
   async isAuthenticated(): Promise<Boolean> {
@@ -128,7 +128,7 @@ export const AuthService = {
     }
   },
 
-  async getCurrentUser(): Promise<VerifyTokenResponse['user'] | null> {
+  async getCurrentUser(): Promise<VerifyTokenResponse["user"] | null> {
     const token = this.getToken();
     if (!token) {
       return null;
@@ -144,24 +144,24 @@ export const AuthService = {
 
   async isAdmin(): Promise<Boolean> {
     const user = await this.getCurrentUser();
-    const isAdminUser = user?.user_type === 'admin';
+    const isAdminUser = user?.user_type === "admin";
     return isAdminUser;
   },
 
   async isUser(): Promise<Boolean> {
     const user = await this.getCurrentUser();
-    return user?.user_type === 'user';
+    return user?.user_type === "user";
   },
 
   async forgotPassword(email: string): Promise<{ message: string }> {
     try {
       const response = await apiClient.post<{ message: string }>(
-        '/auth/forgot-password',
+        "/auth/forgot-password",
         { email },
       );
       return response.data;
     } catch (error) {
-      console.error('Error al solicitar recuperación de contraseña:', error);
+      console.error("Error al solicitar recuperación de contraseña");
       throw error;
     }
   },
@@ -172,12 +172,12 @@ export const AuthService = {
   ): Promise<{ message: string }> {
     try {
       const response = await apiClient.post<{ message: string }>(
-        '/auth/reset-password',
+        "/auth/reset-password",
         { token, newPassword },
       );
       return response.data;
     } catch (error) {
-      console.error('Error al restablecer contraseña:', error);
+      console.error("Error al restablecer contraseña");
       throw error;
     }
   },

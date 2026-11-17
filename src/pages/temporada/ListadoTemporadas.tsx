@@ -17,8 +17,7 @@ function ListadoTemporadas() {
   useEffect(() => {
     getTemporada()
       .then((data) => setTemporadas(data))
-      .catch((err) => {
-        console.error("Error fetching temporadas:", err);
+      .catch(() => {
         setError("Error al cargar las temporadas");
       })
       .finally(() => setLoading(false));

@@ -38,7 +38,6 @@ function ListadoEscuderias() {
       })
       .catch((err) => {
         setError(err.message);
-        console.error("Error cargando escuderías", err);
       })
       .finally(() => setLoading(false));
   }, []);
