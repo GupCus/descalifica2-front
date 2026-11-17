@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AuthService } from '@/services/auth.service.ts';
 import { useNavigate, Link } from 'react-router-dom';
 import * as React from 'react';
@@ -32,6 +32,14 @@ export function LoginForm({
     email: '',
     password: '',
   });
+
+  useEffect(() => {
+    if (sessionStorage.getItem('session_expired') === '1') {
+      sessionStorage.removeItem('session_expired');
+      setMessageType('error');
+      setMessage('Tu sesión ha vencido. Por favor, volvé a iniciar sesión.');
+    }
+  }, []);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {

@@ -98,10 +98,14 @@ export const AuthService = {
     }
   },
 
+  clearSession(): void {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+  },
+
   logout(): void {
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
-    window.location.href = "/";
+    this.clearSession();
+    window.location.href = '/';
   },
 
   getToken(): string | null {
@@ -118,8 +122,8 @@ export const AuthService = {
       await this.verifyToken(token);
       return true;
     } catch {
-      //en caso de que el token sea inválido/esté vencido lo deslogueamos
-      this.logout();
+      // En caso de que el token sea inválido/esté vencido limpiamos la sesión
+      this.clearSession();
       return false;
     }
   },
@@ -133,7 +137,7 @@ export const AuthService = {
       const response = await this.verifyToken(token);
       return response.user;
     } catch (error) {
-      this.logout();
+      this.clearSession();
       return null;
     }
   },
