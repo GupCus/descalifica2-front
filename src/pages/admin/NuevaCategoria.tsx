@@ -35,7 +35,7 @@ function NuevaCategoria() {
   useEffect(() => {
     getCategoria()
       .then((data) => setCategorias(data))
-      .catch((err) => console.error("Error cargando categorías", err));
+      .catch(() => console.error("Error cargando categorías"));
   }, []);
 
   const handleEntitySelect = (value: string) => {

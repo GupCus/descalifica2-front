@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { apiClient } from "@/services/httpClient";
+import { isAdmin, USER_ROLES } from "@/utils/role.util";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -46,11 +47,9 @@ function AdminUsuarios() {
       const response = await apiClient.get<{ data: Usuario[] }>("/usuarios");
       const usuariosData = response.data.data;
       setUsuarios(usuariosData);
-      console.log("usuarios: ", usuariosData);
       setError(null);
     } catch (err: any) {
       setError("Error al cargar usuarios");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -58,15 +57,13 @@ function AdminUsuarios() {
 
   const cambiarRol = async (idUser: number, nuevoRol: string) => {
     try {
-      const response = await apiClient.patch(`/usuarios/${idUser}`, {
+      await apiClient.patch(`/usuarios/${idUser}`, {
         user_type: nuevoRol,
       });
-      console.log("respuesta del servidor: ", response);
-
       // Refrescar los usuarios desde el backend para verificar el cambio
       await fetchUsuarios();
     } catch (err: any) {
-      console.error("Error al cambiar rol:", err);
+      console.error("Error al cambiar rol");
       alert("Error al cambiar el rol del usuario");
     }
   };
@@ -80,7 +77,7 @@ function AdminUsuarios() {
       await fetchUsuarios();
       setEditingUser(null);
     } catch (err: any) {
-      console.error("Error guardando telegram:", err);
+      console.error("Error guardando telegram");
       alert("Error al guardar el usuario de Telegram");
     } finally {
       setSavingTg(false);
@@ -154,13 +151,9 @@ function AdminUsuarios() {
                   </TableCell>
                   <TableCell>
                     <Badge
-                      variant={
-                        usuario.user_type === "admin" ? "default" : "secondary"
-                      }
+                      variant={isAdmin(usuario) ? "default" : "secondary"}
                       className={
-                        usuario.user_type === "admin"
-                          ? "bg-red-600"
-                          : "bg-blue-600"
+                        isAdmin(usuario) ? "bg-red-600" : "bg-blue-600"
                       }
                     >
                       {usuario.user_type}
@@ -168,10 +161,12 @@ function AdminUsuarios() {
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      {usuario.user_type === "user" ? (
+                      {!isAdmin(usuario) ? (
                         <Button
                           size="sm"
-                          onClick={() => cambiarRol(usuario.id, "admin")}
+                          onClick={() =>
+                            cambiarRol(usuario.id, USER_ROLES.ADMIN)
+                          }
                           className="bg-green-600 hover:bg-green-700"
                         >
                           Hacer Admin
@@ -179,7 +174,9 @@ function AdminUsuarios() {
                       ) : (
                         <Button
                           size="sm"
-                          onClick={() => cambiarRol(usuario.id, "user")}
+                          onClick={() =>
+                            cambiarRol(usuario.id, USER_ROLES.USER)
+                          }
                           variant="outline"
                           className="border-gray-600 text-gray-300"
                         >

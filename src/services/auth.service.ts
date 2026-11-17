@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { apiClient } from './httpClient.ts';
+import { isAdmin as checkIsAdmin, USER_ROLES } from '@/utils/role.util.ts';
 
 export interface LoginRequest {
   mail: string;
@@ -77,7 +78,7 @@ export const AuthService = {
       });
       return response.data;
     } catch (error) {
-      console.error('Error al loguearse: ', error);
+      console.error('Error al loguearse');
       throw error;
     }
   },
@@ -89,7 +90,7 @@ export const AuthService = {
       );
       return response.data;
     } catch (error) {
-      console.error('Error al loguearse: ', error);
+      console.error('Error al loguearse');
       throw error;
     }
   },
@@ -102,7 +103,7 @@ export const AuthService = {
       );
       return response.data;
     } catch (error) {
-      console.error('Error al registrarse: ', error);
+      console.error('Error al registrarse');
       throw error;
     }
   },
@@ -119,7 +120,7 @@ export const AuthService = {
       );
       return response.data;
     } catch (error) {
-      console.error('Error al verificar token: ', error);
+      console.error('Error al verificar token');
       throw error;
     }
   },
@@ -135,14 +136,18 @@ export const AuthService = {
     }
   },
 
-  clearToken(): void {
+  clearSession(): void {
     inMemoryToken = null;
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
   },
 
+  clearToken(): void {
+    this.clearSession();
+  },
+
   logout(): void {
-    this.clearToken();
+    this.clearSession();
     window.location.href = '/';
   },
 
@@ -157,7 +162,7 @@ export const AuthService = {
     }
 
     if (isJwtExpired(token)) {
-      this.clearToken();
+      this.clearSession();
       return null;
     }
 
@@ -176,7 +181,7 @@ export const AuthService = {
       return { status: 'authenticated', user: response.user };
     } catch (error) {
       if (isAuthTokenError(error)) {
-        this.logout();
+        this.clearSession();
         return { status: 'unauthenticated', user: null };
       }
       return {
@@ -200,12 +205,12 @@ export const AuthService = {
 
   async isAdmin(): Promise<boolean> {
     const user = await this.getCurrentUser();
-    return user?.user_type === 'admin';
+    return checkIsAdmin(user);
   },
 
   async isUser(): Promise<boolean> {
     const user = await this.getCurrentUser();
-    return user?.user_type === 'user';
+    return user?.user_type?.trim().toLowerCase() === USER_ROLES.USER;
   },
 
   async forgotPassword(email: string): Promise<{ message: string }> {
@@ -216,7 +221,7 @@ export const AuthService = {
       );
       return response.data;
     } catch (error) {
-      console.error('Error al solicitar recuperación de contraseña:', error);
+      console.error('Error al solicitar recuperación de contraseña');
       throw error;
     }
   },
@@ -232,7 +237,7 @@ export const AuthService = {
       );
       return response.data;
     } catch (error) {
-      console.error('Error al restablecer contraseña:', error);
+      console.error('Error al restablecer contraseña');
       throw error;
     }
   },

@@ -12,6 +12,7 @@ import { Usuario } from '@/entities/usuario.entity';
 import { getOneBlogPost, deleteBlogPost } from '@/services/blogpost.service';
 import { getUsuarios } from '@/services/usuario.service';
 import { getAssetUrl } from '@/utils/asset.util';
+import { isAdmin } from '@/utils/role.util';
 import { AuthService, VerifyTokenResponse } from '@/services/auth.service';
 import fondoMonza from '../../assets/Monza.jpg';
 
@@ -28,14 +29,13 @@ function DetallePost() {
     if (!id) return;
     getOneBlogPost(Number(id))
       .then((data) => setPost(data))
-      .catch((err) => {
+      .catch(() => {
         setError('Error cargando la publicación');
-        console.error(err);
       })
       .finally(() => setLoading(false));
 
     AuthService.getCurrentUser().then(setUser);
-    getUsuarios().then(setUsuarios).catch(console.error);
+    getUsuarios().then(setUsuarios).catch(()=>console.error("Hubo un error cargando los usuarios de la publicación"));
   }, [id]);
 
   const getAuthorId = (p: BlogPost): number => {
@@ -56,7 +56,7 @@ function DetallePost() {
       typeof post.author === 'object' && post.author !== null
         ? (post.author as unknown as { id: number }).id
         : post.author;
-    return user.user_type === 'admin' || Number(user.id) === Number(authorId);
+    return isAdmin(user) || Number(user.id) === Number(authorId);
   };
 
   const handleEliminarPost = async () => {
@@ -68,7 +68,6 @@ function DetallePost() {
       navigate('/foro');
     } catch (err) {
       setError('Error al eliminar la publicación');
-      console.error(err);
     }
   };
 

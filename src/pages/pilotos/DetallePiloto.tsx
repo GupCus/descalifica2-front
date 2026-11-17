@@ -68,7 +68,7 @@ function DetallePiloto() {
             setNationalityName(nationality.name);
           }
         })
-        .catch((err) => console.error('Error fetching nationality:', err));
+        .catch(() => console.error('Error fetching nationality'));
     }
   }, [piloto?.nationality]);
 

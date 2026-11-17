@@ -25,6 +25,7 @@ import logoDescalifica2 from '../assets/descalifica2logo.png';
 import { AuthService } from '@/services/auth.service.ts';
 import HeaderSearch from '@/components/HeaderSearch';
 import { getAssetUrl } from '@/utils/asset.util.ts';
+import { isAdmin } from '@/utils/role.util.ts';
 
 function RootLayout() {
   const location = useLocation();
@@ -59,7 +60,6 @@ function RootLayout() {
         setAvatarUrl('');
       }
     } catch (error) {
-      console.error('Error loading user:', error);
       setUser(null);
       setAvatarUrl('');
     } finally {
@@ -74,7 +74,13 @@ function RootLayout() {
       loadUser();
     };
 
+    const handleSessionExpired = () => {
+      setUser(null);
+      setAvatarUrl('');
+    };
+
     window.addEventListener('userLoggedIn', handleLoginEvent);
+    window.addEventListener('sessionExpired', handleSessionExpired);
 
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'token' && !e.newValue) {
@@ -88,6 +94,7 @@ function RootLayout() {
 
     return () => {
       window.removeEventListener('userLoggedIn', handleLoginEvent);
+      window.removeEventListener('sessionExpired', handleSessionExpired);
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
@@ -292,7 +299,7 @@ function RootLayout() {
               ) : user ? (
                 <>
                   <Link
-                    to={user.user_type === 'ADMIN' ? '/menuadmin' : '/perfil'}
+                    to={isAdmin(user) ? '/menuadmin' : '/perfil'}
                     className="flex items-center gap-2 text-sm font-medium text-gray-200 hover:text-white transition-all group"
                   >
                     <span className="hidden sm:inline group-hover:text-white transition-colors">

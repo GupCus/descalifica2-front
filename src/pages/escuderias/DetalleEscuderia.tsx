@@ -80,7 +80,6 @@ function DetalleEscuderia() {
       .then((data) => setEscuderia(data))
       .catch((err) => {
         setError(err.message);
-        console.error("Error cargando escudería", err);
       })
       .finally(() => setLoading(false));
   }, [id]);
@@ -93,7 +92,6 @@ function DetalleEscuderia() {
         await deleteEscuderia(escuderia.id);
         navigate("/escuderias");
       } catch (err: any) {
-        console.error("Error eliminando escudería", err);
         const errorMessage = err.response?.data?.message || "Error al eliminar la escudería";
         alert(errorMessage);
       }

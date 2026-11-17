@@ -31,7 +31,6 @@ function ForgotPassword() {
       await AuthService.forgotPassword(email.trim());
       setSent(true);
     } catch (err: any) {
-      console.error('Error al solicitar recuperación:', err);
       setErrorMessage(
         err.response?.data?.message ||
           err.message ||

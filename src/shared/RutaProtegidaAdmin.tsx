@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, PropsWithChildren } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthService, SessionCheckResult } from "../services/auth.service";
+import { isAdmin } from "@/utils/role.util.ts";
 import { Button } from "@/components/ui/button";
 
 const RutaProtegidaAdmin = ({ children }: PropsWithChildren) => {
@@ -44,10 +45,7 @@ const RutaProtegidaAdmin = ({ children }: PropsWithChildren) => {
     );
   }
 
-  if (
-    sessionState.status !== "authenticated" ||
-    sessionState.user.user_type !== "admin"
-  ) {
+  if (sessionState.status !== "authenticated" || !isAdmin(sessionState.user)) {
     return <Navigate to="/" replace />;
   }
 

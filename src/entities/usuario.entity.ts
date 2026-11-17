@@ -3,8 +3,8 @@ import { baseEntity } from './baseEntity.entity.ts';
 export class Usuario extends baseEntity {
   name!: string;
   username!: string;
-  email!: string;
-  password!: string;
+  email?: string;
+  password?: string;
   surname?: string;
   date_of_birth?: Date | string;
   fav_driver?: string;
@@ -14,6 +14,16 @@ export class Usuario extends baseEntity {
   telegram_username?: string;
   telegram_id?: string;
   avatar_url?: string;
+  is_admin?: boolean;
+  user_type?: string;
+}
+
+export interface PublicUsuario {
+  id: number;
+  username: string;
+  name: string;
+  avatar_url?: string;
+  is_admin?: boolean;
   user_type?: string;
 }
 

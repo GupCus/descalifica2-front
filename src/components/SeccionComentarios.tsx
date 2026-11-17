@@ -17,6 +17,7 @@ import {
 } from '@/services/comentario.service';
 import { getUsuarios } from '@/services/usuario.service';
 import { AuthService } from '@/services/auth.service';
+import { isAdmin } from '@/utils/role.util';
 
 interface SeccionComentariosProps {
   postId: number;
@@ -45,12 +46,11 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
       setComentarios(data);
     } catch (err) {
       setError('Error al cargar los comentarios');
-      console.error(err);
     }
   }, [postId]);
 
   useEffect(() => {
-    cargarComentarios().catch(console.error);
+    cargarComentarios().catch(()=>console.error("Hubo un error cargando los comentarios"));
     getUsuarios()
       .then(setUsuarios)
       .catch(() => setUsuarios([]));
@@ -67,7 +67,7 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
 
   const puedeEliminar = (comentario: Comentario): boolean => {
     if (!user) return false;
-    return user.user_type === 'admin' || user.id === comentario.author;
+    return isAdmin(user) || user.id === comentario.author;
   };
 
   const handleComentar = async () => {
@@ -83,7 +83,6 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
       await cargarComentarios();
     } catch (err) {
       setError('Error al publicar el comentario');
-      console.error(err);
     } finally {
       setEnviando(false);
     }
@@ -99,7 +98,6 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
       await cargarComentarios();
     } catch (err) {
       setError('Error al eliminar el comentario');
-      console.error(err);
     }
   };
 

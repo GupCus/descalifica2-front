@@ -43,10 +43,10 @@ function NuevaMarca() {
   useEffect(() => {
     getNationalities()
       .then((data) => setNationalities(data))
-      .catch((err) => console.error("Error cargando nacionalidades", err));
+      .catch(() => console.error("Error cargando nacionalidades"));
     getMarca()
       .then((data) => setMarcas(data))
-      .catch((err) => console.error("Error cargando marcas", err));
+      .catch(() => console.error("Error cargando marcas"));
   }, []);
 
   const handleEntitySelect = (value: string) => {

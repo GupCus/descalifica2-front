@@ -3,6 +3,9 @@ function getRequiredEnv(key: 'VITE_API_URL'): string {
   const value = typeof rawValue === 'string' ? rawValue.trim() : '';
 
   if (!value) {
+    if (import.meta.env.MODE === 'test') {
+      return 'http://localhost:3000/api';
+    }
     const message = `[Config] Falta la variable de entorno obligatoria ${key}. Definila en el archivo .env (ver .env.example).`;
     if (typeof document !== 'undefined') {
       const root = document.getElementById('root') ?? document.body;
