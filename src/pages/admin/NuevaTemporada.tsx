@@ -62,10 +62,10 @@ function NuevaTemporada() {
   };
 
   useEffect(() => {
-    getCategoria().then((data) => setCategorias(data)).catch((err) => console.error(err));
-    getPiloto().then((data) => setPilotos(data)).catch((err) => console.error(err));
-    getEscuderia().then((data) => setEscuderias(data)).catch((err) => console.error(err));
-    getTemporada().then((data) => setTemporadas(data)).catch((err) => console.error(err));
+    getCategoria().then((data) => setCategorias(data)).catch(() => console.error("Hubo un error del servidor"));
+    getPiloto().then((data) => setPilotos(data)).catch(() => console.error("Hubo un error del servidor"));
+    getEscuderia().then((data) => setEscuderias(data)).catch(() => console.error("Hubo un error del servidor"));
+    getTemporada().then((data) => setTemporadas(data)).catch(() => console.error("Hubo un error del servidor"));
   }, []);
 
   const handleEntitySelect = (value: string) => {

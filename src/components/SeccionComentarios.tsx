@@ -46,12 +46,11 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
       setComentarios(data);
     } catch (err) {
       setError('Error al cargar los comentarios');
-      console.error(err);
     }
   }, [postId]);
 
   useEffect(() => {
-    cargarComentarios().catch(console.error);
+    cargarComentarios().catch(()=>console.error("Hubo un error cargando los comentarios"));
     getUsuarios()
       .then(setUsuarios)
       .catch(() => setUsuarios([]));
@@ -84,7 +83,6 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
       await cargarComentarios();
     } catch (err) {
       setError('Error al publicar el comentario');
-      console.error(err);
     } finally {
       setEnviando(false);
     }
@@ -100,7 +98,6 @@ function SeccionComentarios({ postId }: SeccionComentariosProps) {
       await cargarComentarios();
     } catch (err) {
       setError('Error al eliminar el comentario');
-      console.error(err);
     }
   };
 

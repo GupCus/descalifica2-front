@@ -59,27 +59,27 @@ function NuevaEscuderia() {
   useEffect(() => {
     getCategoria()
       .then((data) => setCategorias(data))
-      .catch((err) => {
+      .catch(() => {
         setCategorias([]);
-        console.error("Error cargando categorías", err);
+        console.error("Error cargando categorías");
       });
     getMarca()
       .then((data) => setMarcas(data))
-      .catch((err) => {
+      .catch(() => {
         setMarcas([]);
-        console.error("Error cargando marcas", err);
+        console.error("Error cargando marcas");
       });
     getNationalities()
       .then((data) => setNationalities(data))
-      .catch((err) => {
+      .catch(() => {
         setNationalities([]);
-        console.error("Error cargando nacionalidades", err);
+        console.error("Error cargando nacionalidades");
       });
     getEscuderia()
       .then((data) => setEscuderias(data))
-      .catch((err) => {
+      .catch(() => {
         setEscuderias([]);
-        console.error("Error cargando escuderias", err);
+        console.error("Error cargando escuderias");
       });
   }, []);
 

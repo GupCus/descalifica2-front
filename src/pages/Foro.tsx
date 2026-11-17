@@ -44,7 +44,7 @@ function Foro() {
       .finally(() => setLoading(false));
 
     AuthService.getCurrentUser().then(setUser);
-    getUsuarios().then(setUsuarios).catch(console.error);
+    getUsuarios().then(setUsuarios).catch(()=>console.error("Hubo un error"));
   }, []);
 
   const getAuthorId = (post: BlogPost): number => {
@@ -55,7 +55,6 @@ function Foro() {
   };
 
   const usernameDe = (authorId: number): string => {
-    console.log('Usuarios:', usuarios);
     const usuario = usuarios.find((u) => u.id === authorId);
     return usuario?.username ?? usuario?.name ?? 'Usuario eliminado';
   };
@@ -77,7 +76,6 @@ function Foro() {
       await deleteBlogPost(post.id);
       setPosts((prev) => prev.filter((p) => p.id !== post.id));
     } catch (err) {
-      console.error(err);
       setError('Error al eliminar la publicación');
     }
   };

@@ -49,7 +49,6 @@ function RootLayout() {
         setAvatarUrl('');
       }
     } catch (error) {
-      console.error('Error loading user:', error);
       setUser(null);
       setAvatarUrl('');
     } finally {
@@ -64,7 +63,13 @@ function RootLayout() {
       loadUser();
     };
 
+    const handleSessionExpired = () => {
+      setUser(null);
+      setAvatarUrl('');
+    };
+
     window.addEventListener('userLoggedIn', handleLoginEvent);
+    window.addEventListener('sessionExpired', handleSessionExpired);
 
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'token' && !e.newValue) {
@@ -78,6 +83,7 @@ function RootLayout() {
 
     return () => {
       window.removeEventListener('userLoggedIn', handleLoginEvent);
+      window.removeEventListener('sessionExpired', handleSessionExpired);
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);

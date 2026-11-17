@@ -115,7 +115,6 @@ function Perfil() {
 
         await verifyInitialStatus(data);
       } catch (err: any) {
-        console.error('Error al cargar perfil:', err);
         setError('Error al cargar los datos del perfil.');
       } finally {
         setLoading(false);

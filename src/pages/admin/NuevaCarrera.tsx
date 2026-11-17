@@ -71,16 +71,16 @@ function NuevaCarrera() {
   useEffect(() => {
     getCircuito()
       .then((data) => setCircuitos(data))
-      .catch((err) => console.error("Error cargando circuitos", err));
+      .catch(() => console.error("Error cargando circuitos"));
     getTemporada()
       .then((data) => setTemporadas(data))
-      .catch((err) => console.error("Error cargando temporadas", err));
+      .catch(() => console.error("Error cargando temporadas"));
     getCategoria()
       .then((data) => setCategorias(data))
-      .catch((err) => console.error("Error cargando categorías", err));
+      .catch(() => console.error("Error cargando categorías"));
     getCarrera()
       .then((data) => setCarreras(data))
-      .catch((err) => console.error("Error cargando carreras", err));
+      .catch(() => console.error("Error cargando carreras"));
   }, []);
 
   const handleEntitySelect = (value: string) => {

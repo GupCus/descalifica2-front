@@ -37,9 +37,9 @@ function ListadoPilotos() {
 
     getEscuderia()
       .then((data) => setEscuderias(data))
-      .catch((err) => {
+      .catch(() => {
         setEscuderias([]);
-        console.error('Error cargando escuderías', err);
+        console.error('Error cargando escuderías');
       });
   }, []);
 

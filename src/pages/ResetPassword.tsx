@@ -51,7 +51,7 @@ function ResetPassword() {
         navigate('/login');
       }, 3000);
     } catch (err: any) {
-      console.error('Error al restablecer contraseña:', err);
+      console.error('Error al restablecer contraseña');
       setErrorMessage(
         err.response?.data?.message ||
           err.message ||

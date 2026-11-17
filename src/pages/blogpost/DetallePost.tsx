@@ -29,14 +29,13 @@ function DetallePost() {
     if (!id) return;
     getOneBlogPost(Number(id))
       .then((data) => setPost(data))
-      .catch((err) => {
+      .catch(() => {
         setError('Error cargando la publicación');
-        console.error(err);
       })
       .finally(() => setLoading(false));
 
     AuthService.getCurrentUser().then(setUser);
-    getUsuarios().then(setUsuarios).catch(console.error);
+    getUsuarios().then(setUsuarios).catch(()=>console.error("Hubo un error cargando los usuarios de la publicación"));
   }, [id]);
 
   const getAuthorId = (p: BlogPost): number => {
@@ -69,7 +68,6 @@ function DetallePost() {
       navigate('/foro');
     } catch (err) {
       setError('Error al eliminar la publicación');
-      console.error(err);
     }
   };
 

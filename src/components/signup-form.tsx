@@ -214,8 +214,6 @@ export function SignupForm({
       }, 1000);
     } catch (err: any) {
       setMessageType('error');
-      console.error('Error completo:', err);
-      console.error('Respuesta del servidor:', err.response?.data);
 
       setMessage(
         `Error: ${
