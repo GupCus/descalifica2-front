@@ -1,10 +1,4 @@
-import axios from "axios";
-
-const URL_API = import.meta.env.VITE_API_URL;
-
-const client = axios.create({
-  baseURL: URL_API + "/nationalities",
-});
+import { apiClient } from "./httpClient.ts";
 
 export type Nationality = {
   code: string;
@@ -12,6 +6,11 @@ export type Nationality = {
 };
 
 export async function getNationalities(): Promise<Nationality[]> {
-  const response = await client.get("/");
+  const response = await apiClient.get("/nationalities/");
+  return response.data.data;
+}
+
+export async function getNationalityByCode(code: string): Promise<Nationality> {
+  const response = await apiClient.get(`/nationalities/${code}`);
   return response.data.data;
 }

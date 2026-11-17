@@ -3,7 +3,11 @@ import { useState, useEffect } from "react";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
-import { deleteMarca, uploadMarcaImage } from "@/services/marca.service.ts";
+import {
+  deleteMarca,
+  getOneMarca,
+  uploadMarcaImage,
+} from "@/services/marca.service.ts";
 import { AuthService } from "@/services/auth.service.ts";
 import { getAssetUrl } from "@/utils/asset.util.ts";
 
@@ -45,26 +49,20 @@ function DetalleMarca() {
     }
   };
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-
   useEffect(() => {
     if (location.state?.marca) return;
     if (!id) return;
 
-    fetch(`${api}/marcas/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    getOneMarca(Number(id))
       .then((data) => {
-        setMarca(data.data);
+        setMarca(data);
         setLoading(false);
       })
       .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [id, api, location.state]);
+  }, [id, location.state]);
 
   const handleDelete = async () => {
     if (!marca?.id || !isAdmin) return;

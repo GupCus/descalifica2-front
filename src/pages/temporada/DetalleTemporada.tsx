@@ -2,6 +2,7 @@ import { Temporada } from "@/entities/temporada.entity.ts";
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { getOneTemporada } from "@/services/temporada.service.ts";
 
 function DetalleTemporada() {
   const { id } = useParams<{ id: string }>();
@@ -9,25 +10,19 @@ function DetalleTemporada() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const api = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-
   useEffect(() => {
     if (!id) return;
 
-    fetch(`${api}/temporadas/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res.json();
-      })
+    getOneTemporada(Number(id))
       .then((data) => {
-        setTemporada(data.data ?? data);
+        setTemporada(data);
         setLoading(false);
       })
       .catch((err) => {
         setError(err.message);
         setLoading(false);
       });
-  }, [id, api]);
+  }, [id]);
 
   if (loading) {
     return (

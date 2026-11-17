@@ -24,14 +24,19 @@ Descalifica2 es un sitio web dedicado principalmente a la Fórmula 1, donde podr
    ```
 
 2. **Variables de Entorno:**
-   Crea un archivo `.env` con:
+   Copia el archivo de ejemplo `.env.example` a `.env` y completa los valores requeridos:
+
+   ```bash
+   cp .env.example .env
+   ```
 
    ```env
    VITE_API_URL=http://localhost:3000/api
    VITE_GOOGLE_KEY=
    ```
 
-   `VITE_GOOGLE_KEY` es el mismo ID de cliente usado en `GOOGLE_KEY` del backend.
+   - `VITE_API_URL` (**obligatoria**): URL base de la API del backend. Es validada al iniciar en `src/config/env.ts`; si falta, la aplicación falla de forma visible al arrancar en lugar de asumir `localhost`.
+   - `VITE_GOOGLE_KEY`: Client ID de Google OAuth (el mismo ID de cliente usado en `GOOGLE_KEY` del backend).
 
 3. **Instalar dependencias:**
 
